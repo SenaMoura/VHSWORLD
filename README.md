@@ -50,26 +50,17 @@ Those all are going to be on my own mod Vhsworld version-1.0.
 ## 📸 PHOTOS ABOUT THE PROGRESS:
 
 
-<p align="right">
-  MAIN MENU
-</p>
+## MAIN MENU
 
 <img width="918" height="526" alt="image" src="https://github.com/user-attachments/assets/709eb9c8-0ffd-4a5e-b4be-493b274df0eb" />
 
-
-
-<p align="right">
-  VISUALS
-</p>
+## VISUALS
 
 <img width="925" height="530" alt="2026-07-21_22 21 03" src="https://github.com/user-attachments/assets/ed2fa851-61bd-4f20-a639-f23e085acff8" />
 
 <img width="925" height="530" alt="2026-07-21_22 21 18" src="https://github.com/user-attachments/assets/8b5b612b-9c27-4f8f-80aa-362924a5e029" />
 
-
-<p align="right">
-  WORLDGEN
-</p>
+## WORLDGEN
 
 <img width="925" height="530" alt="2026-07-21_22 20 45" src="https://github.com/user-attachments/assets/3a114dce-f6c2-4f15-9439-c2972555667c" />
 
