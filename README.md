@@ -9,9 +9,11 @@ VHSWORLD is my project that I have been working on since 2025, the main ideia of
 ## VERSIONS 🖥️
 
 
-| VHSWORLD VERSIONS|  |
+| VHSWORLD VERSIONS| MAIN_PROBLEMS |
 |---|---|
-|VHSWORLD | Game mechanic incompatibilities: Basic survival mechanics were missing (such as the inability for the player to                sleep in the early editions). |
+|VHSWORLDv1.0 - v1.2 | Game mechanic incompatibilities: Basic survival mechanics were missing (such as the inability for the                          player to sleep in the early editions). |
+|VHSWORLDv1.3 |  Entidades desbalanceadas: A entidade "The man from the shadow" apresentava problemas de comportamento e desbalanceamento no gameplay, precisando ser removida.
 
+Névoa visual travada: A névoa do modpack causava limitação severa de visibilidade sem permitir ajuste fino pelo jogador (o que levou à inclusão de menu de configuração via F8).|
 
 
