@@ -7,13 +7,14 @@
 
 <img width="1920" height="1080" alt="ref_minecraft_ambiente" src="https://github.com/user-attachments/assets/6dedf078-8293-4ac4-9900-76913d42552e" />
 
-# VHSWORLD main project 🔥
+# VHSWORLD MAIN PROJECT 🔥
 ## 1.20.1 | Forge 
 
 
 ## CHECKOUT MY CURSEFORGE TO PLAY VHSWORLD [Curseforge](https://www.curseforge.com/minecraft/modpacks/vhsworld)
 
-## Main Idea
+## MAIN IDEA
+
 VHSWORLD is my project that I have been working on since 2025, the main ideia of this modpack is to create the most immersive experience using psychological horror, minecraft nostalgia and exploration. To make this happen I implemented some uniques mechanics during the process of the modpack, unfortuanely I couldn't update it, so after 4 months without any update I decided to work on it and bring back my main project. 
 
 ## 📜 VERSION HISTORY AND KNOWN ISSUES
