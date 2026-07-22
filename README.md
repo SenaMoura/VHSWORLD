@@ -6,19 +6,12 @@
 ## Main Idea
 VHSWORLD is my project that I have been working on since 2025, the main ideia of this modpack is to create the most immersive experience using psychological horror, minecraft nostalgia and exploration. To make this happen I implemented some uniques mechanics during the process of the modpack, unfortuanely I couldn't update it, so after 4 months without any update I decided to work on it and bring back my main project. 
 
-## VERSIONS 🖥️
+## 📜 VERSION HISTORY AND KNOWN ISSUES
 
-
-| VHSWORLD VERSIONS| MAIN_PROBLEMS |
-|---|---|
-|VHSWORLDv1.0 - v1.2 | Game mechanic incompatibilities: Basic survival mechanics were missing (such as the inability for the                          player to sleep in the early editions). Lack of polish: The visual atmosphere remained inconsistent and                        featured little variety in structures and entities. |
-
-|VHSWORLDv1.3 | Unbalanced entities: The "The man from the shadow" entity exhibited behavioral issues and gameplay imbalances,                 necessitating its removal. Fixed visual fog: The modpack's fog severely limited visibility without allowing                    for fine-tuning by the player (which led to the inclusion of a configuration menu accessible via F8).|
-
-|VHSWORLDv1.4 | Intentional crashes and code bugs: This version introduced creatures intentionally programmed to close or                      force-quit the game (crash), which caused dissatisfaction and confusion among players. General instability:                    The creator confirmed that the modpack contained several bugs due to a long period without maintenance, as                     well as issues with the original fog configuration mod (which had to be removed).|
-
-|VHSWORLDv1.5(Rework) | Severe FPS drops and lag: Several mods caused extreme performance loss. The Befall Faces mod caused                            critical in-game lag. File conflicts: The file/mod 000.jar presented serious compatibility                                  conflicts with other files in the modpack. Excess of unstable content: Broken dimensions (such                              as the Midnight Dimension) and an overabundance of overlapping entities undermined the                                      psychological horror premise, necessitating a mass removal of mods for the Rework. |
-
-|VHSWORLDv1.6(Rework) | High hardware usage (heavy shaders): The revamped visuals place a significant load on low-end or                            mid-range computers, requiring the player to manually disable shaders (O key). Out-of-game                                  difficulty: The introduction of puzzles and lore that rely on data and research outside of                                  Minecraft may confuse players seeking only a traditional gaming experience. |
-
-  
+| VERSION | CATEGORY | RECORDED ISSUES AND LIMITATIONS |
+| :--- | :--- | :--- |
+| **`v1.0 – v1.2`** | **Initial Versions** | • **Incompatible Gameplay Mechanics:** Basic survival mechanics were missing (such as the player's inability to sleep in the earliest editions).<br>• **Lack of Polish:** The visual atmosphere was still inconsistent, featuring little variety in structures and entities. |
+| **`v1.3`** | **Entity & Visual Adjustments** | • **Unbalanced Entities:** The entity *"The man from the shadow"* had behavior and gameplay balancing issues, requiring its removal.<br>• **Locked Visual Fog:** The modpack's fog caused severe visibility limitations without allowing fine adjustments by the player (which led to the inclusion of a configuration menu via F8). |
+| **`v1.4`** | **Stability & Bugs** | • **Intentional Crashes and Code Bugs:** This version introduced creatures intentionally programmed to force-close or crash the game, causing frustration and confusion among players.<br>• **General Instability:** The creator confirmed that the modpack contained various bugs due to a long period without maintenance, along with glitches in the original fog configuration mod (which had to be removed). |
+| **`v1.5`** | **Rework** | • **Severe FPS Drops and Lag:** Several mods caused extreme performance drops. The *Befall Faces* mod generated critical lag in the world.<br>• **File Conflicts:** The file/mod `000.jar` caused severe compatibility conflicts with other files in the modpack.<br>• **Excess of Unstable Content:** Broken dimensions (such as the *Midnight Dimension*) and an overlap of too many entities undermined the psychological horror concept, requiring a mass removal of mods in the Rework. |
+| **`v1.6`** | **Rework** | • **High Hardware Consumption (Heavy Shaders):** The redesigned visuals are quite demanding on low- or mid-end computers, requiring players to manually disable shaders (using the `O` key).<br>• **Out-of-Game Difficulty:** The introduction of puzzles and lore that rely on data and research outside of Minecraft can confuse players who are just looking for a traditional gaming experience. |
