@@ -1,5 +1,7 @@
 # VHSWORLD main project 🔥
 
+## 1.20.1 | Forge 
+
 
 [Curseforge](https://www.curseforge.com/minecraft/modpacks/vhsworld)
 
@@ -15,3 +17,31 @@ VHSWORLD is my project that I have been working on since 2025, the main ideia of
 | **`v1.4`** | **Stability & Bugs** | • **Intentional Crashes and Code Bugs:** This version introduced creatures intentionally programmed to force-close or crash the game, causing frustration and confusion among players.<br>• **General Instability:** The creator confirmed that the modpack contained various bugs due to a long period without maintenance, along with glitches in the original fog configuration mod (which had to be removed). |
 | **`v1.5`** | **Rework** | • **Severe FPS Drops and Lag:** Several mods caused extreme performance drops. The *Befall Faces* mod generated critical lag in the world.<br>• **File Conflicts:** The file/mod `000.jar` caused severe compatibility conflicts with other files in the modpack.<br>• **Excess of Unstable Content:** Broken dimensions (such as the *Midnight Dimension*) and an overlap of too many entities undermined the psychological horror concept, requiring a mass removal of mods in the Rework. |
 | **`v1.6`** | **Rework** | • **High Hardware Consumption (Heavy Shaders):** The redesigned visuals are quite demanding on low- or mid-end computers, requiring players to manually disable shaders (using the `O` key).<br>• **Out-of-Game Difficulty:** The introduction of puzzles and lore that rely on data and research outside of Minecraft can confuse players who are just looking for a traditional gaming experience. |
+
+
+## VHSWORLDv2.0
+Now i'm working on a fully and complete rework to the modpack, creating my own mod called Vhsworld version-1.0, it's an  reboot, so everything that I have created to VHSWORLD will be removed and changed. A lot of new mechanics are going to be implemented to the modpack, here it's some of them:
+
+## 💡WORKING ON IT:
+- [ ] New main menu
+- [ ] New first person visual
+- [ ] New entities
+- [ ] New Dimensions
+- [ ] New events
+- [ ] Working and planning an ARG
+- [ ] Voicelines
+- [ ] Ambient Interaction
+- [ ] Flash System
+- [ ] New items
+
+Those all are going to be on my own mod Vhsworld version-1.0.
+
+
+## 📸 PHOTOS ABOUT THE PROGRESS:
+
+
+
+
+
+
+
