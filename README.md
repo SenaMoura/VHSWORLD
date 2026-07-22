@@ -76,7 +76,7 @@ Those all are going to be on my own mod Vhsworld version-1.0.
 
 
 
-Talk with me on [🔥Curseforge](https://www.curseforge.com/minecraft/modpacks/vhsworld)
+Talk to me [🔥Curseforge](https://www.curseforge.com/minecraft/modpacks/vhsworld)
 
 
 
