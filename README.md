@@ -80,7 +80,9 @@ Those all are going to be on my own mod Vhsworld version-1.0.
 
 © [Domguy] - All rights reserved.
 
-No part of this code or project may be copied, modified, redistributed, or used without the author's prior written permission.
+No part of this code or project may be copied, modified, redistributed, or used without the author's prior written permission. 
+Talk with me on [🔥Curseforge](https://www.curseforge.com/minecraft/modpacks/vhsworld)
+
 
 
 
