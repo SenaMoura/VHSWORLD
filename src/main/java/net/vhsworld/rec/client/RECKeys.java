@@ -20,10 +20,11 @@ public final class RECKeys {
 
     public static final String CATEGORY = "key.categories.recmod";
 
+    // G, e nao F: F e a troca de mao do vanilla, e as duas acoes disparavam juntas.
     public static final KeyMapping OPEN_ALBUM = new KeyMapping(
             "key.recmod.album",
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_F,
+            GLFW.GLFW_KEY_G,
             CATEGORY
     );
 

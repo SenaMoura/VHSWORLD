@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * O album de fotografias (tecla F).
+ * O album de fotografias (tecla G).
  *
  * Duas telas em uma: a grade de miniaturas e, ao clicar numa foto, ela grande.
  * Foto nao revelada aparece como filme velado — chiado e nada mais. Revelar
