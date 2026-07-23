@@ -160,8 +160,11 @@ public final class RECConfig {
                     .defineInRange("staticAmount", 0.50D, 0.0D, 1.0D);
 
             trackingBar = b
-                    .comment("Aquela faixa clara que sobe/desce na imagem (tracking da fita).")
-                    .define("trackingBar", true);
+                    .comment("Aquela faixa clara que sobe/desce na imagem (tracking da fita).",
+                             "DESLIGADA por padrao — do jeito que ficou, ela rouba a atencao da",
+                             "cena inteira toda vez que passa. Efeito de fita tem que ser textura",
+                             "de fundo, nao protagonista.")
+                    .define("trackingBar", false);
 
             trackingPeriodSeconds = b
                     .comment("Segundos que a faixa leva para atravessar a tela.")
