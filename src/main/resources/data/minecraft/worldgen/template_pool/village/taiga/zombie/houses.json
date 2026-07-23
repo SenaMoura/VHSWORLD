@@ -3,8 +3,8 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/taiga_house_small_zombie",
-        "processors": "minecraft:mossify_10_percent",
+        "location": "recmod:village/built/taiga_house_small_zombie",
+        "processors": "minecraft:empty",
         "projection": "rigid"
       },
       "weight": 4
@@ -12,8 +12,8 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/taiga_house_large_zombie",
-        "processors": "minecraft:mossify_10_percent",
+        "location": "recmod:village/built/taiga_house_tower_zombie",
+        "processors": "minecraft:empty",
         "projection": "rigid"
       },
       "weight": 3
@@ -21,8 +21,26 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/taiga_smithy_zombie",
-        "processors": "minecraft:mossify_10_percent",
+        "location": "recmod:village/built/taiga_house_mini_zombie",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "recmod:village/built/taiga_house_large2_zombie",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "recmod:village/built/taiga_library_zombie",
+        "processors": "minecraft:empty",
         "projection": "rigid"
       },
       "weight": 1
@@ -31,19 +49,10 @@
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
         "location": "recmod:village/old/taiga_farm_zombie",
-        "processors": "minecraft:mossify_10_percent",
+        "processors": "minecraft:empty",
         "projection": "rigid"
       },
       "weight": 3
-    },
-    {
-      "element": {
-        "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/taiga_church_zombie",
-        "processors": "minecraft:mossify_10_percent",
-        "projection": "rigid"
-      },
-      "weight": 1
     },
     {
       "element": {

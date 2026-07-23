@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/taiga_well",
+        "location": "recmod:village/built/taiga_well",
         "processors": "minecraft:mossify_20_percent",
         "projection": "rigid"
       },
@@ -12,7 +12,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/taiga_well_zombie",
+        "location": "recmod:village/built/taiga_well_zombie",
         "processors": "minecraft:zombie_taiga",
         "projection": "rigid"
       },
