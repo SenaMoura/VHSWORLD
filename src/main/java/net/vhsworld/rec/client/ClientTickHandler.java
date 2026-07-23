@@ -8,6 +8,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.client.photo.PhotoAlbumScreen;
+import net.vhsworld.rec.client.sanity.HostileSightWatcher;
 import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
@@ -31,6 +32,7 @@ public class ClientTickHandler {
         if (mc.player == null || mc.level == null) return;
 
         SanityState.get().tick();
+        HostileSightWatcher.tick(mc);
 
         // --- ÁLBUM DE FOTOS (tecla C) ---
         while (RECKeys.OPEN_ALBUM.consumeClick()) {

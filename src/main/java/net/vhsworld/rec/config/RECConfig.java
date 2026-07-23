@@ -84,6 +84,8 @@ public final class RECConfig {
         // --- sanidade ---
         public final ForgeConfigSpec.BooleanValue sanity;
         public final ForgeConfigSpec.BooleanValue sanityBar;
+        public final ForgeConfigSpec.IntValue sanityBarMargin;
+        public final ForgeConfigSpec.BooleanValue sanityShakeOnHostile;
         public final ForgeConfigSpec.DoubleValue sanityLossPerSighting;
         public final ForgeConfigSpec.DoubleValue sanityRegenPerMinute;
         public final ForgeConfigSpec.DoubleValue sanityShakeSeconds;
@@ -303,6 +305,17 @@ public final class RECConfig {
             sanityBar = b
                     .comment("Mostra a barra com o cerebro na lateral esquerda.")
                     .define("sanityBar", true);
+
+            sanityBarMargin = b
+                    .comment("Distancia da barra ate a borda, em pixels. A barra preta do",
+                             "letterbox ja e descontada: isto conta a partir do fim dela.")
+                    .defineInRange("sanityBarMargin", 14, 0, 400);
+
+            sanityShakeOnHostile = b
+                    .comment("PROVISORIO, para testar a camera: a tela treme quando um mob",
+                             "hostil entra no campo de visao. Nao tira sanidade — so treme.",
+                             "Some quando as criaturas do mod existirem e o susto vier da foto.")
+                    .define("sanityShakeOnHostile", true);
 
             sanityLossPerSighting = b
                     .comment("Quanto de sanidade (%) cai a cada revelacao com algo na foto.",

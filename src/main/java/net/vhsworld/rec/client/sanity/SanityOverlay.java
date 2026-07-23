@@ -19,7 +19,6 @@ public final class SanityOverlay {
     private static final ResourceLocation BRAIN =
             new ResourceLocation(RECMod.MOD_ID, "textures/gui/sanity_brain.png");
 
-    private static final int MARGIN_X = 12;
     private static final int ICON = 16;
     private static final int BAR_W = 6;
     private static final int BAR_H = 84;
@@ -38,10 +37,15 @@ public final class SanityOverlay {
         int totalH = ICON + 4 + BAR_H;
         int top = (height - totalH) / 2;
 
-        int iconX = MARGIN_X + (BAR_W - ICON) / 2;
+        // Começa DEPOIS da barra preta do letterbox — senão o cérebro fica escondido
+        // atrás dela, que era o que acontecia.
+        int margin = CamcorderOverlay.letterboxBarWidth(width)
+                + RECConfig.CLIENT.sanityBarMargin.get();
+
+        int iconX = margin + (BAR_W - ICON) / 2;
         g.blit(BRAIN, iconX, top, 0.0f, 0.0f, ICON, ICON, ICON, ICON);
 
-        int barX = MARGIN_X;
+        int barX = margin;
         int barY = top + ICON + 4;
 
         // Moldura + fundo
