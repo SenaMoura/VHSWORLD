@@ -33,6 +33,15 @@ public class Photo {
     /** Textura carregada sob demanda; null enquanto a foto nao foi aberta. */
     public transient ResourceLocation texture;
 
+    /**
+     * Ticks desde que a revelacao chegou a 100%, para a imagem nascer no lugar do
+     * filme velado em vez de aparecer de estalo.
+     *
+     * -1 = sem animacao. E o valor de quem ja estava revelada quando o jogo abriu:
+     * foto velha nao se revela de novo toda vez que voce olha para ela.
+     */
+    public transient int revealFade = -1;
+
     /** true se o PNG sumiu do disco — a foto vira uma ficha orfa. */
     public transient boolean broken;
 

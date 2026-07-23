@@ -78,6 +78,7 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue photos;
         public final ForgeConfigSpec.IntValue maxPhotos;
         public final ForgeConfigSpec.IntValue photoDevelopSeconds;
+        public final ForgeConfigSpec.DoubleValue photoFadeSeconds;
         public final ForgeConfigSpec.BooleanValue photoCatchesAnyMob;
 
         // --- audio ---
@@ -269,6 +270,11 @@ public final class RECConfig {
                     .comment("Segundos para revelar uma foto. A espera e proposital: e nela",
                              "que o jogador fica imaginando o que vai aparecer.")
                     .defineInRange("photoDevelopSeconds", 6, 0, 300);
+
+            photoFadeSeconds = b
+                    .comment("Segundos que a imagem leva para nascer por cima do filme velado",
+                             "quando a revelacao chega a 100%. 0.0 faz aparecer de estalo.")
+                    .defineInRange("photoFadeSeconds", 1.5D, 0.0D, 10.0D);
 
             photoCatchesAnyMob = b
                     .comment("Se true, qualquer mob na frente da lente conta como revelacao.",

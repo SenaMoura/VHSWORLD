@@ -1,5 +1,6 @@
 package net.vhsworld.rec.client.photo;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -102,15 +103,42 @@ public class PhotoAlbumScreen extends Screen {
 
     @Override
     public void tick() {
-        if (open == null || open.developed || open.developTicks <= 0) return;
+        if (open == null) return;
+
+        // Imagem nascendo depois que a revelacao fechou em 100%.
+        if (open.developed) {
+            if (open.revealFade >= 0 && open.revealFade < fadeTicks()) {
+                open.revealFade++;
+            }
+            return;
+        }
+
+        if (open.developTicks <= 0) return;
 
         int needed = Math.max(1, RECConfig.CLIENT.photoDevelopSeconds.get() * 20);
         open.developTicks++;
 
         if (open.developTicks >= needed) {
             open.developed = true;
+            open.revealFade = 0;      // so aqui a animacao comeca
             PhotoAlbum.get().save();
         }
+    }
+
+    private static int fadeTicks() {
+        return Math.max(1, (int) Math.round(RECConfig.CLIENT.photoFadeSeconds.get() * 20.0D));
+    }
+
+    /**
+     * 1.0 = imagem cheia. Menor que isso enquanto ela esta nascendo.
+     * Foto revelada em outra sessao nunca anima: entra direto em 1.0.
+     */
+    private static float revealAlpha(Photo photo, float partialTick) {
+        if (!photo.developed) return 0.0f;
+        if (photo.revealFade < 0) return 1.0f;
+
+        float progress = (photo.revealFade + partialTick) / fadeTicks();
+        return Math.max(0.0f, Math.min(1.0f, progress));
     }
 
     // ------------------------------------------------------------------ render
@@ -121,9 +149,9 @@ public class PhotoAlbumScreen extends Screen {
         grain(g);
 
         if (open == null) {
-            renderGrid(g, mouseX, mouseY);
+            renderGrid(g, mouseX, mouseY, partialTick);
         } else {
-            renderOpen(g);
+            renderOpen(g, partialTick);
         }
 
         super.render(g, mouseX, mouseY, partialTick);
@@ -145,7 +173,7 @@ public class PhotoAlbumScreen extends Screen {
         }
     }
 
-    private void renderGrid(GuiGraphics g, int mouseX, int mouseY) {
+    private void renderGrid(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         List<Photo> photos = album();
 
         g.drawString(font, "FOTOGRAFIAS", 16, 14, 0xFFCCCCCC, false);
@@ -174,7 +202,7 @@ public class PhotoAlbumScreen extends Screen {
             int y = startY + row * (THUMB_H + GAP);
 
             boolean hover = mouseX >= x && mouseX < x + THUMB_W && mouseY >= y && mouseY < y + THUMB_H;
-            drawPhoto(g, photos.get(index), x, y, THUMB_W, THUMB_H, hover);
+            drawPhoto(g, photos.get(index), x, y, THUMB_W, THUMB_H, hover, partialTick);
         }
 
         int pages = (photos.size() + perPage() - 1) / perPage();
@@ -182,13 +210,13 @@ public class PhotoAlbumScreen extends Screen {
         g.drawString(font, label, (width - font.width(label)) / 2, height - 48, 0xFF777777, false);
     }
 
-    private void renderOpen(GuiGraphics g) {
+    private void renderOpen(GuiGraphics g, float partialTick) {
         int w = 384;
         int h = 216;
         int x = (width - w) / 2;
         int y = (height - h) / 2 - 14;
 
-        drawPhoto(g, open, x, y, w, h, false);
+        drawPhoto(g, open, x, y, w, h, false, partialTick);
 
         String stamp = STAMP.format(new Date(open.takenAt));
         g.drawString(font, stamp, x, y - 12, 0xFF777777, false);
@@ -198,6 +226,11 @@ public class PhotoAlbumScreen extends Screen {
         if (open.broken) {
             status = "FILME PERDIDO";
             color = 0xFFAA3333;
+        } else if (open.developed && revealAlpha(open, partialTick) < 1.0f) {
+            // O veredito espera a imagem terminar de nascer. Ler antes de ver
+            // estragaria o unico momento que o sistema inteiro existe para criar.
+            status = "REVELANDO... 100%";
+            color = 0xFFCCCC55;
         } else if (open.developed) {
             status = open.subject == null
                     ? "NADA FOI CAPTURADO"
@@ -219,34 +252,60 @@ public class PhotoAlbumScreen extends Screen {
      * Desenha uma foto. Se ainda nao foi revelada, desenha o filme velado no lugar
      * da imagem — o arquivo existe, mas o jogador ainda nao tem direito de ver.
      */
-    private void drawPhoto(GuiGraphics g, Photo photo, int x, int y, int w, int h, boolean hover) {
+    private void drawPhoto(GuiGraphics g, Photo photo, int x, int y, int w, int h,
+                           boolean hover, float partialTick) {
         int border = hover ? 0xFFFFFFFF : 0xFF555555;
         g.fill(x - 1, y - 1, x + w + 1, y, border);
         g.fill(x - 1, y + h, x + w + 1, y + h + 1, border);
         g.fill(x - 1, y, x, y + h, border);
         g.fill(x + w, y, x + w + 1, y + h, border);
 
-        if (photo.developed && !photo.broken) {
-            ResourceLocation tex = PhotoAlbum.get().texture(photo);
-            if (tex != null) {
-                g.blit(tex, x, y, 0.0f, 0.0f, w, h, w, h);
-                return;
-            }
+        ResourceLocation tex = (photo.developed && !photo.broken)
+                ? PhotoAlbum.get().texture(photo) : null;
+
+        float alpha = tex == null ? 0.0f : revealAlpha(photo, partialTick);
+
+        // O filme velado fica por baixo enquanto a imagem nasce: a foto não pisca
+        // do nada, ela emerge de dentro do chiado.
+        if (alpha < 1.0f) {
+            drawUndevelopedFilm(g, photo, x, y, w, h, 1.0f - alpha);
         }
 
-        // Filme velado: escuro com chiado. Nao e a foto — e a ausencia dela.
-        g.fill(x, y, x + w, y + h, 0xFF101014);
-        int specks = w * h / 260;
-        for (int i = 0; i < specks; i++) {
-            int px = x + RANDOM.nextInt(w);
-            int py = y + RANDOM.nextInt(h);
-            int a = 30 + RANDOM.nextInt(90);
-            g.fill(px, py, px + 1, py + 1, (a << 24) | 0x00FFFFFF);
+        if (tex != null && alpha > 0.0f) {
+            if (alpha >= 1.0f) {
+                g.blit(tex, x, y, 0.0f, 0.0f, w, h, w, h);
+            } else {
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
+                g.blit(tex, x, y, 0.0f, 0.0f, w, h, w, h);
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+                RenderSystem.disableBlend();
+            }
         }
 
         if (photo.broken) {
             String lost = "X";
             g.drawString(font, lost, x + (w - font.width(lost)) / 2, y + h / 2 - 4, 0xFFAA3333, false);
+        }
+    }
+
+    /**
+     * Filme velado: escuro com chiado. Nao e a foto — e a ausencia dela.
+     *
+     * O peso vai de 1.0 (velado por completo) a 0.0, para o chiado sumir na mesma
+     * medida em que a imagem aparece.
+     */
+    private void drawUndevelopedFilm(GuiGraphics g, Photo photo, int x, int y, int w, int h, float weight) {
+        int base = (int) (0xFF * weight) << 24;
+        g.fill(x, y, x + w, y + h, base | 0x00101014);
+
+        int specks = (int) (w * h / 260 * weight);
+        for (int i = 0; i < specks; i++) {
+            int px = x + RANDOM.nextInt(w);
+            int py = y + RANDOM.nextInt(h);
+            int a = (int) ((30 + RANDOM.nextInt(90)) * weight);
+            g.fill(px, py, px + 1, py + 1, (a << 24) | 0x00FFFFFF);
         }
     }
 
