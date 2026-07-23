@@ -3,18 +3,10 @@
     "minecraft:overworld": {
       "type": "minecraft:overworld",
       "generator": {
-        "type": "moderner_beta:moderner_beta",
+        "type": "recmod:alpha",
         "biome_source": {
-          "type": "moderner_beta:moderner_beta",
-          "cave_provider_settings": {
-            "moderner_beta:preset": "moderner_beta:default"
-          },
-          "provider_settings": {
-            "moderner_beta:preset": "moderner_beta:default"
-          }
-        },
-        "provider_settings": {
-          "moderner_beta:preset": "moderner_beta:default"
+          "type": "minecraft:multi_noise",
+          "preset": "minecraft:overworld"
         }
       }
     },

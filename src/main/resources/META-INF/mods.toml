@@ -25,12 +25,5 @@ versionRange="[47.1.0,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.recmod]]
-modId="moderner_beta"
-mandatory=true
-versionRange="[4.1,)"
-ordering="NONE"
-side="BOTH"
-
 [[mixins]]
 config="recmod.mixins.json"

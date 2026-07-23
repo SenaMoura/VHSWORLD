@@ -77,6 +77,8 @@ public class AlphaChunkGenerator extends ChunkGenerator {
     private AlphaNoise surface;
     private boolean noiseReady = false;
 
+    private final AlphaCaves caves = new AlphaCaves(SEA_LEVEL, GEN_HEIGHT);
+
     public AlphaChunkGenerator(BiomeSource biomeSource) {
         super(biomeSource);
     }
@@ -117,13 +119,19 @@ public class AlphaChunkGenerator extends ChunkGenerator {
      */
     private double density(int x, int y, int z) {
         double d = depth.sample2d(x, z, DEPTH_SCALE) * 0.5;
-        double base = (SEA_LEVEL + 8.0) + d * 24.0;
+        double base = (SEA_LEVEL + 6.0) + d * 26.0;
 
-        // Puxa para baixo acima do nivel base e empurra para cima abaixo dele.
-        double gradient = (base - y) * 0.12;
+        // O gradiente e o que decide se ha ilha flutuante ou nao.
+        //
+        // Ele puxa a densidade para baixo conforme se sobe. Se puxar forte, o
+        // terreno vira mapa de altura: nada sobrevive destacado no ar. Se puxar de
+        // menos, o ceu enche de pedra e o mundo fica ilegivel. 0.085 e o ponto em
+        // que o ruido ainda vence o gradiente uns 15 blocos acima do chao — o
+        // suficiente para arrancar um pedaco de terreno e deixa-lo boiando.
+        double gradient = (base - y) * 0.085;
 
-        double lo = minLimit.sample(x, y, z, XZ_SCALE, Y_SCALE) * 0.6;
-        double hi = maxLimit.sample(x, y, z, XZ_SCALE, Y_SCALE) * 0.6;
+        double lo = minLimit.sample(x, y, z, XZ_SCALE, Y_SCALE) * 0.75;
+        double hi = maxLimit.sample(x, y, z, XZ_SCALE, Y_SCALE) * 0.75;
         double selector = (main.sample(x, y, z, MAIN_XZ, MAIN_Y) * 8.0 + 1.0) * 0.5;
 
         double value;
@@ -138,10 +146,12 @@ public class AlphaChunkGenerator extends ChunkGenerator {
         value += gradient;
 
         // Perto do teto o terreno afina, senao o mundo fecha numa tampa de pedra.
-        int fadeStart = GEN_HEIGHT - 24;
+        // A tampa do mundo. Comeca alto e sobe devagar, para cortar a pedra colada
+        // no teto sem apagar as ilhas que nascem no meio do caminho.
+        int fadeStart = GEN_HEIGHT - 16;
         if (y > fadeStart) {
-            double t = (y - fadeStart) / 24.0;
-            value -= t * t * 6.0;
+            double t = (y - fadeStart) / 16.0;
+            value -= t * t * 8.0;
         }
         return value;
     }
@@ -295,7 +305,16 @@ public class AlphaChunkGenerator extends ChunkGenerator {
     public void applyCarvers(WorldGenRegion region, long seed, RandomState randomState,
                              BiomeManager biomes, StructureManager structures,
                              ChunkAccess chunk, GenerationStep.Carving step) {
-        // Cavernas entram na proxima fatia: o terreno vem primeiro.
+        if (step != GenerationStep.Carving.AIR) return;
+        ensureNoise(randomState);
+
+        // Cada chunk sorteia os proprios tuneis a partir de uma semente estavel de
+        // posicao: o mesmo mundo da sempre a mesma caverna, e um tunel que nasce
+        // longe chega inteiro aqui.
+        var factory = randomState.getOrCreateRandomFactory(
+                new ResourceLocation(RECMod.MOD_ID, "alpha_caves"));
+
+        caves.carve(chunk, (cx, cz) -> factory.at(cx, 0, cz));
     }
 
     @Override
