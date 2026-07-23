@@ -6,5 +6,11 @@
   "recmod.tooltip.known": "Press G to open the log.",
   "key.recmod.codex": "Item log",
   "recmod.codex.battery.desc": "An ordinary battery, the kind you used to buy anywhere. It recharges the camera and, along with it, whatever is left of you. Swapping a battery is the only known way to recover sanity.",
-  "recmod.codex.battery.obtain": "Found in the chests of old structures and lying on the ground near you. It can also be crafted from copper and redstone dust."
+  "recmod.codex.battery.obtain": "Found in the chests of old structures and lying on the ground near you. It can also be built from 4 aluminum ingots, 2 gold ingots, glowstone dust and redstone.",
+  "block.recmod.aluminum_ore": "Aluminum Ore",
+  "block.recmod.deepslate_aluminum_ore": "Deepslate Aluminum Ore",
+  "item.recmod.raw_aluminum": "Raw Aluminum",
+  "item.recmod.aluminum_ingot": "Aluminum Ingot",
+  "recmod.codex.aluminum.desc": "Light, soft and dull. It is good for exactly one thing: becoming the shell of a battery. Whoever finds an aluminum vein in a cave is a few steps away from never rationing power again.",
+  "recmod.codex.aluminum.obtain": "Small veins in any overworld cave, between height -32 and 60. A stone pickaxe is enough. Smelt the raw ore into ingots."
 }

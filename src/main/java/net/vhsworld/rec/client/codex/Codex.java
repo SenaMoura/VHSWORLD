@@ -56,6 +56,7 @@ public final class Codex {
     static {
         register(new CodexEntry(ModItems.BATTERY.get(), "battery",
                 new ResourceLocation(RECMod.MOD_ID, "battery")));
+        register(new CodexEntry(ModItems.ALUMINUM_INGOT.get(), "aluminum", null));
     }
 
     private Codex() {

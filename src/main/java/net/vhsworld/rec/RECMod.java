@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.vhsworld.rec.config.RECConfig;
+import net.vhsworld.rec.init.ModBlocks;
 import net.vhsworld.rec.init.ModItems;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.loot.ModLootModifiers;
@@ -27,6 +28,7 @@ public class RECMod {
         ctx.registerConfig(ModConfig.Type.COMMON, RECConfig.COMMON_SPEC, "recmod-common.toml");
 
         //Registra os itens no clico de vida do mod
+        ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
 
         ModSounds.register(modEventBus);

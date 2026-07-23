@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "recmod:block/deepslate_aluminum_ore"
+  }
+}

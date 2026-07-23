@@ -6,5 +6,11 @@
   "recmod.tooltip.known": "Aperte G para abrir o registro.",
   "key.recmod.codex": "Registro dos itens",
   "recmod.codex.battery.desc": "Uma pilha comum, do tipo que se comprava em qualquer mercado. Recarrega a bateria da camera e, junto com ela, o que sobrou de voce. Trocar a pilha e o unico jeito conhecido de recuperar sanidade.",
-  "recmod.codex.battery.obtain": "Encontrada em baus de estruturas antigas e largada pelo chao perto de onde voce esta. Tambem pode ser montada com cobre e po de redstone."
+  "recmod.codex.battery.obtain": "Encontrada em baus de estruturas antigas e largada pelo chao perto de onde voce esta. Tambem se monta com 4 lingotes de aluminio, 2 de ouro, po de glowstone e redstone.",
+  "block.recmod.aluminum_ore": "Minerio de Aluminio",
+  "block.recmod.deepslate_aluminum_ore": "Minerio de Aluminio do Ardosia",
+  "item.recmod.raw_aluminum": "Aluminio Bruto",
+  "item.recmod.aluminum_ingot": "Lingote de Aluminio",
+  "recmod.codex.aluminum.desc": "Leve, mole e sem brilho. Serve para uma coisa so: virar a carcaca de uma pilha. Quem encontra veio de aluminio numa caverna esta a poucos passos de nao precisar mais racionar bateria.",
+  "recmod.codex.aluminum.obtain": "Veios pequenos em qualquer caverna do overworld, entre a altura -32 e 60. Picareta de pedra ja quebra. Funde o bruto na fornalha para virar lingote."
 }

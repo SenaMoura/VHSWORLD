@@ -307,10 +307,12 @@ public final class RECConfig {
                     .defineInRange("photoFadeSeconds", 1.5D, 0.0D, 10.0D);
 
             photoCatchesAnyMob = b
-                    .comment("Se true, qualquer mob na frente da lente conta como revelacao.",
-                             "Padrao false: so as criaturas do proprio mod aparecem no filme,",
-                             "para uma vaca no pasto nao virar o susto da foto.")
-                    .define("photoCatchesAnyMob", false);
+                    .comment("Qualquer mob na frente da lente conta como revelacao.",
+                             "LIGADO por enquanto: sem criatura propria no mod, deixar isto",
+                             "desligado faria a fotografia inteira nao ter o que revelar.",
+                             "Vira false quando as entidades do VHSWORLD existirem — ai uma",
+                             "vaca no pasto nao pode mais custar sanidade.")
+                    .define("photoCatchesAnyMob", true);
 
             codex = b
                     .comment("Registro dos itens (tecla G). Cada ficha comeca trancada e so",
