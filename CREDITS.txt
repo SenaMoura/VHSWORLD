@@ -63,3 +63,11 @@ with credit to it's authors.
 Forge Mod Loader downloads components from the Minecraft Coder Pack
 (http://mcp.ocean-labs.de/index.php/Main_Page) with kind permission from the MCP team.
 
+
+
+--- Fontes ---
+
+VT323 (assets/recmod/font/vt323.ttf)
+Copyright 2011, The VT323 Project Authors (peter.hull@oikoi.com)
+Licenciada sob a SIL Open Font License 1.1.
+Texto completo da licenca em assets/recmod/font/OFL.txt
