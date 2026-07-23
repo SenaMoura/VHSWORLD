@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.RECMod;
 
@@ -36,27 +37,43 @@ public class ClientTickHandler {
             mc.gameRenderer.shutdownEffect();
         }
 
+        // --- DESCARGA DA BATERIA (por tick, não por frame) ---
+        // Antes isto vivia dentro do render do HUD, então a bateria durava mais em PC
+        // fraco e menos em PC bom. Por tick o tempo é o mesmo para todo mundo.
+        if (!CamcorderOverlay.isBatteryDead
+                && RECConfig.CLIENT.batteryDrains.get()
+                && CameraState.isActive()) {
+            CamcorderOverlay.batteryLevel -= RECConfig.CLIENT.batteryDrainPerTick.get().floatValue();
+            if (CamcorderOverlay.batteryLevel <= 0.0f) {
+                CamcorderOverlay.batteryLevel = 0.0f;
+                CamcorderOverlay.isBatteryDead = true;
+                CamcorderOverlay.miniGameProgress = 0.0f;
+            }
+        }
+
         // --- LÓGICA DE CARGA E FADE DO FLASH ---
         if (CamcorderOverlay.isChargingFlash && !CamcorderOverlay.isBatteryDead) {
-            if (CamcorderOverlay.flashChargeTime < CamcorderOverlay.MAX_FLASH_CHARGE) {
+            if (CamcorderOverlay.flashChargeTime < CamcorderOverlay.maxFlashCharge()) {
                 CamcorderOverlay.flashChargeTime += 1.0f;
             }
         }
 
         if (CamcorderOverlay.activeFlashAlpha > 0.0f) {
-            CamcorderOverlay.activeFlashAlpha -= CamcorderOverlay.flashFadeSpeed;
+            CamcorderOverlay.activeFlashAlpha -= CamcorderOverlay.flashFadeSpeed();
             if (CamcorderOverlay.activeFlashAlpha < 0.0f) {
                 CamcorderOverlay.activeFlashAlpha = 0.0f;
             }
         }
 
         // --- SONS DE TRANSIÇÃO (máquina desligando / religando) ---
-        if (CamcorderOverlay.isBatteryDead && !wasBatteryDead) {
-            // Bateria acabou -> câmera desligando
-            mc.player.playSound(ModSounds.CAMERA_OFF.get(), 1.0f, 1.0f);
-        } else if (!CamcorderOverlay.isBatteryDead && wasBatteryDead) {
-            // Câmera religada -> máquina voltando a funcionar
-            mc.player.playSound(ModSounds.CAMERA_ON.get(), 1.0f, 1.0f);
+        if (CameraState.audible()) {
+            if (CamcorderOverlay.isBatteryDead && !wasBatteryDead) {
+                // Bateria acabou -> câmera desligando
+                mc.player.playSound(ModSounds.CAMERA_OFF.get(), CameraState.volume(1.0f), 1.0f);
+            } else if (!CamcorderOverlay.isBatteryDead && wasBatteryDead) {
+                // Câmera religada -> máquina voltando a funcionar
+                mc.player.playSound(ModSounds.CAMERA_ON.get(), CameraState.volume(1.0f), 1.0f);
+            }
         }
         wasBatteryDead = CamcorderOverlay.isBatteryDead;
 
@@ -66,30 +83,33 @@ public class ClientTickHandler {
 
             // A barra vaza sozinha: o jogador precisa apertar ESPAÇO rápido p/ vencer o vazamento
             if (CamcorderOverlay.miniGameProgress > 0.0f) {
-                CamcorderOverlay.miniGameProgress -= CamcorderOverlay.DRAIN_PER_TICK;
+                CamcorderOverlay.miniGameProgress -= CamcorderOverlay.blackoutDrainPerTick();
                 if (CamcorderOverlay.miniGameProgress < 0.0f) {
                     CamcorderOverlay.miniGameProgress = 0.0f;
                 }
             }
 
-            // 5 segundos (100 ticks) de escuridão -> grito
-            if (blackoutTimer >= 100 && !hasScreamed) {
+            // Escuridão por N segundos -> grito
+            int screamAt = RECConfig.CLIENT.secondsUntilScream.get() * 20;
+            if (blackoutTimer >= screamAt && !hasScreamed) {
                 hasScreamed = true;
-                mc.level.playLocalSound(
-                        mc.player.getX(), mc.player.getY(), mc.player.getZ(),
-                        ModSounds.ENTITY_SCREAM.get(),
-                        SoundSource.HOSTILE, 3.5f, 1.0f, false
-                );
+                if (CameraState.audible()) {
+                    mc.level.playLocalSound(
+                            mc.player.getX(), mc.player.getY(), mc.player.getZ(),
+                            ModSounds.ENTITY_SCREAM.get(),
+                            SoundSource.HOSTILE, CameraState.volume(3.5f), 1.0f, false
+                    );
+                }
             }
 
-            if (hasScreamed) {
+            if (hasScreamed && RECConfig.CLIENT.blackoutFootsteps.get() && CameraState.audible()) {
                 stepTimer++;
                 if (stepTimer >= stepInterval) {
                     stepTimer = 0;
                     mc.level.playLocalSound(
                             mc.player.getX(), mc.player.getY(), mc.player.getZ(),
                             SoundEvents.STONE_STEP,
-                            SoundSource.HOSTILE, soundVolume, 0.8f, false
+                            SoundSource.HOSTILE, CameraState.volume(soundVolume), 0.8f, false
                     );
 
                     if (stepInterval > 6) stepInterval -= 3;

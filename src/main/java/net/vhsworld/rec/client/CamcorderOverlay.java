@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.config.RECConfig;
 
 public class CamcorderOverlay {
 
@@ -21,19 +22,39 @@ public class CamcorderOverlay {
     // Mini-Game Variables
     public static float miniGameProgress = 0.0f;
     public static final float MAX_PROGRESS = 100.0f;
-    // Cada aperto de ESPAÇO enche a barra; ela vaza sozinha (ver DRAIN_PER_TICK)
-    public static final int PRESSES_TO_RECHARGE = 25;
-    public static final float PRESS_STEP = MAX_PROGRESS / PRESSES_TO_RECHARGE; // 4.0 por aperto
-    // Quanto a barra desce a cada tick enquanto o jogador tenta enchê-la (dificuldade)
-    public static final float DRAIN_PER_TICK = 0.8f;
 
     // --- VARIÁVEIS DO FLASH (TECLA R) ---
     public static boolean isChargingFlash = false;
     public static float flashChargeTime = 0.0f;
-    public static final float MAX_FLASH_CHARGE = 60.0f;
 
     public static float activeFlashAlpha = 0.0f;
-    public static float flashFadeSpeed = 0.05f;
+
+    // Os numeros abaixo vinham chumbados no codigo; agora saem do config (recmod-client.toml).
+
+    /** Quantos apertos de ESPACO religam a camera. */
+    public static int pressesToRecharge() {
+        return RECConfig.CLIENT.pressesToRecharge.get();
+    }
+
+    /** Quanto cada aperto enche da barra. */
+    public static float pressStep() {
+        return MAX_PROGRESS / pressesToRecharge();
+    }
+
+    /** Quanto a barra do mini-game vaza por tick. */
+    public static float blackoutDrainPerTick() {
+        return RECConfig.CLIENT.blackoutDrainPerTick.get().floatValue();
+    }
+
+    /** Ticks segurando R ate o flash carregar por completo. */
+    public static float maxFlashCharge() {
+        return RECConfig.CLIENT.flashChargeTicks.get().floatValue();
+    }
+
+    /** Velocidade com que o clarao branco some. */
+    public static float flashFadeSpeed() {
+        return RECConfig.CLIENT.flashFadeSpeed.get().floatValue();
+    }
 
     public static final IGuiOverlay HUD_CAMCORDER = (gui, guiGraphics, partialTick, width, height) -> {
         Minecraft mc = Minecraft.getInstance();
@@ -41,31 +62,36 @@ public class CamcorderOverlay {
 
         long gameTime = mc.level.getGameTime();
 
+        // O apagão desenha sempre: guardar a filmadora não te tira do escuro.
+        boolean cameraOn = CameraState.isActive();
+        if (!cameraOn && !isBatteryDead) return;
+
         // 0. MOLDURA PRETA (viewfinder) — sempre por cima do mundo, atrás do HUD.
         //    Textura esticada para a resolução atual; alfa cuida da transparência.
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        guiGraphics.blit(VIGNETTE, 0, 0, width, height, 0.0f, 0.0f, 1024, 1024, 1024, 1024);
-        RenderSystem.disableBlend();
-
-        // 1. DESCARGA DA BATERIA
-        if (!isBatteryDead) {
-            batteryLevel -= 0.004f;
-            if (batteryLevel <= 0.0f) {
-                batteryLevel = 0.0f;
-                isBatteryDead = true;
-                miniGameProgress = 0.0f;
-            }
+        float frameAlpha = RECConfig.CLIENT.viewfinderOpacity.get().floatValue();
+        if (cameraOn && RECConfig.CLIENT.viewfinder.get() && frameAlpha > 0.0f) {
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, frameAlpha);
+            guiGraphics.blit(VIGNETTE, 0, 0, width, height, 0.0f, 0.0f, 1024, 1024, 1024, 1024);
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+            RenderSystem.disableBlend();
         }
+
+        // 1. A DESCARGA DA BATERIA saiu daqui.
+        //    Estava por FRAME, então a bateria durava o dobro em 30 FPS e metade em 120.
+        //    Agora corre por TICK, no ClientTickHandler: mesmo tempo para todo mundo.
 
         // 2. HUD NORMAL (Bateria Ligada)
         if (!isBatteryDead) {
+          if (RECConfig.CLIENT.showHud.get()) {
             long seconds = (gameTime / 20) % 60;
             long minutes = (gameTime / 1200) % 60;
             long hours = (gameTime / 7200);
             String timeStr = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
-            if ((gameTime / 10) % 2 == 0) {
+            boolean recVisible = !RECConfig.CLIENT.showRecBlink.get() || (gameTime / 10) % 2 == 0;
+            if (recVisible) {
                 guiGraphics.drawString(mc.font, "REC", (int)(width * 0.05), 20, 0xFFFF0000, true);
             }
 
@@ -77,9 +103,10 @@ public class CamcorderOverlay {
 
             // Carga do Flash
             if (isChargingFlash) {
-                String chargeText = "FLASH: " + (int)((flashChargeTime / MAX_FLASH_CHARGE) * 100) + "%";
+                String chargeText = "FLASH: " + (int)((flashChargeTime / maxFlashCharge()) * 100) + "%";
                 guiGraphics.drawString(mc.font, chargeText, (width - mc.font.width(chargeText)) / 2, height - 50, 0xFFFFFF00, true);
             }
+          }
         }
 
         // 3. MINI-GAME DE EMERGÊNCIA (Bateria Zerada)
@@ -93,7 +120,7 @@ public class CamcorderOverlay {
             int centerY = (height / 2) - 35 + shakeY;
             guiGraphics.drawString(mc.font, warningText, centerX, centerY, 0xFFFF0000, true);
 
-            int pressesLeft = Math.max(0, PRESSES_TO_RECHARGE - (int) (miniGameProgress / PRESS_STEP));
+            int pressesLeft = Math.max(0, pressesToRecharge() - (int) (miniGameProgress / pressStep()));
             String actionText = "[ APERTE ESPACO: " + pressesLeft + " ]";
             int actionX = (width - mc.font.width(actionText)) / 2;
             guiGraphics.drawString(mc.font, actionText, actionX, (height / 2) + 5, 0xFFFFFF00, true);
@@ -111,7 +138,7 @@ public class CamcorderOverlay {
         }
 
         // 4. FLASH BRANCO
-        if (activeFlashAlpha > 0.0f) {
+        if (activeFlashAlpha > 0.0f && RECConfig.CLIENT.screenFlash.get()) {
             int alphaInt = (int)(activeFlashAlpha * 255);
             int flashColor = (alphaInt << 24) | 0x00FFFFFF;
             guiGraphics.fill(0, 0, width, height, flashColor);

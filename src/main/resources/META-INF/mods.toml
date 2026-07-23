@@ -4,7 +4,7 @@ license="MIT"
 
 [[mods]]
 modId="recmod"
-version="1.0.4"
+version="${mod_version}"
 displayName="REC: Paranormal Mechanics"
 authors="Hamilton"
 description='''

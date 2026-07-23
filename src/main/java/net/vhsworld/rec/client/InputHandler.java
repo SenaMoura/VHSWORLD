@@ -25,7 +25,7 @@ public class InputHandler {
         // --- APAGÃO: apertar ESPAÇO 25 vezes para religar a câmera ---
         if (CamcorderOverlay.isBatteryDead) {
             if (key == GLFW.GLFW_KEY_SPACE && action == GLFW.GLFW_PRESS) {
-                CamcorderOverlay.miniGameProgress += CamcorderOverlay.PRESS_STEP;
+                CamcorderOverlay.miniGameProgress += CamcorderOverlay.pressStep();
 
                 if (CamcorderOverlay.miniGameProgress >= CamcorderOverlay.MAX_PROGRESS) {
                     // Câmera religada: bateria cheia e HUD normal de volta
@@ -39,7 +39,8 @@ public class InputHandler {
         }
 
         // --- FLASH: segurar R para carregar e soltar para disparar ---
-        if (key == GLFW.GLFW_KEY_R) {
+        // Sem a câmera ativa não há flash (ver effectsOnlyWhenHolding no config).
+        if (key == GLFW.GLFW_KEY_R && CameraState.isActive()) {
             if (action == GLFW.GLFW_PRESS) {
                 CamcorderOverlay.isChargingFlash = true;
                 CamcorderOverlay.flashChargeTime = 0.0f;
@@ -48,7 +49,9 @@ public class InputHandler {
                 CamcorderOverlay.flashChargeTime = 0.0f;
                 // Clarão branco na tela + som do flash da filmadora
                 CamcorderOverlay.activeFlashAlpha = 1.0f;
-                mc.player.playSound(ModSounds.FLASH.get(), 1.0f, 1.0f);
+                if (CameraState.audible()) {
+                    mc.player.playSound(ModSounds.FLASH.get(), CameraState.volume(1.0f), 1.0f);
+                }
             }
         }
     }
