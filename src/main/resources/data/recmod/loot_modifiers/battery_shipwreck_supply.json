@@ -1,0 +1,12 @@
+{
+  "type": "recmod:add_battery",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/shipwreck_supply"
+    }
+  ],
+  "chance": 0.5,
+  "min": 1,
+  "max": 2
+}

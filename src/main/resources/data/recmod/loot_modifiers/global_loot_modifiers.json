@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "entries": [
+    "recmod:battery_abandoned_mineshaft",
+    "recmod:battery_simple_dungeon",
+    "recmod:battery_stronghold_corridor",
+    "recmod:battery_stronghold_crossing",
+    "recmod:battery_shipwreck_supply",
+    "recmod:battery_underwater_ruin_big",
+    "recmod:battery_underwater_ruin_small",
+    "recmod:battery_desert_pyramid",
+    "recmod:battery_jungle_temple",
+    "recmod:battery_pillager_outpost",
+    "recmod:battery_woodland_mansion",
+    "recmod:battery_village_temple",
+    "recmod:battery_village_toolsmith",
+    "recmod:battery_igloo_chest",
+    "recmod:battery_buried_treasure",
+    "recmod:battery_bastion_other"
+  ]
+}

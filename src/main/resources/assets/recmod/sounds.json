@@ -1,0 +1,47 @@
+{
+  "entity_approaching": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:footsteps_approaching"
+    ]
+  },
+  "entity_scream": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:scream_01"
+    ]
+  },
+  "flash": {
+    "category": "player",
+    "sounds": [
+      "recmod:flash"
+    ]
+  },
+  "flashlight_click": {
+    "category": "player",
+    "sounds": [
+      "recmod:flashlight_click"
+    ]
+  },
+  "camera_off": {
+    "category": "player",
+    "sounds": [
+      "recmod:camera_off"
+    ]
+  },
+  "camera_on": {
+    "category": "player",
+    "sounds": [
+      "recmod:camera_on"
+    ]
+  },
+  "horror_ambience": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:horror_ambience",
+        "stream": true
+      }
+    ]
+  }
+}
