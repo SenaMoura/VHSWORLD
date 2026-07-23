@@ -2,6 +2,7 @@ package net.vhsworld.rec.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.OptionsScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -56,7 +57,7 @@ public class CustomMainMenuScreen extends Screen {
         this.addRenderableWidget(new VHSButton(centerX, startY + 26, buttonWidth, buttonHeight,
                 Component.literal("MULTIPLAYER"), button -> {
             if (this.minecraft != null) {
-                this.minecraft.setScreen(new CustomJoinMultiplayerScreen(this));
+                this.minecraft.setScreen(new JoinMultiplayerScreen(this));
             }
         }));
 
