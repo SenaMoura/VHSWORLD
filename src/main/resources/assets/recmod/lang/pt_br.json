@@ -1,6 +1,10 @@
 {
   "item.recmod.battery": "Pilha",
-
   "key.categories.recmod": "VHSWORLD",
-  "key.recmod.album": "Album de fotografias"
+  "key.recmod.album": "Album de fotografias",
+  "recmod.tooltip.locked": "Use your flash to learn more about this item.",
+  "recmod.tooltip.known": "Aperte G para abrir o registro.",
+  "key.recmod.codex": "Registro dos itens",
+  "recmod.codex.battery.desc": "Uma pilha comum, do tipo que se comprava em qualquer mercado. Recarrega a bateria da camera e, junto com ela, o que sobrou de voce. Trocar a pilha e o unico jeito conhecido de recuperar sanidade.",
+  "recmod.codex.battery.obtain": "Encontrada em baus de estruturas antigas e largada pelo chao perto de onde voce esta. Tambem pode ser montada com cobre e po de redstone."
 }

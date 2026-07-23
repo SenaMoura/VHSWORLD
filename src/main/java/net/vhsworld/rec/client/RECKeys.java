@@ -28,9 +28,18 @@ public final class RECKeys {
             CATEGORY
     );
 
+    /** G: o registro dos itens, destrancado a base de flash. */
+    public static final KeyMapping OPEN_CODEX = new KeyMapping(
+            "key.recmod.codex",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_G,
+            CATEGORY
+    );
+
     @SubscribeEvent
     public static void register(RegisterKeyMappingsEvent event) {
         event.register(OPEN_ALBUM);
+        event.register(OPEN_CODEX);
     }
 
     private RECKeys() {}

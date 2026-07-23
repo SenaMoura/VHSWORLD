@@ -81,6 +81,7 @@ public final class RECConfig {
         public final ForgeConfigSpec.IntValue photoDevelopSeconds;
         public final ForgeConfigSpec.DoubleValue photoFadeSeconds;
         public final ForgeConfigSpec.BooleanValue photoCatchesAnyMob;
+        public final ForgeConfigSpec.BooleanValue codex;
 
         // --- sanidade ---
         public final ForgeConfigSpec.BooleanValue sanity;
@@ -310,6 +311,13 @@ public final class RECConfig {
                              "Padrao false: so as criaturas do proprio mod aparecem no filme,",
                              "para uma vaca no pasto nao virar o susto da foto.")
                     .define("photoCatchesAnyMob", false);
+
+            codex = b
+                    .comment("Registro dos itens (tecla G). Cada ficha comeca trancada e so",
+                             "abre quando o jogador fotografa o item com o flash — na mao ou",
+                             "jogado no chao dentro do enquadramento.",
+                             "Desligado, some tambem a frase no tooltip dos itens.")
+                    .define("codex", true);
 
             b.pop();
 

@@ -1,6 +1,10 @@
 {
   "item.recmod.battery": "Battery",
-
   "key.categories.recmod": "VHSWORLD",
-  "key.recmod.album": "Photo album"
+  "key.recmod.album": "Photo album",
+  "recmod.tooltip.locked": "Use your flash to learn more about this item.",
+  "recmod.tooltip.known": "Press G to open the log.",
+  "key.recmod.codex": "Item log",
+  "recmod.codex.battery.desc": "An ordinary battery, the kind you used to buy anywhere. It recharges the camera and, along with it, whatever is left of you. Swapping a battery is the only known way to recover sanity.",
+  "recmod.codex.battery.obtain": "Found in the chests of old structures and lying on the ground near you. It can also be crafted from copper and redstone dust."
 }

@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.vhsworld.rec.client.codex.CodexScreen;
 import net.vhsworld.rec.client.photo.PhotoAlbumScreen;
 import net.vhsworld.rec.client.sanity.HostileSightWatcher;
 import net.vhsworld.rec.client.sanity.SanityHaunting;
@@ -47,6 +48,13 @@ public class ClientTickHandler {
         while (RECKeys.OPEN_ALBUM.consumeClick()) {
             if (mc.screen == null && RECConfig.CLIENT.photos.get()) {
                 mc.setScreen(new PhotoAlbumScreen());
+            }
+        }
+
+        // --- REGISTRO DOS ITENS (tecla G) ---
+        while (RECKeys.OPEN_CODEX.consumeClick()) {
+            if (mc.screen == null && RECConfig.CLIENT.codex.get()) {
+                mc.setScreen(new CodexScreen());
             }
         }
 

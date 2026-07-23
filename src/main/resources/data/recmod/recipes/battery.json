@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "CRC",
+    " C "
+  ],
+  "key": {
+    "C": { "item": "minecraft:copper_ingot" },
+    "R": { "tag": "forge:dusts/redstone" }
+  },
+  "result": {
+    "item": "recmod:battery",
+    "count": 2
+  }
+}

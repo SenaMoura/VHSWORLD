@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.client.codex.Codex;
 import net.vhsworld.rec.config.RECConfig;
 import org.slf4j.Logger;
 
@@ -63,6 +64,12 @@ public final class PhotoCapture {
 
             PhotoAlbum.get().add(photo, findSubject(mc));
             photo = null; // o album fecha a imagem
+
+            // O mesmo disparo que guarda a foto tambem destranca o registro do que
+            // estava enquadrado. Fotografar é o verbo de descoberta deste jogo.
+            if (RECConfig.CLIENT.codex.get()) {
+                Codex.unlockFromFlash(mc);
+            }
         } catch (Throwable t) {
             if (photo != null) photo.close();
         } finally {
