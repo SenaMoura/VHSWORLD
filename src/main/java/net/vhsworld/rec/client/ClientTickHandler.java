@@ -8,6 +8,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.client.photo.PhotoAlbumScreen;
+import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.RECMod;
@@ -29,7 +30,9 @@ public class ClientTickHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
 
-        // --- ÁLBUM DE FOTOS (tecla F) ---
+        SanityState.get().tick();
+
+        // --- ÁLBUM DE FOTOS (tecla C) ---
         while (RECKeys.OPEN_ALBUM.consumeClick()) {
             if (mc.screen == null && RECConfig.CLIENT.photos.get()) {
                 mc.setScreen(new PhotoAlbumScreen());

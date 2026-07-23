@@ -81,6 +81,14 @@ public final class RECConfig {
         public final ForgeConfigSpec.DoubleValue photoFadeSeconds;
         public final ForgeConfigSpec.BooleanValue photoCatchesAnyMob;
 
+        // --- sanidade ---
+        public final ForgeConfigSpec.BooleanValue sanity;
+        public final ForgeConfigSpec.BooleanValue sanityBar;
+        public final ForgeConfigSpec.DoubleValue sanityLossPerSighting;
+        public final ForgeConfigSpec.DoubleValue sanityRegenPerMinute;
+        public final ForgeConfigSpec.DoubleValue sanityShakeSeconds;
+        public final ForgeConfigSpec.DoubleValue sanityShakeStrength;
+
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
 
@@ -281,6 +289,38 @@ public final class RECConfig {
                              "Padrao false: so as criaturas do proprio mod aparecem no filme,",
                              "para uma vaca no pasto nao virar o susto da foto.")
                     .define("photoCatchesAnyMob", false);
+
+            b.pop();
+
+            b.comment("Sanidade. Hoje ela so cai de um jeito: revelando uma foto e",
+                      "descobrindo que alguma coisa estava ali com voce.")
+             .push("sanidade");
+
+            sanity = b
+                    .comment("Liga o sistema de sanidade.")
+                    .define("sanity", true);
+
+            sanityBar = b
+                    .comment("Mostra a barra com o cerebro na lateral esquerda.")
+                    .define("sanityBar", true);
+
+            sanityLossPerSighting = b
+                    .comment("Quanto de sanidade (%) cai a cada revelacao com algo na foto.",
+                             "18 = cinco ou seis avistamentos ate o fundo do poco.")
+                    .defineInRange("sanityLossPerSighting", 18.0D, 0.0D, 100.0D);
+
+            sanityRegenPerMinute = b
+                    .comment("Quanto volta por minuto. 0.0 (padrao) = nao volta sozinha:",
+                             "o que voce viu, viu.")
+                    .defineInRange("sanityRegenPerMinute", 0.0D, 0.0D, 100.0D);
+
+            sanityShakeSeconds = b
+                    .comment("Duracao do tremor da tela ao ver a criatura na foto.")
+                    .defineInRange("sanityShakeSeconds", 3.0D, 0.0D, 30.0D);
+
+            sanityShakeStrength = b
+                    .comment("Forca do tremor. 1.0 = padrao; acima de 2.0 fica dificil de olhar.")
+                    .defineInRange("sanityShakeStrength", 1.0D, 0.0D, 3.0D);
 
             b.pop();
 

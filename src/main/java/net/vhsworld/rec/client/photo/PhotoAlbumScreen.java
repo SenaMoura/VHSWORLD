@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.vhsworld.rec.client.VHSButton;
+import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 
 import java.text.SimpleDateFormat;
@@ -122,6 +123,12 @@ public class PhotoAlbumScreen extends Screen {
             open.developed = true;
             open.revealFade = 0;      // so aqui a animacao comeca
             PhotoAlbum.get().save();
+
+            // Havia alguma coisa ali com voce. O preco vem agora.
+            if (open.subject != null) {
+                SanityState.get().sighting(
+                        RECConfig.CLIENT.sanityLossPerSighting.get().floatValue());
+            }
         }
     }
 
@@ -215,6 +222,13 @@ public class PhotoAlbumScreen extends Screen {
         int h = 216;
         int x = (width - w) / 2;
         int y = (height - h) / 2 - 14;
+
+        // A foto treme junto: o susto e na sala, nao so no mundo la fora.
+        float panic = SanityState.get().shakeAmount();
+        if (panic > 0.0f) {
+            x += (int) ((RANDOM.nextFloat() - 0.5f) * panic * 10.0f);
+            y += (int) ((RANDOM.nextFloat() - 0.5f) * panic * 10.0f);
+        }
 
         drawPhoto(g, open, x, y, w, h, false, partialTick);
 
