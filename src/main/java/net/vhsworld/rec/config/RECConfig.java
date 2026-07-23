@@ -255,7 +255,7 @@ public final class RECConfig {
 
             b.pop();
 
-            b.comment("Fotografia: o flash (R) tira uma foto, e o album abre no G.").push("fotos");
+            b.comment("Fotografia: o flash (R) tira uma foto, e o album abre no C.").push("fotos");
 
             photos = b
                     .comment("Liga o sistema de fotografia. Desligado, o R so da o clarao.")
