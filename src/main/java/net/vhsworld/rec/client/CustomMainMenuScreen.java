@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.vhsworld.rec.client.world.TapeArchiveScreen;
 
 import java.util.Random;
 
@@ -48,7 +49,7 @@ public class CustomMainMenuScreen extends Screen {
         this.addRenderableWidget(new VHSButton(centerX, startY, buttonWidth, buttonHeight,
                 Component.literal("TAPES"), button -> {
             if (this.minecraft != null) {
-                this.minecraft.setScreen(new CustomSelectWorldScreen(this));
+                this.minecraft.setScreen(new TapeArchiveScreen(this));
             }
         }));
 
