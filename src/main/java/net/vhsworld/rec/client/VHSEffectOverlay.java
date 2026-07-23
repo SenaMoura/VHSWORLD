@@ -37,14 +37,22 @@ public final class VHSEffectOverlay {
 
         float wear = wearFactor();
 
+        // A fita só suja a IMAGEM. As barras pretas do letterbox ficam limpas — elas são
+        // o recorte da câmera, não parte do vídeo.
+        int bar = RECConfig.CLIENT.letterbox.get()
+                ? CamcorderOverlay.letterboxBarHeight(width, height) : 0;
+        int top = bar;
+        int bottom = height - bar;
+        if (bottom <= top) return;
+
         if (RECConfig.CLIENT.scanlines.get()) {
-            drawScanlines(guiGraphics, width, height);
+            drawScanlines(guiGraphics, width, top, bottom);
         }
         if (RECConfig.CLIENT.staticNoise.get()) {
-            drawStatic(guiGraphics, width, height, wear);
+            drawStatic(guiGraphics, width, top, bottom, wear);
         }
         if (RECConfig.CLIENT.trackingBar.get()) {
-            drawTracking(guiGraphics, width, height, mc, partialTick, wear);
+            drawTracking(guiGraphics, width, top, bottom, mc, partialTick, wear);
         }
     };
 
@@ -60,53 +68,64 @@ public final class VHSEffectOverlay {
         return 1.0f + (1.0f - charge) * 2.0f;
     }
 
-    private static void drawScanlines(net.minecraft.client.gui.GuiGraphics g, int width, int height) {
+    private static void drawScanlines(net.minecraft.client.gui.GuiGraphics g,
+                                      int width, int top, int bottom) {
         int alpha = (int) (RECConfig.CLIENT.scanlineOpacity.get() * 255.0D);
         if (alpha <= 0) return;
 
         int color = (alpha << 24);            // preto com alfa: escurece a linha
         int spacing = RECConfig.CLIENT.scanlineSpacing.get();
 
-        for (int y = 0; y < height; y += spacing) {
+        for (int y = top; y < bottom; y += spacing) {
             g.fill(0, y, width, y + 1, color);
         }
     }
 
-    private static void drawStatic(net.minecraft.client.gui.GuiGraphics g, int width, int height, float wear) {
+    private static void drawStatic(net.minecraft.client.gui.GuiGraphics g,
+                                   int width, int top, int bottom, float wear) {
         double amount = RECConfig.CLIENT.staticAmount.get();
         if (amount <= 0.0D) return;
 
+        int band = bottom - top;
+
         // Teto proposital: mesmo com wear alto o chiado nao vira custo de render.
-        int specks = (int) Math.min(900, amount * 350.0D * wear);
+        int specks = (int) Math.min(1200, amount * 700.0D * wear);
 
         for (int i = 0; i < specks; i++) {
             int x = RANDOM.nextInt(width);
-            int y = RANDOM.nextInt(height);
-            int w = 1 + RANDOM.nextInt(3);
-            int a = 40 + RANDOM.nextInt(70);
+            int y = top + RANDOM.nextInt(band);
+            int w = 1 + RANDOM.nextInt(4);
+            int a = 60 + RANDOM.nextInt(120);
             g.fill(x, y, x + w, y + 1, (a << 24) | 0x00FFFFFF);
         }
     }
 
-    private static void drawTracking(net.minecraft.client.gui.GuiGraphics g, int width, int height,
+    private static void drawTracking(net.minecraft.client.gui.GuiGraphics g,
+                                     int width, int top, int bottom,
                                      Minecraft mc, float partialTick, float wear) {
         int periodTicks = RECConfig.CLIENT.trackingPeriodSeconds.get() * 20;
         double time = (mc.level.getGameTime() + partialTick) % periodTicks;
 
-        // Faixa sobe de baixo para cima, saindo e entrando fora da tela.
-        int travel = height + TRACKING_HEIGHT;
-        int top = (int) (height - (time / periodTicks) * travel);
+        int band = bottom - top;
 
-        int bandAlpha = (int) Math.min(60, 14 * wear);
-        g.fill(0, top, width, top + TRACKING_HEIGHT, (bandAlpha << 24) | 0x00FFFFFF);
+        // Faixa sobe de baixo para cima, saindo e entrando fora da imagem.
+        int travel = band + TRACKING_HEIGHT;
+        int bandTop = (int) (bottom - (time / periodTicks) * travel);
+
+        int y0 = Math.max(top, bandTop);
+        int y1 = Math.min(bottom, bandTop + TRACKING_HEIGHT);
+        if (y1 <= y0) return;
+
+        int bandAlpha = (int) Math.min(120, 34 * wear);
+        g.fill(0, y0, width, y1, (bandAlpha << 24) | 0x00FFFFFF);
 
         // Linhas rasgadas dentro da faixa: o "rolo" da fita.
-        int tears = 2 + (int) wear;
+        int tears = 3 + (int) (wear * 2);
         for (int i = 0; i < tears; i++) {
-            int y = top + RANDOM.nextInt(TRACKING_HEIGHT);
+            int y = y0 + RANDOM.nextInt(Math.max(1, y1 - y0));
             int x = RANDOM.nextInt(Math.max(1, width / 2));
             int w = width / 3 + RANDOM.nextInt(Math.max(1, width / 3));
-            g.fill(x, y, Math.min(width, x + w), y + 1, 0x66FFFFFF);
+            g.fill(x, y, Math.min(width, x + w), y + 1, 0x99FFFFFF);
         }
     }
 

@@ -1,20 +1,13 @@
 package net.vhsworld.rec.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.config.RECConfig;
 
+// HUD da filmadora: letterbox, REC/timer/bateria, apagão e clarão do flash.
+// Tudo desenhado na camada de GUI, depois do mundo — não encosta no framebuffer.
 public class CamcorderOverlay {
-
-    // Moldura preta (viewfinder do camcorder) desenhada como overlay 2D — roda DEPOIS
-    // do mundo, então não mexe no framebuffer e não conflita com shaderpacks (Oculus).
-    // Substitui a antiga borda que vinha do pós-shader fisheye (que quebrava o render).
-    private static final ResourceLocation VIGNETTE =
-            new ResourceLocation(RECMod.MOD_ID, "textures/gui/vignette.png");
 
     public static float batteryLevel = 100.0f;
     public static boolean isBatteryDead = false;
@@ -30,6 +23,20 @@ public class CamcorderOverlay {
     public static float activeFlashAlpha = 0.0f;
 
     // Os numeros abaixo vinham chumbados no codigo; agora saem do config (recmod-client.toml).
+
+    /**
+     * Altura de cada barra preta, em pixels.
+     *
+     * A imagem visivel fica com a proporcao pedida no config; o que sobra vira barra,
+     * metade em cima e metade embaixo. Numa tela que ja e mais larga que a proporcao
+     * (ultrawide), da 0 e nao desenha nada.
+     */
+    public static int letterboxBarHeight(int width, int height) {
+        double aspect = RECConfig.CLIENT.letterboxAspect.get();
+        int visible = (int) Math.round(width / aspect);
+        if (visible >= height) return 0;
+        return (height - visible) / 2;
+    }
 
     /** Quantos apertos de ESPACO religam a camera. */
     public static int pressesToRecharge() {
@@ -66,16 +73,15 @@ public class CamcorderOverlay {
         boolean cameraOn = CameraState.isActive();
         if (!cameraOn && !isBatteryDead) return;
 
-        // 0. MOLDURA PRETA (viewfinder) — sempre por cima do mundo, atrás do HUD.
-        //    Textura esticada para a resolução atual; alfa cuida da transparência.
-        float frameAlpha = RECConfig.CLIENT.viewfinderOpacity.get().floatValue();
-        if (cameraOn && RECConfig.CLIENT.viewfinder.get() && frameAlpha > 0.0f) {
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, frameAlpha);
-            guiGraphics.blit(VIGNETTE, 0, 0, width, height, 0.0f, 0.0f, 1024, 1024, 1024, 1024);
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-            RenderSystem.disableBlend();
+        // 0. LETTERBOX — duas barras pretas, em cima e embaixo.
+        //    Substituiu a moldura curvada (vignette.png), que escurecia a tela inteira
+        //    e comia a visão periférica. Aqui a imagem fica limpa, só recortada.
+        if (cameraOn && RECConfig.CLIENT.letterbox.get()) {
+            int bar = letterboxBarHeight(width, height);
+            if (bar > 0) {
+                guiGraphics.fill(0, 0, width, bar, 0xFF000000);
+                guiGraphics.fill(0, height - bar, width, height, 0xFF000000);
+            }
         }
 
         // 1. A DESCARGA DA BATERIA saiu daqui.

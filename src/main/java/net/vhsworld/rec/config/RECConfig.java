@@ -27,8 +27,8 @@ public final class RECConfig {
         // --- camera ---
         public final ForgeConfigSpec.BooleanValue effectsOnlyWhenHolding;
 
-        public final ForgeConfigSpec.BooleanValue viewfinder;
-        public final ForgeConfigSpec.DoubleValue viewfinderOpacity;
+        public final ForgeConfigSpec.BooleanValue letterbox;
+        public final ForgeConfigSpec.DoubleValue letterboxAspect;
 
         public final ForgeConfigSpec.BooleanValue fisheye;
         public final ForgeConfigSpec.DoubleValue fisheyeStrength;
@@ -79,22 +79,26 @@ public final class RECConfig {
                              "Se false (padrao), a camera fica sempre ligada, como nas versoes antigas.")
                     .define("effectsOnlyWhenHolding", false);
 
-            viewfinder = b
-                    .comment("Moldura preta do visor (vignette) por cima do mundo.")
-                    .define("viewfinder", true);
+            letterbox = b
+                    .comment("Barras pretas em cima e embaixo (cinema). Substituiu a antiga",
+                             "moldura curvada do visor, que comia a tela toda.")
+                    .define("letterbox", true);
 
-            viewfinderOpacity = b
-                    .comment("Opacidade da moldura. 0.0 = invisivel, 1.0 = cheia.")
-                    .defineInRange("viewfinderOpacity", 1.0D, 0.0D, 1.0D);
+            letterboxAspect = b
+                    .comment("Proporcao da imagem entre as barras. 2.39 = cinemascope (barra fina),",
+                             "1.85 = cinema comum, 2.76 = barra bem grossa.",
+                             "Em monitor ultrawide a barra some sozinha: a tela ja e mais larga.")
+                    .defineInRange("letterboxAspect", 2.39D, 1.33D, 3.50D);
 
             fisheye = b
                     .comment("Distorcao de lente (aumento do FOV) enquanto a camera esta ativa.")
                     .define("fisheye", true);
 
             fisheyeStrength = b
-                    .comment("Multiplicador do FOV. 1.0 = sem distorcao, 1.35 = padrao.",
-                             "Valores altos causam enjoo em muita gente; nao passe de 1.6.")
-                    .defineInRange("fisheyeStrength", 1.35D, 1.0D, 2.0D);
+                    .comment("Multiplicador do FOV. 1.0 = sem distorcao.",
+                             "1.7 = padrao, bem aberto, cara de lente de camcorder.",
+                             "Acima de 2.2 embrulha o estomago de muita gente.")
+                    .defineInRange("fisheyeStrength", 1.7D, 1.0D, 2.5D);
 
             handShake = b
                     .comment("Balanco de mao (a camera respira junto com o jogador).")
@@ -121,8 +125,8 @@ public final class RECConfig {
                     .define("scanlines", true);
 
             scanlineOpacity = b
-                    .comment("Opacidade das linhas. 0.10 e sutil, 0.30 ja e bem agressivo.")
-                    .defineInRange("scanlineOpacity", 0.10D, 0.0D, 1.0D);
+                    .comment("Opacidade das linhas. 0.22 = padrao, bem visivel. 0.10 mal aparece.")
+                    .defineInRange("scanlineOpacity", 0.22D, 0.0D, 1.0D);
 
             scanlineSpacing = b
                     .comment("Distancia entre linhas, em pixels. Menor = tela mais riscada e",
@@ -135,7 +139,7 @@ public final class RECConfig {
 
             staticAmount = b
                     .comment("Quantidade de chiado. 0.0 nenhum, 1.0 tempestade de areia.")
-                    .defineInRange("staticAmount", 0.25D, 0.0D, 1.0D);
+                    .defineInRange("staticAmount", 0.50D, 0.0D, 1.0D);
 
             trackingBar = b
                     .comment("Aquela faixa clara que sobe/desce na imagem (tracking da fita).")
