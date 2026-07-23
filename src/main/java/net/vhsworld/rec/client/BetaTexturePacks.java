@@ -59,7 +59,12 @@ public final class BetaTexturePacks {
             PackRepository repo = mc.getResourcePackRepository();
             repo.reload();
 
-            List<String> selected = new ArrayList<>(mc.options.resourcePacks);
+            // A selecao que vale e a do REPOSITORIO, nao a lista das opcoes.
+            // Mexer so em options.resourcePacks nao liga nada: reloadResourcePacks()
+            // chama repo.reload(), que reaplica a selecao do proprio repositorio e
+            // joga fora o que escrevemos. Foi exatamente o que aconteceu na 1.11.1 —
+            // o log dizia "ligadas" e nada mudava na tela.
+            List<String> selected = new ArrayList<>(repo.getSelectedIds());
             List<String> found = new ArrayList<>();
 
             for (String id : repo.getAvailableIds()) {
@@ -84,7 +89,9 @@ public final class BetaTexturePacks {
                     b.toLowerCase(Locale.ROOT).contains("compat")));
 
             selected.addAll(found);
-            mc.options.resourcePacks = selected;
+
+            repo.setSelected(selected);                              // o que de fato liga
+            mc.options.resourcePacks = new ArrayList<>(selected);    // para sobreviver ao restart
             mc.options.save();
 
             LOG.info("[REC] texturas beta ligadas: {}", found);
