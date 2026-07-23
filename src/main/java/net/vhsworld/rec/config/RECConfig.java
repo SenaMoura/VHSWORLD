@@ -312,10 +312,11 @@ public final class RECConfig {
                     .defineInRange("sanityBarMargin", 14, 0, 400);
 
             sanityShakeOnHostile = b
-                    .comment("PROVISORIO, para testar a camera: a tela treme quando um mob",
-                             "hostil entra no campo de visao. Nao tira sanidade — so treme.",
-                             "Some quando as criaturas do mod existirem e o susto vier da foto.")
-                    .define("sanityShakeOnHostile", true);
+                    .comment("Andaime de teste, DESLIGADO: a tela treme ao ver um mob hostil,",
+                             "sem tirar sanidade. Serviu para sentir a camera antes de haver",
+                             "criatura propria. O susto de verdade e o da foto revelada, e",
+                             "espalhar tremor por qualquer slime so gastaria o efeito.")
+                    .define("sanityShakeOnHostile", false);
 
             sanityLossPerSighting = b
                     .comment("Quanto de sanidade (%) cai a cada revelacao com algo na foto.",

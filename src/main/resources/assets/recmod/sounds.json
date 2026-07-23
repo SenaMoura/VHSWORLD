@@ -43,5 +43,11 @@
         "stream": true
       }
     ]
+  },
+  "bone_breaking": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:bone_breaking"
+    ]
   }
 }

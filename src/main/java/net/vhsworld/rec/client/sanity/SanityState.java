@@ -4,7 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.vhsworld.rec.client.CameraState;
 import net.vhsworld.rec.config.RECConfig;
+import net.vhsworld.rec.item.ModSounds;
 import org.slf4j.Logger;
 
 import java.nio.file.Files;
@@ -86,6 +88,12 @@ public final class SanityState {
 
         shakeTotal = (int) Math.round(RECConfig.CLIENT.sanityShakeSeconds.get() * 20.0D);
         shakeTicks = shakeTotal;
+
+        // O estalo entra junto com o tremor, não depois: o som é o susto.
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && CameraState.audible()) {
+            mc.player.playSound(ModSounds.BONE_BREAKING.get(), CameraState.volume(1.0f), 1.0f);
+        }
 
         save();
     }

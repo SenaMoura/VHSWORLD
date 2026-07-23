@@ -41,6 +41,11 @@ public class ModSounds {
             SOUND_EVENTS.register("horror_ambience",
                     () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "horror_ambience")));
 
+    /** O estalo que acompanha o susto da revelacao. */
+    public static final RegistryObject<SoundEvent> BONE_BREAKING =
+            SOUND_EVENTS.register("bone_breaking",
+                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "bone_breaking")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }
