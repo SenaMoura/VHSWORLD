@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -81,6 +82,8 @@ public final class PhotoCapture {
 
         for (Entity entity : mc.level.entitiesForRendering()) {
             if (entity == mc.player) continue;
+            // Bicho, nunca item no chao: "CAPTURADO: TOCHA" nao assusta ninguem.
+            if (!(entity instanceof LivingEntity)) continue;
             if (!RECConfig.CLIENT.photoCatchesAnyMob.get() && !isSubjectWorthy(entity)) continue;
 
             Vec3 center = entity.position().add(0.0, entity.getBbHeight() * 0.5, 0.0);
