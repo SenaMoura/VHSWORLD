@@ -3,6 +3,7 @@ package net.vhsworld.rec.worldgen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
@@ -15,8 +16,11 @@ import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -78,6 +82,7 @@ public class AlphaChunkGenerator extends ChunkGenerator {
     private boolean noiseReady = false;
 
     private final AlphaCaves caves = new AlphaCaves(SEA_LEVEL, GEN_HEIGHT);
+    private final AlphaOres ores = new AlphaOres();
 
     public AlphaChunkGenerator(BiomeSource biomeSource) {
         super(biomeSource);
@@ -241,6 +246,12 @@ public class AlphaChunkGenerator extends ChunkGenerator {
      * O alpha nao tinha regra de superficie por bioma: era esta, para o mundo
      * inteiro. A praia sai de um ruido proprio, e nao de "esta perto do mar" —
      * por isso as praias antigas apareciam tambem em lagos no meio do nada.
+     *
+     * As duas excecoes sao as que o jogador cobraria na hora: deserto de grama e
+     * tundra sem neve. O jogo moderno resolve as duas com regras de superficie que
+     * so o gerador de ruido executa; aqui elas entram na mao, olhando o bioma da
+     * coluna. Neve e gelo tambem sao o que faz o bioma frio PARECER frio antes de
+     * qualquer arvore nascer.
      */
     @Override
     public void buildSurface(WorldGenRegion region, StructureManager structures,
@@ -258,11 +269,20 @@ public class AlphaChunkGenerator extends ChunkGenerator {
         BlockState gravel = Blocks.GRAVEL.defaultBlockState();
         BlockState bedrock = Blocks.BEDROCK.defaultBlockState();
 
+        BlockState snow = Blocks.SNOW.defaultBlockState();
+        BlockState ice = Blocks.ICE.defaultBlockState();
+        BlockPos.MutableBlockPos world = new BlockPos.MutableBlockPos();
+
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 double beach = surface.sample2d(originX + x, originZ + z, 0.03125);
                 boolean sandy = beach + 0.15 > 0.0;
 
+                var biome = region.getBiome(world.set(originX + x, SEA_LEVEL, originZ + z));
+                boolean desert = biome.is(Biomes.DESERT);
+                boolean cold = biome.value().coldEnoughToSnow(world);
+
+                int top = Integer.MIN_VALUE;
                 int depthLeft = -1;
                 for (int y = GEN_HEIGHT - 1; y >= MIN_Y; y--) {
                     cursor.set(x, y, z);
@@ -277,14 +297,28 @@ public class AlphaChunkGenerator extends ChunkGenerator {
                     if (depthLeft == -1) {
                         // Primeiro solido de cima para baixo: e a superficie.
                         depthLeft = 4;
+                        if (top == Integer.MIN_VALUE) top = y;
                         if (y >= SEA_LEVEL - 1) {
-                            chunk.setBlockState(cursor, sandy && y <= SEA_LEVEL + 1 ? sand : grass, false);
+                            boolean asSand = desert || (sandy && y <= SEA_LEVEL + 1);
+                            chunk.setBlockState(cursor, asSand ? sand : grass, false);
                         } else {
-                            chunk.setBlockState(cursor, sandy ? sand : gravel, false);
+                            chunk.setBlockState(cursor, sandy || desert ? sand : gravel, false);
                         }
                     } else if (depthLeft > 0) {
                         depthLeft--;
-                        chunk.setBlockState(cursor, sandy && y >= SEA_LEVEL - 2 ? sand : dirt, false);
+                        chunk.setBlockState(cursor, (sandy && y >= SEA_LEVEL - 2) || desert ? sand : dirt, false);
+                    }
+                }
+
+                if (cold) {
+                    // Um dedo de neve por cima do chao, e a superficie da agua parada
+                    // congelada — o resto (arvore nevada, lago) e a decoracao do bioma.
+                    if (top >= SEA_LEVEL && top + 1 < GEN_HEIGHT
+                            && chunk.getBlockState(cursor.set(x, top + 1, z)).isAir()) {
+                        chunk.setBlockState(cursor, snow, false);
+                    }
+                    if (chunk.getBlockState(cursor.set(x, SEA_LEVEL - 1, z)).is(Blocks.WATER)) {
+                        chunk.setBlockState(cursor, ice, false);
                     }
                 }
 
@@ -301,6 +335,23 @@ public class AlphaChunkGenerator extends ChunkGenerator {
         return CODEC;
     }
 
+    /**
+     * O unico lugar onde a semente do mundo passa pela nossa mao.
+     *
+     * A fonte de biomas moderna nunca recebe a semente — ela conta com o amostrador
+     * de clima, que no nosso caso vem zerado (ver AlphaBiomeSource). Este metodo
+     * roda uma vez, na montagem do ChunkMap, antes de qualquer chunk e antes de o
+     * jogo procurar o ponto de nascimento. E a janela certa para entregar a semente.
+     */
+    @Override
+    public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> structureSets,
+                                                    RandomState randomState, long seed) {
+        if (biomeSource instanceof AlphaBiomeSource alpha) {
+            alpha.setSeed(seed);
+        }
+        return super.createState(structureSets, randomState, seed);
+    }
+
     @Override
     public void applyCarvers(WorldGenRegion region, long seed, RandomState randomState,
                              BiomeManager biomes, StructureManager structures,
@@ -315,6 +366,15 @@ public class AlphaChunkGenerator extends ChunkGenerator {
                 new ResourceLocation(RECMod.MOD_ID, "alpha_caves"));
 
         caves.carve(chunk, (cx, cz) -> factory.at(cx, 0, cz));
+
+        // Os minerios entram AQUI, logo depois de cavar, e nao junto com a decoracao do
+        // bioma. Duas razoes: o veio colocado antes do tunel seria comido por ele, e as
+        // faixas de altura do jogo moderno sao escritas contra o fundo -64, que este
+        // mundo nao tem. Ver AlphaOres.
+        ChunkPos pos = chunk.getPos();
+        ores.place(chunk, randomState
+                .getOrCreateRandomFactory(new ResourceLocation(RECMod.MOD_ID, "alpha_ores"))
+                .at(pos.getMinBlockX(), 0, pos.getMinBlockZ()));
     }
 
     @Override

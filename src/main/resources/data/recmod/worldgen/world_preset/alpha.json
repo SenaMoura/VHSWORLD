@@ -5,8 +5,7 @@
       "generator": {
         "type": "recmod:alpha",
         "biome_source": {
-          "type": "minecraft:multi_noise",
-          "preset": "minecraft:overworld"
+          "type": "recmod:alpha"
         }
       }
     },
