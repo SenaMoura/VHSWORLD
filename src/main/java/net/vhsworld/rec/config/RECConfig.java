@@ -149,8 +149,11 @@ public final class RECConfig {
                     .defineInRange("scanlineSpacing", 3, 2, 16);
 
             staticNoise = b
-                    .comment("Chiado/estatica da fita.")
-                    .define("staticNoise", true);
+                    .comment("Chiado/estatica da fita: pontinhos brancos por toda a imagem.",
+                             "DESLIGADO por padrao — na tela cheia vira poluicao visual e",
+                             "atrapalha enxergar o mundo, que e o oposto do que a fita deveria",
+                             "fazer. Ligue so se quiser a tela realmente suja.")
+                    .define("staticNoise", false);
 
             staticAmount = b
                     .comment("Quantidade de chiado. 0.0 nenhum, 1.0 tempestade de areia.")
