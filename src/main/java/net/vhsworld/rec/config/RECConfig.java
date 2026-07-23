@@ -82,6 +82,7 @@ public final class RECConfig {
         public final ForgeConfigSpec.DoubleValue photoFadeSeconds;
         public final ForgeConfigSpec.BooleanValue photoCatchesAnyMob;
         public final ForgeConfigSpec.BooleanValue codex;
+        public final ForgeConfigSpec.BooleanValue autoEnableBetaTextures;
 
         // --- sanidade ---
         public final ForgeConfigSpec.BooleanValue sanity;
@@ -320,6 +321,14 @@ public final class RECConfig {
                              "jogado no chao dentro do enquadramento.",
                              "Desligado, some tambem a frase no tooltip dos itens.")
                     .define("codex", true);
+
+            autoEnableBetaTextures = b
+                    .comment("Liga sozinho, UMA UNICA VEZ, os packs de textura beta que ja",
+                             "estiverem instalados (Golden Days e afins). Nada e redistribuido:",
+                             "so ativamos o que ja esta na maquina do jogador.",
+                             "Depois de ligado, fica registrado em disco e nunca mais insiste —",
+                             "se voce desligar o pack, ele fica desligado.")
+                    .define("autoEnableBetaTextures", true);
 
             b.pop();
 
