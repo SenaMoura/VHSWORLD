@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import java.util.Random;
 
@@ -21,12 +22,22 @@ public class CustomMainMenuScreen extends Screen {
     private static final String TITLE = "VHSWORLD";
     private static final String SUBTITLE = "FOUND FOOTAGE";
 
+    /** Duracao da entrada: o titulo desce do tamanho do loading ate o do menu. */
+    private static final long INTRO_MS = 900L;
+
+    /** Uma vez por sessao. Reabrir o menu no meio do jogo nao repete a abertura. */
+    private static boolean introPlayed = false;
+
+    private long openedAt = 0L;
+
     public CustomMainMenuScreen() {
         super(Component.literal("REC Mod Menu"));
     }
 
     @Override
     protected void init() {
+        if (openedAt == 0L) openedAt = System.currentTimeMillis();
+
         int buttonWidth = 160;
         int buttonHeight = 22;
         int centerX = this.width / 2 - buttonWidth / 2;
@@ -74,10 +85,42 @@ public class CustomMainMenuScreen extends Screen {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(shift, 0.0f, 0.0f);
 
-        renderTitle(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        float intro = introProgress();
+
+        renderTitle(guiGraphics, intro);
+
+        // Os botoes so entram quando o titulo chega no lugar: a fita "assenta"
+        // antes de virar menu.
+        if (intro >= 1.0f) {
+            super.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
 
         guiGraphics.pose().popPose();
+
+        // Estatica cobrindo o corte, forte no inicio e sumindo
+        if (intro < 1.0f) {
+            int burst = (int) ((1.0f - intro) * 160);
+            guiGraphics.fill(0, 0, this.width, this.height, (burst << 24) | 0x00101014);
+            for (int i = 0; i < (int) ((1.0f - intro) * 220); i++) {
+                int x = RANDOM.nextInt(this.width);
+                int y = RANDOM.nextInt(this.height);
+                int w = 1 + RANDOM.nextInt(20);
+                guiGraphics.fill(x, y, x + w, y + 1, 0x99FFFFFF);
+            }
+        }
+    }
+
+    /** 0.0 no primeiro frame, 1.0 quando o titulo terminou de assentar. */
+    private float introProgress() {
+        if (introPlayed) return 1.0f;
+
+        long elapsed = System.currentTimeMillis() - openedAt;
+        if (elapsed >= INTRO_MS) {
+            introPlayed = true;
+            return 1.0f;
+        }
+        float t = elapsed / (float) INTRO_MS;
+        return 1.0f - (1.0f - t) * (1.0f - t);   // desacelera no fim
     }
 
     /**
@@ -87,23 +130,28 @@ public class CustomMainMenuScreen extends Screen {
      * antes do resto. Custa duas chamadas de texto e faz mais pela ambientacao do que
      * qualquer imagem que eu pudesse desenhar aqui.
      */
-    private void renderTitle(GuiGraphics g) {
+    private void renderTitle(GuiGraphics g, float intro) {
         int centerX = this.width / 2;
         int titleY = this.height / 2 - 60;
 
+        // Sai de onde o loading deixou (grande, no meio) e chega no lugar do menu.
+        float scale = Mth.lerp(intro, 4.0f, 1.0f);
+        float y = Mth.lerp(intro, this.height / 2.0f - 54.0f, (float) titleY);
+
         int jitter = RANDOM.nextFloat() < 0.12f ? RANDOM.nextInt(3) - 1 : 0;
+        int w = this.font.width(TITLE);
 
-        String title = TITLE;
-        int w = this.font.width(title);
+        g.pose().pushPose();
+        g.pose().translate(centerX + jitter, y, 0.0f);
+        g.pose().scale(scale, scale, 1.0f);
+        g.drawString(this.font, TITLE, -w / 2 - 1, 0, 0xFFAA1111, false);
+        g.drawString(this.font, TITLE, -w / 2, 0, 0xFFEEEEEE, false);
+        g.pose().popPose();
 
-        // fantasma vermelho, depois o branco por cima
-        g.drawString(this.font, title, centerX - w / 2 - 2 + jitter, titleY, 0xFFAA1111, false);
-        g.drawString(this.font, title, centerX - w / 2 + jitter, titleY, 0xFFEEEEEE, false);
+        if (intro < 1.0f) return;   // subtitulo e linha so depois de assentar
 
         int sw = this.font.width(SUBTITLE);
         g.drawString(this.font, SUBTITLE, centerX - sw / 2, titleY + 14, 0xFF888888, false);
-
-        // Linha fina separando o cabecalho dos botoes
         g.fill(centerX - 90, titleY + 30, centerX + 90, titleY + 31, 0x44FFFFFF);
     }
 

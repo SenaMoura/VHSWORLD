@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.vhsworld.rec.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "recmod.refmap.json",
+  "client": [
+    "LoadingOverlayMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

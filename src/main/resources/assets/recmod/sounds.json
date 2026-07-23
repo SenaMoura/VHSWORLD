@@ -61,5 +61,11 @@
     "sounds": [
       "recmod:horror_sanity"
     ]
+  },
+  "tape_player": {
+    "category": "ambient",
+    "sounds": [
+      "recmod:tape_player"
+    ]
   }
 }

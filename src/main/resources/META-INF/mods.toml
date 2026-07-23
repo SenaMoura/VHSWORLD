@@ -24,3 +24,6 @@ mandatory=true
 versionRange="[47.1.0,)"
 ordering="NONE"
 side="BOTH"
+
+[[mixins]]
+config="recmod.mixins.json"

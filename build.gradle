@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 version = mod_version
@@ -11,6 +12,13 @@ group = mod_group_id
 base {
     // jar sai direto como Vhsworld-<versao>.jar (nao precisa renomear a mao)
     archivesName = 'Vhsworld'
+}
+
+// Mixin: o refmap traduz os nomes que escrevemos (Mojang) para os nomes que o jogo
+// tem em producao (SRG). Sem ele o mixin casa no ambiente de dev e falha no jogo real.
+mixin {
+    add sourceSets.main, 'recmod.refmap.json'
+    config 'recmod.mixins.json'
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -113,6 +121,9 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    // Processador de anotacoes do Mixin, que gera o refmap
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -130,6 +141,10 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // Sem este processador o refmap nao e gerado: o mixin casa no dev e falha no
+    // jogo de verdade, onde os metodos tem nomes SRG.
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

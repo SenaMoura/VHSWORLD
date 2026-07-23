@@ -56,6 +56,11 @@ public class ModSounds {
             SOUND_EVENTS.register("horror_sanity",
                     () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "horror_sanity")));
 
+    /** O aparelho engolindo a fita: abertura do jogo. */
+    public static final RegistryObject<SoundEvent> TAPE_PLAYER =
+            SOUND_EVENTS.register("tape_player",
+                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "tape_player")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }
