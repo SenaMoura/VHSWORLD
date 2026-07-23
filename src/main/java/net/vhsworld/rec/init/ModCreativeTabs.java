@@ -13,7 +13,6 @@ public class ModCreativeTabs {
     @SubscribeEvent
     public static void addToTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(ModItems.CAMCORDER);
             event.accept(ModItems.BATTERY);
         }
     }

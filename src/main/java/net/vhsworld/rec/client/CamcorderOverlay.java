@@ -115,10 +115,14 @@ public class CamcorderOverlay {
             int batColor = batteryLevel > 50 ? 0xFF00FF00 : (batteryLevel > 20 ? 0xFFFFFF00 : 0xFFFF0000);
             guiGraphics.drawString(mc.font, "BATTERY " + (int)batteryLevel + "%", (int)(width * 0.80), 20, batColor, true);
 
-            // Carga do Flash
+            // Carga do Flash — só dispara em 100%, então o HUD precisa avisar quando chega lá.
             if (isChargingFlash) {
-                String chargeText = "FLASH: " + (int)((flashChargeTime / maxFlashCharge()) * 100) + "%";
-                guiGraphics.drawString(mc.font, chargeText, (width - mc.font.width(chargeText)) / 2, height - 50, 0xFFFFFF00, true);
+                boolean ready = flashChargeTime >= maxFlashCharge();
+                String chargeText = ready
+                        ? "[ FLASH PRONTO ]"
+                        : "FLASH: " + (int)((flashChargeTime / maxFlashCharge()) * 100) + "%";
+                int chargeColor = ready ? 0xFF66FF66 : 0xFFFFFF00;
+                guiGraphics.drawString(mc.font, chargeText, (width - mc.font.width(chargeText)) / 2, height - 50, chargeColor, true);
             }
           }
         }

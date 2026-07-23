@@ -29,8 +29,15 @@ public class ClientTickHandler {
         if (event.phase != TickEvent.Phase.END) return;
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.level == null) return;
 
+        // Fora do mundo: devolve o gamma, senao um flash interrompido deixaria o
+        // jogo claro para sempre.
+        if (mc.player == null || mc.level == null) {
+            FlashLight.restore(mc);
+            return;
+        }
+
+        FlashLight.tick(mc);
         SanityState.get().tick();
         HostileSightWatcher.tick(mc);
 

@@ -32,8 +32,6 @@ public final class RECConfig {
     public static final class Client {
 
         // --- camera ---
-        public final ForgeConfigSpec.BooleanValue effectsOnlyWhenHolding;
-
         public final ForgeConfigSpec.BooleanValue letterbox;
         public final ForgeConfigSpec.EnumValue<LetterboxMode> letterboxMode;
         public final ForgeConfigSpec.DoubleValue letterboxThickness;
@@ -64,6 +62,9 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue screenFlash;
         public final ForgeConfigSpec.DoubleValue flashFadeSpeed;
         public final ForgeConfigSpec.IntValue flashChargeTicks;
+        public final ForgeConfigSpec.BooleanValue flashLights;
+        public final ForgeConfigSpec.DoubleValue flashLightBoost;
+        public final ForgeConfigSpec.DoubleValue flashLightSeconds;
 
         // --- bateria / apagao ---
         public final ForgeConfigSpec.BooleanValue batteryDrains;
@@ -98,11 +99,6 @@ public final class RECConfig {
             b.comment("Visual da filmadora. Tudo aqui e client-side: nao muda regra de jogo,",
                       "so como a tela se comporta no teu PC.")
              .push("camera");
-
-            effectsOnlyWhenHolding = b
-                    .comment("Se true, moldura/fisheye/tremida so aparecem com a filmadora na mao.",
-                             "Se false (padrao), a camera fica sempre ligada, como nas versoes antigas.")
-                    .define("effectsOnlyWhenHolding", false);
 
             letterbox = b
                     .comment("Barras pretas recortando a imagem. Substituiu a antiga moldura",
@@ -226,8 +222,25 @@ public final class RECConfig {
                     .defineInRange("flashFadeSpeed", 0.05D, 0.01D, 1.0D);
 
             flashChargeTicks = b
-                    .comment("Ticks segurando R para carregar o flash por completo (20 ticks = 1s).")
+                    .comment("Ticks segurando R para carregar o flash por completo (20 ticks = 1s).",
+                             "O flash SO dispara em 100%: soltar antes perde a carga.")
                     .defineInRange("flashChargeTicks", 60, 1, 600);
+
+            flashLights = b
+                    .comment("O flash ilumina o mundo de verdade, e nao so pinta a tela.",
+                             "Como a foto e tirada no mesmo instante, ela sai iluminada por ele.")
+                    .define("flashLights", true);
+
+            flashLightBoost = b
+                    .comment("Quanto o flash clareia. 6.0 enxerga bem uma caverna escura;",
+                             "valores altos deixam o mundo lavado.",
+                             "OBS: com shaderpack (Oculus) o efeito e menor, porque o shader",
+                             "manda na iluminacao final.")
+                    .defineInRange("flashLightBoost", 6.0D, 0.0D, 20.0D);
+
+            flashLightSeconds = b
+                    .comment("Duracao da luz. Um flash e um estouro: 0.4s ja e generoso.")
+                    .defineInRange("flashLightSeconds", 0.4D, 0.05D, 5.0D);
 
             b.pop();
 

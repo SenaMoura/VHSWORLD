@@ -12,9 +12,8 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, RECMod.MOD_ID);
 
-    // Registo do item Camcorder (empilhável até 1 unidade)
-    public static final RegistryObject<Item> CAMCORDER = ITEMS.register("camcorder",
-            () -> new Item(new Item.Properties().stacksTo(1)));
+    // A filmadora foi removida: a camera nao e um item que se segura, e o estado
+    // do mundo. O jogador ja esta filmando desde que acordou.
 
     // Pilha: recarrega a bateria da filmadora ao usar (botão direito)
     public static final RegistryObject<Item> BATTERY = ITEMS.register("battery",

@@ -47,10 +47,20 @@ public class InputHandler {
                 CamcorderOverlay.isChargingFlash = true;
                 CamcorderOverlay.flashChargeTime = 0.0f;
             } else if (action == GLFW.GLFW_RELEASE && CamcorderOverlay.isChargingFlash) {
+                boolean charged = CamcorderOverlay.flashChargeTime >= CamcorderOverlay.maxFlashCharge();
+
                 CamcorderOverlay.isChargingFlash = false;
                 CamcorderOverlay.flashChargeTime = 0.0f;
-                // Clarão branco na tela + som do flash da filmadora
+
+                // Soltar antes da carga fechar não dispara nada: a carga se perde.
+                // O flash tem que custar a espera, senão ninguém segura o botão com
+                // uma coisa vindo na sua direção.
+                if (!charged) return;
+
+                // Clarão branco na tela + som + a luz de verdade no mundo
                 CamcorderOverlay.activeFlashAlpha = 1.0f;
+                FlashLight.trigger();
+
                 if (CameraState.audible()) {
                     mc.player.playSound(ModSounds.FLASH.get(), CameraState.volume(1.0f), 1.0f);
                 }
