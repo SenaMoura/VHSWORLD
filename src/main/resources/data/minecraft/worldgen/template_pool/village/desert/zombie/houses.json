@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/plains_house_small_zombie",
+        "location": "recmod:village/old/desert_house_small_zombie",
         "processors": "minecraft:mossify_10_percent",
         "projection": "rigid"
       },
@@ -12,7 +12,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/plains_house_large_zombie",
+        "location": "recmod:village/old/desert_house_large_zombie",
         "processors": "minecraft:mossify_10_percent",
         "projection": "rigid"
       },
@@ -21,7 +21,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/plains_smithy_zombie",
+        "location": "recmod:village/old/desert_smithy_zombie",
         "processors": "minecraft:mossify_10_percent",
         "projection": "rigid"
       },
@@ -34,5 +34,5 @@
       "weight": 4
     }
   ],
-  "fallback": "minecraft:village/plains/terminators"
+  "fallback": "minecraft:village/desert/zombie/terminators"
 }

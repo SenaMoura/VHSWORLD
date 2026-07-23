@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/house_small",
+        "location": "recmod:village/old/plains_house_small",
         "processors": "minecraft:mossify_10_percent",
         "projection": "rigid"
       },
@@ -12,7 +12,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/house_large",
+        "location": "recmod:village/old/plains_house_large",
         "processors": "minecraft:mossify_10_percent",
         "projection": "rigid"
       },
@@ -21,7 +21,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "recmod:village/old/smithy",
+        "location": "recmod:village/old/plains_smithy",
         "processors": "minecraft:mossify_10_percent",
         "projection": "rigid"
       },
