@@ -39,6 +39,26 @@ public final class BetaTexturePacks {
     /** Pedacos de nome que identificam um pack de textura beta. */
     private static final String[] WANTED = {"golden-days", "golden_days", "golden days"};
 
+    /**
+     * O Programmer Art e a PROPRIA Mojang: sao as texturas de antes da reforma de
+     * 1.14, que o jogo ainda distribui como pack embutido. Ele entra por baixo do
+     * Golden Days porque tapa justamente o buraco que o outro deixa — o Golden Days
+     * refaz blocos e interface, mas nao mexe nas ferramentas: espada, picareta, pa e
+     * enxada continuavam com a arte nova. Nao ha nada a redistribuir aqui; o arquivo
+     * ja veio com o jogo.
+     */
+    private static final String PROGRAMMER_ART = "programmer_art";
+
+    /**
+     * A marca em disco guarda uma VERSAO, nao um "ja fiz".
+     *
+     * Quando esta lista muda (foi o caso ao entrar o Programmer Art), quem ja tinha a
+     * marca antiga nunca mais receberia o pack novo — o mod olharia o arquivo, veria
+     * que existe, e iria embora. Guardar a versao deixa passar exatamente uma vez a
+     * cada mudanca nossa, sem voltar a insistir depois.
+     */
+    private static final String MARKER_VERSION = "2";
+
     private static boolean handled = false;
 
     @SubscribeEvent
@@ -53,7 +73,11 @@ public final class BetaTexturePacks {
         if (!RECConfig.CLIENT.autoEnableBetaTextures.get()) return;
 
         Path marker = mc.gameDirectory.toPath().resolve("vhsworld_packs_applied");
-        if (Files.exists(marker)) return;
+        try {
+            if (Files.exists(marker) && Files.readString(marker).trim().endsWith(MARKER_VERSION)) return;
+        } catch (Throwable ignored) {
+            return;
+        }
 
         try {
             PackRepository repo = mc.getResourcePackRepository();
@@ -79,14 +103,21 @@ public final class BetaTexturePacks {
 
             // Marca mesmo sem achar nada: quem nao tem o pack nao precisa desta
             // varredura toda vez que abre o jogo.
-            Files.writeString(marker, "beta textures checked");
-
-            if (found.isEmpty()) return;
+            Files.writeString(marker, "beta textures checked v" + MARKER_VERSION);
 
             // "base" antes de "compat": o de compatibilidade tem que vencer o de base.
             found.sort((a, b) -> Boolean.compare(
                     a.toLowerCase(Locale.ROOT).contains("compat"),
                     b.toLowerCase(Locale.ROOT).contains("compat")));
+
+            // O Programmer Art vai na FRENTE de todos: na selecao do jogo, quem vem
+            // depois manda. Ele e o piso — o Golden Days pinta por cima do que sabe
+            // pintar, e o que sobra (as ferramentas) fica com a arte antiga da Mojang.
+            if (repo.getAvailableIds().contains(PROGRAMMER_ART) && !selected.contains(PROGRAMMER_ART)) {
+                found.add(0, PROGRAMMER_ART);
+            }
+
+            if (found.isEmpty()) return;
 
             selected.addAll(found);
 
