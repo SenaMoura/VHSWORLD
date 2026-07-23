@@ -33,6 +33,9 @@ public final class SanityState {
 
     private float sanity = MAX;
 
+    /** true enquanto a sanidade esta no fundo — impede o som de tocar em loop. */
+    private boolean bottomed;
+
     /** Quanto falta do tremor, em ticks, e de quanto ele partiu. */
     private int shakeTicks;
     private int shakeTotal;
@@ -133,6 +136,19 @@ public final class SanityState {
     public void tick() {
         if (shakeTicks > 0) shakeTicks--;
 
+        // A virada para zero toca uma vez, e so volta a poder tocar depois que o
+        // jogador se recuperar. Sem isso o som repetiria a cada tick no fundo.
+        boolean empty = sanity <= 0.0f;
+        if (empty && !bottomed) {
+            bottomed = true;
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null && CameraState.audible()) {
+                mc.player.playSound(ModSounds.HORROR_SANITY.get(), CameraState.volume(1.0f), 1.0f);
+            }
+        } else if (!empty) {
+            bottomed = false;
+        }
+
         double perMinute = RECConfig.CLIENT.sanityRegenPerMinute.get();
         if (perMinute > 0.0D && sanity < MAX) {
             sanity = Math.min(MAX, sanity + (float) (perMinute / 1200.0D));   // 1200 ticks = 1 min
@@ -154,6 +170,9 @@ public final class SanityState {
             if (json.has("sanity")) {
                 sanity = Math.max(0.0f, Math.min(MAX, json.get("sanity").getAsFloat()));
             }
+            // Quem entra no mundo ja no fundo nao leva o som na cara: ele marca a
+            // QUEDA, nao o estado.
+            bottomed = sanity <= 0.0f;
         } catch (Exception e) {
             LOG.error("vhsworld_sanity.json ilegivel; comecando sao", e);
         }

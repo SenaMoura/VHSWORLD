@@ -26,6 +26,12 @@ public class ClientTickHandler {
     private static boolean hasScreamed = false;
     private static boolean wasBatteryDead = false;
 
+    /** O clique seco de abrir album ou registro. Passa pelo horrorVolume como o resto. */
+    private static void playMenuClick(Minecraft mc) {
+        if (mc.player == null || !CameraState.audible()) return;
+        mc.player.playSound(ModSounds.MENU_BUTTON.get(), CameraState.volume(1.0f), 1.0f);
+    }
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
@@ -47,6 +53,7 @@ public class ClientTickHandler {
         // --- ÁLBUM DE FOTOS (tecla C) ---
         while (RECKeys.OPEN_ALBUM.consumeClick()) {
             if (mc.screen == null && RECConfig.CLIENT.photos.get()) {
+                playMenuClick(mc);
                 mc.setScreen(new PhotoAlbumScreen());
             }
         }
@@ -54,6 +61,7 @@ public class ClientTickHandler {
         // --- REGISTRO DOS ITENS (tecla G) ---
         while (RECKeys.OPEN_CODEX.consumeClick()) {
             if (mc.screen == null && RECConfig.CLIENT.codex.get()) {
+                playMenuClick(mc);
                 mc.setScreen(new CodexScreen());
             }
         }

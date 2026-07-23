@@ -46,6 +46,16 @@ public class ModSounds {
             SOUND_EVENTS.register("bone_breaking",
                     () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "bone_breaking")));
 
+    /** Clique seco ao abrir album e registro. */
+    public static final RegistryObject<SoundEvent> MENU_BUTTON =
+            SOUND_EVENTS.register("menu_button",
+                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "menu_button")));
+
+    /** O momento em que a sanidade acaba. Toca uma vez, na virada. */
+    public static final RegistryObject<SoundEvent> HORROR_SANITY =
+            SOUND_EVENTS.register("horror_sanity",
+                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "horror_sanity")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

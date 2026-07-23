@@ -49,5 +49,17 @@
     "sounds": [
       "recmod:bone_breaking"
     ]
+  },
+  "menu_button": {
+    "category": "player",
+    "sounds": [
+      "recmod:menu_button"
+    ]
+  },
+  "horror_sanity": {
+    "category": "ambient",
+    "sounds": [
+      "recmod:horror_sanity"
+    ]
   }
 }
