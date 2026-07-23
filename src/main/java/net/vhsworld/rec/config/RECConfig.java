@@ -36,6 +36,18 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue handShake;
         public final ForgeConfigSpec.DoubleValue handShakeStrength;
 
+        // --- fita vhs ---
+        public final ForgeConfigSpec.BooleanValue vhsEffect;
+        public final ForgeConfigSpec.BooleanValue scanlines;
+        public final ForgeConfigSpec.DoubleValue scanlineOpacity;
+        public final ForgeConfigSpec.IntValue scanlineSpacing;
+        public final ForgeConfigSpec.BooleanValue staticNoise;
+        public final ForgeConfigSpec.DoubleValue staticAmount;
+        public final ForgeConfigSpec.BooleanValue trackingBar;
+        public final ForgeConfigSpec.IntValue trackingPeriodSeconds;
+        public final ForgeConfigSpec.BooleanValue degradeWithBattery;
+        public final ForgeConfigSpec.BooleanValue lensPostShader;
+
         // --- hud ---
         public final ForgeConfigSpec.BooleanValue showHud;
         public final ForgeConfigSpec.BooleanValue showRecBlink;
@@ -91,6 +103,60 @@ public final class RECConfig {
             handShakeStrength = b
                     .comment("Amplitude do balanco, em graus. 0.0 desliga na pratica.")
                     .defineInRange("handShakeStrength", 0.18D, 0.0D, 1.0D);
+
+            b.pop();
+
+            b.comment("A cara da fita VHS: scanlines, chiado e a barra de tracking.",
+                      "Tudo isto e desenhado POR CIMA da tela, na camada de GUI. Nao toca no",
+                      "framebuffer do mundo, entao nao briga com shaderpack (Oculus/Iris) —",
+                      "que foi exatamente o que quebrou o render na v1.0.0.")
+             .push("vhs");
+
+            vhsEffect = b
+                    .comment("Chave geral do efeito de fita.")
+                    .define("vhsEffect", true);
+
+            scanlines = b
+                    .comment("Linhas horizontais de varredura da TV.")
+                    .define("scanlines", true);
+
+            scanlineOpacity = b
+                    .comment("Opacidade das linhas. 0.10 e sutil, 0.30 ja e bem agressivo.")
+                    .defineInRange("scanlineOpacity", 0.10D, 0.0D, 1.0D);
+
+            scanlineSpacing = b
+                    .comment("Distancia entre linhas, em pixels. Menor = tela mais riscada e",
+                             "mais linhas desenhadas por frame (custa um pouco mais).")
+                    .defineInRange("scanlineSpacing", 3, 2, 16);
+
+            staticNoise = b
+                    .comment("Chiado/estatica da fita.")
+                    .define("staticNoise", true);
+
+            staticAmount = b
+                    .comment("Quantidade de chiado. 0.0 nenhum, 1.0 tempestade de areia.")
+                    .defineInRange("staticAmount", 0.25D, 0.0D, 1.0D);
+
+            trackingBar = b
+                    .comment("Aquela faixa clara que sobe/desce na imagem (tracking da fita).")
+                    .define("trackingBar", true);
+
+            trackingPeriodSeconds = b
+                    .comment("Segundos que a faixa leva para atravessar a tela.")
+                    .defineInRange("trackingPeriodSeconds", 12, 1, 300);
+
+            degradeWithBattery = b
+                    .comment("A fita piora conforme a bateria cai: mais chiado, mais tracking.")
+                    .define("degradeWithBattery", true);
+
+            lensPostShader = b
+                    .comment("LEGADO — a lente de verdade da v1.0.0 (post-shader que entorta o",
+                             "mundo inteiro, com scanline e ruido no proprio frame).",
+                             "Foi o que corrompeu o render das chunks distantes quando havia",
+                             "shaderpack ligado: dois donos para o mesmo framebuffer.",
+                             "Se voce ligar isto, o mod AINDA se recusa a carregar enquanto um",
+                             "shaderpack estiver em uso. Sem shaderpack, roda.")
+                    .define("lensPostShader", false);
 
             b.pop();
 

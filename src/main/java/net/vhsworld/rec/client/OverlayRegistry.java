@@ -13,5 +13,7 @@ public class OverlayRegistry {
     @SubscribeEvent
     public static void registerOverlays(RegisterGuiOverlaysEvent event) {
         event.registerAboveAll("camcorder_hud", CamcorderOverlay.HUD_CAMCORDER);
+        // Depois do HUD: numa fita de verdade, o chiado cai em cima do texto também.
+        event.registerAboveAll("vhs_tape", VHSEffectOverlay.VHS_TAPE);
     }
 }

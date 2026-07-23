@@ -28,14 +28,10 @@ public class ClientTickHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
 
-        // FIX v1.0.3: o pós-shader vanilla (fisheye.json) distorcia/granulava o frame
-        // inteiro e conflitava com shaderpacks do Oculus/Iris, corrompendo o render
-        // das chunks distantes. Removido. Se algum efeito nosso ainda estiver ativo
-        // (de versões antigas), garante que ele seja desligado.
-        if (mc.gameRenderer.currentEffect() != null
-                && mc.gameRenderer.currentEffect().getName().contains(RECMod.MOD_ID)) {
-            mc.gameRenderer.shutdownEffect();
-        }
+        // A lente da v1.0.0 voltou, mas atrás de uma trava: só carrega sem shaderpack.
+        // Quem decide é o LegacyLensShader, todo tick — inclusive para descarregar
+        // sozinho se o jogador ligar um shaderpack com a lente ativa.
+        LegacyLensShader.tick(mc);
 
         // --- DESCARGA DA BATERIA (por tick, não por frame) ---
         // Antes isto vivia dentro do render do HUD, então a bateria durava mais em PC
