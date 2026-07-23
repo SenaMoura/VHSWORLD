@@ -1,4 +1,7 @@
 {
   "item.recmod.battery": "Battery",
-  "item.recmod.camcorder": "Camcorder"
+  "item.recmod.camcorder": "Camcorder",
+
+  "key.categories.recmod": "VHSWORLD",
+  "key.recmod.album": "Photo album"
 }

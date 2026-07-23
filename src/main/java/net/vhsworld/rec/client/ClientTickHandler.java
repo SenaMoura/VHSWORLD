@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.vhsworld.rec.client.photo.PhotoAlbumScreen;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.RECMod;
@@ -27,6 +28,13 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
+
+        // --- ÁLBUM DE FOTOS (tecla F) ---
+        while (RECKeys.OPEN_ALBUM.consumeClick()) {
+            if (mc.screen == null && RECConfig.CLIENT.photos.get()) {
+                mc.setScreen(new PhotoAlbumScreen());
+            }
+        }
 
         // A lente da v1.0.0 voltou, mas atrás de uma trava: só carrega sem shaderpack.
         // Quem decide é o LegacyLensShader, todo tick — inclusive para descarregar

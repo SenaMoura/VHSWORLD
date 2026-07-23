@@ -1,4 +1,7 @@
 {
   "item.recmod.battery": "Pilha",
-  "item.recmod.camcorder": "Filmadora"
+  "item.recmod.camcorder": "Filmadora",
+
+  "key.categories.recmod": "VHSWORLD",
+  "key.recmod.album": "Album de fotografias"
 }

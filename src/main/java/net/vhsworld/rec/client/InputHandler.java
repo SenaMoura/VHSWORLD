@@ -6,6 +6,8 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.client.photo.PhotoCapture;
+import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
 import org.lwjgl.glfw.GLFW;
 
@@ -51,6 +53,10 @@ public class InputHandler {
                 CamcorderOverlay.activeFlashAlpha = 1.0f;
                 if (CameraState.audible()) {
                     mc.player.playSound(ModSounds.FLASH.get(), CameraState.volume(1.0f), 1.0f);
+                }
+                // O clarão não é só efeito: é o obturador. A foto sai daqui.
+                if (RECConfig.CLIENT.photos.get()) {
+                    PhotoCapture.request();
                 }
             }
         }

@@ -74,6 +74,12 @@ public final class RECConfig {
         public final ForgeConfigSpec.IntValue secondsUntilScream;
         public final ForgeConfigSpec.BooleanValue blackoutFootsteps;
 
+        // --- fotos ---
+        public final ForgeConfigSpec.BooleanValue photos;
+        public final ForgeConfigSpec.IntValue maxPhotos;
+        public final ForgeConfigSpec.IntValue photoDevelopSeconds;
+        public final ForgeConfigSpec.BooleanValue photoCatchesAnyMob;
+
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
 
@@ -245,6 +251,30 @@ public final class RECConfig {
             blackoutFootsteps = b
                     .comment("Passos se aproximando depois do grito (cada vez mais rapidos e altos).")
                     .define("blackoutFootsteps", true);
+
+            b.pop();
+
+            b.comment("Fotografia: o flash (R) tira uma foto, e o album abre no F.").push("fotos");
+
+            photos = b
+                    .comment("Liga o sistema de fotografia. Desligado, o R so da o clarao.")
+                    .define("photos", true);
+
+            maxPhotos = b
+                    .comment("Quantas fotos o album guarda. Passou disto, a mais antiga e",
+                             "apagada do disco. Cada foto ocupa uns 200 KB.")
+                    .defineInRange("maxPhotos", 64, 1, 512);
+
+            photoDevelopSeconds = b
+                    .comment("Segundos para revelar uma foto. A espera e proposital: e nela",
+                             "que o jogador fica imaginando o que vai aparecer.")
+                    .defineInRange("photoDevelopSeconds", 6, 0, 300);
+
+            photoCatchesAnyMob = b
+                    .comment("Se true, qualquer mob na frente da lente conta como revelacao.",
+                             "Padrao false: so as criaturas do proprio mod aparecem no filme,",
+                             "para uma vaca no pasto nao virar o susto da foto.")
+                    .define("photoCatchesAnyMob", false);
 
             b.pop();
 
