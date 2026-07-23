@@ -1,6 +1,7 @@
 package net.vhsworld.rec.client.photo;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.world.entity.Entity;
@@ -12,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.config.RECConfig;
+import org.slf4j.Logger;
 
 /**
  * Tira a foto: pega o frame que acabou de ser desenhado e guarda no album.
@@ -22,6 +24,8 @@ import net.vhsworld.rec.config.RECConfig;
  */
 @Mod.EventBusSubscriber(modid = RECMod.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class PhotoCapture {
+
+    private static final Logger LOG = LogUtils.getLogger();
 
     /** Tamanho do arquivo guardado. Frame cheio em 4K por foto seria absurdo. */
     private static final int PHOTO_WIDTH = 512;
@@ -80,26 +84,53 @@ public final class PhotoCapture {
         Entity best = null;
         double bestDot = SUBJECT_CONE;
 
+        // Diagnostico: quando a foto sai vazia, e sempre por um destes tres motivos.
+        int living = 0, tooFar = 0, offCamera = 0, filtered = 0;
+        double closestDot = -1.0;
+
+        boolean anyMob = RECConfig.CLIENT.photoCatchesAnyMob.get();
+
         for (Entity entity : mc.level.entitiesForRendering()) {
             if (entity == mc.player) continue;
             // Bicho, nunca item no chao: "CAPTURADO: TOCHA" nao assusta ninguem.
             if (!(entity instanceof LivingEntity)) continue;
-            if (!RECConfig.CLIENT.photoCatchesAnyMob.get() && !isSubjectWorthy(entity)) continue;
+            living++;
+
+            if (!anyMob && !isSubjectWorthy(entity)) {
+                filtered++;
+                continue;
+            }
 
             Vec3 center = entity.position().add(0.0, entity.getBbHeight() * 0.5, 0.0);
             Vec3 delta = center.subtract(eye);
 
             double distance = delta.length();
-            if (distance < 0.01 || distance > SUBJECT_RANGE) continue;
+            if (distance < 0.01 || distance > SUBJECT_RANGE) {
+                tooFar++;
+                continue;
+            }
 
             double dot = delta.normalize().dot(look);
+            closestDot = Math.max(closestDot, dot);
+
             if (dot > bestDot) {
                 bestDot = dot;
                 best = entity;
+            } else {
+                offCamera++;
             }
         }
 
-        return best == null ? null : best.getDisplayName().getString();
+        if (best == null) {
+            LOG.info("[REC] foto vazia — bichos vistos: {}, fora do filtro: {}, longe demais: {}, "
+                            + "fora do cone: {}, melhor centralizacao: {} (precisa > {}), photoCatchesAnyMob={}",
+                    living, filtered, tooFar, offCamera, String.format("%.2f", closestDot),
+                    SUBJECT_CONE, anyMob);
+            return null;
+        }
+
+        LOG.info("[REC] foto com assunto: {}", best.getDisplayName().getString());
+        return best.getDisplayName().getString();
     }
 
     /**

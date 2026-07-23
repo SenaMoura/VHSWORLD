@@ -153,6 +153,19 @@ public class PhotoAlbumScreen extends Screen {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         drawBackdrop(g);
+
+        // O tremor da câmera acontece no mundo, e o mundo está atrás deste fundo preto.
+        // Então quem treme aqui é a TELA inteira — grade, foto, botões e tudo.
+        float panic = SanityState.get().shakeAmount();
+
+        g.pose().pushPose();
+        if (panic > 0.0f) {
+            double time = System.currentTimeMillis() / 40.0;
+            float dx = (float) (Math.sin(time * 1.7) + Math.sin(time * 2.9) * 0.6) * panic * 7.0f;
+            float dy = (float) (Math.cos(time * 2.3) + Math.cos(time * 3.7) * 0.5) * panic * 7.0f;
+            g.pose().translate(dx, dy, 0.0f);
+        }
+
         grain(g);
 
         if (open == null) {
@@ -162,6 +175,14 @@ public class PhotoAlbumScreen extends Screen {
         }
 
         super.render(g, mouseX, mouseY, partialTick);
+        g.pose().popPose();
+
+        // Pulso vermelho por cima do susto, sem tremer junto: a moldura do pânico
+        // fica firme enquanto o conteúdo balança.
+        if (panic > 0.0f) {
+            int alpha = (int) Math.min(90.0f, panic * 55.0f);
+            g.fill(0, 0, width, height, (alpha << 24) | 0x00300000);
+        }
     }
 
     private void drawBackdrop(GuiGraphics g) {
@@ -223,13 +244,7 @@ public class PhotoAlbumScreen extends Screen {
         int x = (width - w) / 2;
         int y = (height - h) / 2 - 14;
 
-        // A foto treme junto: o susto e na sala, nao so no mundo la fora.
-        float panic = SanityState.get().shakeAmount();
-        if (panic > 0.0f) {
-            x += (int) ((RANDOM.nextFloat() - 0.5f) * panic * 10.0f);
-            y += (int) ((RANDOM.nextFloat() - 0.5f) * panic * 10.0f);
-        }
-
+        // O tremor já é aplicado na tela inteira, em render(); aqui não precisa de nada.
         drawPhoto(g, open, x, y, w, h, false, partialTick);
 
         String stamp = STAMP.format(new Date(open.takenAt));
