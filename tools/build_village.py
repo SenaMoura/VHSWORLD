@@ -24,6 +24,9 @@ WOOD = {
     "post":   ("minecraft:oak_log", {"axis": "y"}),
     "roof":   ("minecraft:oak_slab", {"type": "top", "waterlogged": "false"}),
     "heavy":  ("minecraft:cobblestone", None),
+    "stairs": "minecraft:oak_stairs",
+    "beam":   ("minecraft:oak_log", {"axis": "x"}),
+    "pitched": True,
 }
 SAND = {
     "floor":  ("minecraft:sandstone", None),
@@ -31,6 +34,11 @@ SAND = {
     "post":   ("minecraft:chiseled_sandstone", None),
     "roof":   ("minecraft:sandstone_slab", {"type": "top", "waterlogged": "false"}),
     "heavy":  ("minecraft:smooth_sandstone", None),
+    "stairs": "minecraft:sandstone_stairs",
+    "beam":   ("minecraft:cut_sandstone", None),
+    # O deserto NAO ganha telhado de duas aguas: a casa de arenito sempre foi de
+    # teto plano, e e isso que a diferencia da casa de madeira a distancia.
+    "pitched": False,
 }
 
 BIOMES = {
@@ -65,8 +73,61 @@ class Builder:
                 self.put(s, cx, y, cz, "post")
 
     def roof(self, s, x1, z1, x2, z2, y):
-        name, props = self.p["roof"]
-        s.fill(x1 - 1, y, z1 - 1, x2 + 1, y, z2 + 1, name, props)
+        """O telhado.
+
+        Duas aguas em ESCADA, com beiral de um bloco para fora — e a silhueta que
+        diz "vila antiga" de longe, mais do que qualquer parede. A versao anterior
+        era uma laje plana e por isso as casas pareciam caixas.
+
+        A cumeeira corre no eixo X. A cada nivel as duas aguas avancam uma fileira
+        uma na direcao da outra ate se encontrarem; o triangulo que sobra nas duas
+        pontas e fechado com a parede (a empena). O deserto pula tudo isso: la o
+        telhado plano e que e o certo.
+        """
+        if not self.p["pitched"]:
+            name, props = self.p["roof"]
+            s.fill(x1 - 1, y, z1 - 1, x2 + 1, y, z2 + 1, name, props)
+            return
+
+        stairs = self.p["stairs"]
+        wall_name, wall_props = self.p["wall"]
+        zn, zs, yy = z1 - 1, z2 + 1, y
+
+        while zn < zs:
+            # A escada aponta para FORA da cumeeira (conferido no telhado do
+            # taiga_medium_house_1 do vanilla: agua norte com facing=north). Ao
+            # contrario, o telhado nasce invertido, com o degrau virado para
+            # dentro — e so se percebe olhando a casa pronta.
+            for x in range(x1 - 1, x2 + 2):
+                s.set(x, yy, zn, stairs, {"facing": "north", "half": "bottom",
+                                          "shape": "straight", "waterlogged": "false"})
+                s.set(x, yy, zs, stairs, {"facing": "south", "half": "bottom",
+                                          "shape": "straight", "waterlogged": "false"})
+            # empena: o triangulo de parede entre as duas aguas, nas pontas
+            for z in range(zn + 1, zs):
+                s.set(x1 - 1, yy, z, wall_name, wall_props)
+                s.set(x2 + 1, yy, z, wall_name, wall_props)
+            zn += 1
+            zs -= 1
+            yy += 1
+
+        # A cumeeira. Se sobrou uma fileira, ela vira o espinhaco; se as aguas se
+        # cruzaram, o nivel de baixo ja fechou e nao ha o que tampar.
+        if zn == zs:
+            name, props = self.p["roof"]
+            for x in range(x1 - 1, x2 + 2):
+                s.set(x, yy, zn, name, props)
+
+    def rafters(self, s, x1, z1, x2, z2, y):
+        """As vigas: troncos deitados atravessando o vao, logo abaixo do telhado.
+
+        Sao o que se ve ao entrar numa casa da vila antiga — o teto nao e liso, e
+        um madeiramento. Custam tres blocos e mudam o interior inteiro.
+        """
+        name, props = self.p["beam"]
+        for x in range(x1 + 1, x2, 2):
+            for z in range(z1, z2 + 1):
+                s.set(x, y, z, name, props)
 
     def door(self, s, x, y, z, facing):
         common = {"facing": facing, "hinge": "left", "open": "false", "powered": "false"}
@@ -97,13 +158,14 @@ class Builder:
     # ------------------------------------------------------------ construcoes
 
     def house_small(self):
-        s = Structure(7, 6, 7)
+        s = Structure(7, 8, 7)
         self.shell(s, 1, 1, 5, 5, 2)
         self.door(s, 1, 1, 3, "east")
         self.pane(s, 5, 2, 3, True)
         self.pane(s, 3, 2, 1, False)
         self.pane(s, 3, 2, 5, False)
         self.roof(s, 1, 1, 5, 5, 3)
+        self.rafters(s, 1, 1, 5, 5, 3)
         self.bed(s, 2, 1, 2, "east", 1, 0)
         s.set(4, 2, 4, "minecraft:wall_torch", {"facing": "west"})
         s.set(4, 1, 4, "minecraft:crafting_table")
@@ -111,7 +173,7 @@ class Builder:
         return s
 
     def house_large(self):
-        s = Structure(9, 8, 9)
+        s = Structure(9, 10, 9)
         self.shell(s, 1, 1, 7, 7, 3)
         self.door(s, 1, 1, 4, "east")
         for z in (3, 5):
@@ -120,6 +182,7 @@ class Builder:
             self.pane(s, x, 2, 1, False)
             self.pane(s, x, 2, 7, False)
         self.roof(s, 1, 1, 7, 7, 4)
+        self.rafters(s, 1, 1, 7, 7, 4)
         self.bed(s, 2, 1, 2, "south", 0, 1)
         self.bed(s, 5, 1, 2, "south", 0, 1)
         s.set(6, 2, 6, "minecraft:wall_torch", {"facing": "west"})
@@ -129,7 +192,7 @@ class Builder:
 
     def smithy(self):
         """A ferraria: parede pesada, bau duplo e o poco de lava sem grade."""
-        s = Structure(9, 8, 9)
+        s = Structure(9, 10, 9)
         name, props = self.p["heavy"]
         s.fill(1, 0, 1, 7, 0, 7, name, props)
         for y in range(1, 4):
@@ -145,14 +208,83 @@ class Builder:
         self.pane(s, 7, 2, 3, True)
         self.pane(s, 7, 2, 5, True)
         self.roof(s, 1, 1, 7, 7, 4)
+        self.rafters(s, 1, 1, 7, 7, 4)
 
         s.set(5, 0, 5, "minecraft:lava", {"level": "0"})
         s.set(5, 1, 3, "minecraft:anvil", {"facing": "north"})
         s.set(3, 1, 5, "minecraft:furnace", {"facing": "south", "lit": "false"})
-        s.set(2, 1, 2, "minecraft:chest", {"facing": "south", "type": "left", "waterlogged": "false"})
-        s.set(3, 1, 2, "minecraft:chest", {"facing": "south", "type": "right", "waterlogged": "false"})
+        # O bau duplo do ferreiro com o loot do jogo. Antes ele nascia VAZIO, e o
+        # bau do ferreiro sempre foi o motivo de procurar uma vila.
+        for x, half in ((2, "left"), (3, "right")):
+            s.set(x, 1, 2, "minecraft:chest",
+                  {"facing": "south", "type": half, "waterlogged": "false"},
+                  [_c_str("id", "minecraft:chest"),
+                   _c_str("LootTable", "minecraft:chests/village/village_weaponsmith")])
         s.set(6, 2, 6, "minecraft:wall_torch", {"facing": "west"})
         self.connectors(s, 4, 4, 4)
+        return s
+
+    def farm(self):
+        """O rocado cercado: terra arada, o rego d'agua no meio e a plantacao.
+
+        Na vila antiga a lavoura era plana e cercada, colada nas casas — nada de
+        canteiro suspenso. Ela e o que faz a vila parecer habitada de longe.
+        """
+        s = Structure(9, 4, 9)
+        floor_name, floor_props = self.p["floor"]
+
+        for x in range(1, 8):
+            for z in range(1, 8):
+                border = x in (1, 7) or z in (1, 7)
+                if border:
+                    s.set(x, 0, z, "minecraft:dirt")
+                    s.set(x, 1, z, "minecraft:oak_fence",
+                          {"north": "false", "south": "false", "east": "false",
+                           "west": "false", "waterlogged": "false"})
+                elif z == 4:
+                    s.set(x, 0, z, "minecraft:water", {"level": "0"})   # o rego
+                else:
+                    s.set(x, 0, z, "minecraft:farmland", {"moisture": "7"})
+                    crop = "minecraft:wheat" if (x + z) % 3 else "minecraft:carrots"
+                    age = "7" if (x * z) % 2 else "3"
+                    s.set(x, 1, z, crop, {"age": age})
+
+        # portao no lugar de uma estaca da cerca, senao ninguem entra
+        s.set(4, 1, 1, "minecraft:oak_fence_gate",
+              {"facing": "north", "in_wall": "false", "open": "false", "powered": "false"})
+        s.set(4, 0, 1, floor_name, floor_props)
+        self.connectors(s, 4, 4, 2)
+        return s
+
+    def church(self):
+        """A torre da vila: pedra, escada de mao e uma janela em cada lado.
+
+        E o unico predio alto da vila antiga — serve de ponto de referencia para
+        quem volta de longe, e por isso vale mais que outra casa igual.
+        """
+        s = Structure(7, 14, 7)
+        name, props = self.p["heavy"]
+        s.fill(1, 0, 1, 5, 0, 5, name, props)
+        for y in range(1, 8):
+            for x in range(1, 6):
+                s.set(x, y, 1, name, props); s.set(x, y, 5, name, props)
+            for z in range(1, 6):
+                s.set(1, y, z, name, props); s.set(5, y, z, name, props)
+        for (cx, cz) in [(1, 1), (1, 5), (5, 1), (5, 5)]:
+            for y in range(1, 8):
+                self.put(s, cx, y, cz, "post")
+
+        s.fill(2, 1, 2, 4, 7, 4, "minecraft:air")
+        self.door(s, 1, 1, 3, "east")
+        for y in (3, 6):
+            self.pane(s, 5, y, 3, True)
+            self.pane(s, 3, y, 1, False)
+            self.pane(s, 3, y, 5, False)
+        for y in range(1, 7):
+            s.set(4, y, 4, "minecraft:ladder", {"facing": "west", "waterlogged": "false"})
+        s.set(2, 1, 2, "minecraft:wall_torch", {"facing": "east"})
+        self.roof(s, 1, 1, 5, 5, 8)
+        self.connectors(s, 3, 3, 3)
         return s
 
 
@@ -163,7 +295,7 @@ def main():
         for zombie in (False, True):
             b = Builder(biome, zombie)
             suffix = "_zombie" if zombie else ""
-            for kind in ("house_small", "house_large", "smithy"):
+            for kind in ("house_small", "house_large", "smithy", "farm", "church"):
                 s = getattr(b, kind)()
                 path = os.path.join(ROOT, "%s_%s%s.nbt" % (biome, kind, suffix))
                 s.save(path)

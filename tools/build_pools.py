@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Escreve os template_pool que trocam as casas do vanilla pelas antigas.
+"""Escreve os template_pool que trocam as pecas do vanilla pelas antigas.
 
-So o pool de CASAS e sobrescrito. Ruas, pracas, decoracao e espacamento
-continuam sendo do jogo — a vila muda de roupa, nao de comportamento.
+Sao sobrescritos o pool de CASAS e o de PRACA (`town_centers`, que vira o poco).
+Ruas, decoracao e espacamento continuam sendo do jogo — a vila muda de roupa,
+nao de comportamento.
 """
 import io, json, os
 
@@ -23,7 +24,8 @@ FALLBACKS = {
     ("snowy",   True):  "minecraft:village/snowy/terminators",
 }
 
-WEIGHTS = [("house_small", 4), ("house_large", 3), ("smithy", 1)]
+WEIGHTS = [("house_small", 4), ("house_large", 3), ("smithy", 1),
+           ("farm", 3), ("church", 1)]
 
 
 def pool(biome, zombie):
@@ -44,14 +46,54 @@ def pool(biome, zombie):
     return {"elements": elements, "fallback": FALLBACKS[(biome, zombie)]}
 
 
+# A praca fica num pool SO, com a variante zumbi dentro dele e peso baixinho —
+# e assim que o vanilla faz, e e o que decide se a vila nasce viva ou morta.
+# Cada bioma tem o seu processador de zumbi; o de neve nao tem nenhum (o vanilla
+# tambem deixa a lista vazia la).
+ZOMBIE_PROCESSOR = {
+    "plains":  "minecraft:zombie_plains",
+    "desert":  "minecraft:zombie_desert",
+    "savanna": "minecraft:zombie_savanna",
+    "taiga":   "minecraft:zombie_taiga",
+    "snowy":   {"processors": []},
+}
+
+
+def town_center(biome):
+    def element(zombie, processors, weight):
+        return {
+            "element": {
+                "element_type": "minecraft:legacy_single_pool_element",
+                "location": "recmod:village/old/%s_well%s" % (biome, "_zombie" if zombie else ""),
+                "processors": processors,
+                "projection": "rigid",
+            },
+            "weight": weight,
+        }
+
+    return {
+        "elements": [
+            element(False, "minecraft:mossify_20_percent", 98),
+            element(True, ZOMBIE_PROCESSOR[biome], 2),
+        ],
+        # lido do arquivo do vanilla: a praca nao tem para onde cair
+        "fallback": "minecraft:empty",
+    }
+
+
+def write(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    io.open(path, 'w', encoding='utf-8', newline='').write(
+        json.dumps(data, indent=2) + "\n")
+    print("escrito", os.path.relpath(path, ROOT))
+
+
 def main():
     for (biome, zombie), _ in FALLBACKS.items():
         parts = [ROOT, biome] + (["zombie"] if zombie else []) + ["houses.json"]
-        path = os.path.join(*parts)
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        io.open(path, 'w', encoding='utf-8', newline='').write(
-            json.dumps(pool(biome, zombie), indent=2) + "\n")
-        print("escrito", os.path.relpath(path, ROOT))
+        write(os.path.join(*parts), pool(biome, zombie))
+    for biome in ZOMBIE_PROCESSOR:
+        write(os.path.join(ROOT, biome, "town_centers.json"), town_center(biome))
 
 
 if __name__ == "__main__":
