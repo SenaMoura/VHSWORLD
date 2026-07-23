@@ -91,6 +91,11 @@ public final class RECConfig {
         public final ForgeConfigSpec.DoubleValue sanityRegenPerMinute;
         public final ForgeConfigSpec.DoubleValue sanityShakeSeconds;
         public final ForgeConfigSpec.DoubleValue sanityShakeStrength;
+        public final ForgeConfigSpec.DoubleValue sanityThreshold;
+        public final ForgeConfigSpec.BooleanValue sanityCorruptsTape;
+        public final ForgeConfigSpec.BooleanValue sanityDrainsBattery;
+        public final ForgeConfigSpec.BooleanValue sanityBlackouts;
+        public final ForgeConfigSpec.BooleanValue sanityPhantomSounds;
 
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
@@ -348,6 +353,35 @@ public final class RECConfig {
             sanityShakeStrength = b
                     .comment("Forca do tremor. 1.0 = padrao; acima de 2.0 fica dificil de olhar.")
                     .defineInRange("sanityShakeStrength", 1.0D, 0.0D, 3.0D);
+
+            b.comment("Abaixo do limiar a fita comeca a virar contra o jogador, e em zero",
+                      "ela esta de vez do outro lado. Nao existe morte por sanidade: o preco",
+                      "de ter olhado demais e a camera deixar de ser um lugar seguro.")
+             .push("sanidade_baixa");
+
+            sanityThreshold = b
+                    .comment("Fracao de sanidade em que a fita comeca a apodrecer. 0.4 = 40%.",
+                             "Acima disso nada acontece; de la ate zero o efeito cresce.")
+                    .defineInRange("sanityThreshold", 0.4D, 0.0D, 1.0D);
+
+            sanityCorruptsTape = b
+                    .comment("Chiado e tracking voltam sozinhos, mesmo desligados no config,",
+                             "e as scanlines pesam. A imagem some junto com o juizo.")
+                    .define("sanityCorruptsTape", true);
+
+            sanityDrainsBattery = b
+                    .comment("A bateria dura ate metade do normal quando a sanidade acaba.")
+                    .define("sanityDrainsBattery", true);
+
+            sanityBlackouts = b
+                    .comment("A camera apaga sozinha de vez em quando, sem a bateria ter",
+                             "acabado. Cai direto no apagao e no mini-game.")
+                    .define("sanityBlackouts", true);
+
+            sanityPhantomSounds = b
+                    .comment("Passos e gritos ao redor sem nada por perto. Nao ha entidade",
+                             "nenhuma: e a fita mentindo para voce.")
+                    .define("sanityPhantomSounds", true);
 
             b.pop();
 

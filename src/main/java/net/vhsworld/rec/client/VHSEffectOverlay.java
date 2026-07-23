@@ -2,6 +2,7 @@ package net.vhsworld.rec.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 
 import java.util.Random;
@@ -48,13 +49,20 @@ public final class VHSEffectOverlay {
         int bottom = height - barY;
         if (right <= left || bottom <= top) return;
 
-        if (RECConfig.CLIENT.scanlines.get()) {
-            drawScanlines(guiGraphics, left, right, top, bottom);
+        // Sanidade baixa liga o chiado e o tracking na marra, mesmo desligados no
+        // config. O jogador escolheu olhar; a fita e que nao pediu para ver.
+        float dread = SanityState.get().dread();
+        boolean corrupted = dread > 0.0f && RECConfig.CLIENT.sanityCorruptsTape.get();
+
+        if (RECConfig.CLIENT.scanlines.get() || corrupted) {
+            drawScanlines(guiGraphics, left, right, top, bottom, corrupted ? dread : 0.0f);
         }
-        if (RECConfig.CLIENT.staticNoise.get()) {
-            drawStatic(guiGraphics, left, right, top, bottom, wear);
+        if (RECConfig.CLIENT.staticNoise.get() || corrupted) {
+            double amount = RECConfig.CLIENT.staticAmount.get();
+            if (corrupted) amount = Math.max(amount, dread * 0.55D);
+            drawStatic(guiGraphics, left, right, top, bottom, wear, amount);
         }
-        if (RECConfig.CLIENT.trackingBar.get()) {
+        if (RECConfig.CLIENT.trackingBar.get() || corrupted) {
             drawTracking(guiGraphics, left, right, top, bottom, mc, partialTick, wear);
         }
     };
@@ -64,16 +72,23 @@ public final class VHSEffectOverlay {
      * degradeWithBattery estiver ligado. E o que faz o apagao parecer chegando.
      */
     private static float wearFactor() {
-        if (!RECConfig.CLIENT.degradeWithBattery.get()) return 1.0f;
-        if (CamcorderOverlay.isBatteryDead) return 3.0f;
+        // O medo conta sempre, mesmo com a degradacao por bateria desligada:
+        // sao duas causas diferentes para a mesma fita gasta.
+        float dread = SanityState.get().dread() * 1.5f;
+
+        if (!RECConfig.CLIENT.degradeWithBattery.get()) return 1.0f + dread;
+        if (CamcorderOverlay.isBatteryDead) return 3.0f + dread;
 
         float charge = Math.max(0.0f, Math.min(100.0f, CamcorderOverlay.batteryLevel)) / 100.0f;
-        return 1.0f + (1.0f - charge) * 2.0f;
+        return 1.0f + (1.0f - charge) * 2.0f + dread;
     }
 
     private static void drawScanlines(net.minecraft.client.gui.GuiGraphics g,
-                                      int left, int right, int top, int bottom) {
-        int alpha = (int) (RECConfig.CLIENT.scanlineOpacity.get() * 255.0D);
+                                      int left, int right, int top, int bottom, float dread) {
+        double opacity = RECConfig.CLIENT.scanlineOpacity.get();
+        if (dread > 0.0f) opacity = Math.max(opacity, 0.10D + dread * 0.30D);
+
+        int alpha = (int) (opacity * 255.0D);
         if (alpha <= 0) return;
 
         int color = (alpha << 24);            // preto com alfa: escurece a linha
@@ -85,8 +100,8 @@ public final class VHSEffectOverlay {
     }
 
     private static void drawStatic(net.minecraft.client.gui.GuiGraphics g,
-                                   int left, int right, int top, int bottom, float wear) {
-        double amount = RECConfig.CLIENT.staticAmount.get();
+                                   int left, int right, int top, int bottom,
+                                   float wear, double amount) {
         if (amount <= 0.0D) return;
 
         int span = right - left;

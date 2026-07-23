@@ -9,6 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.client.photo.PhotoAlbumScreen;
 import net.vhsworld.rec.client.sanity.HostileSightWatcher;
+import net.vhsworld.rec.client.sanity.SanityHaunting;
 import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
@@ -39,6 +40,7 @@ public class ClientTickHandler {
 
         FlashLight.tick(mc);
         SanityState.get().tick();
+        SanityHaunting.tick(mc);
         HostileSightWatcher.tick(mc);
 
         // --- ÁLBUM DE FOTOS (tecla C) ---
@@ -59,7 +61,15 @@ public class ClientTickHandler {
         if (!CamcorderOverlay.isBatteryDead
                 && RECConfig.CLIENT.batteryDrains.get()
                 && CameraState.isActive()) {
-            CamcorderOverlay.batteryLevel -= RECConfig.CLIENT.batteryDrainPerTick.get().floatValue();
+
+            // Sanidade no fim faz a bateria durar ate metade. Nao ha explicacao
+            // no jogo para isso, e essa é a graça.
+            float haste = RECConfig.CLIENT.sanityDrainsBattery.get()
+                    ? 1.0f + SanityState.get().dread()
+                    : 1.0f;
+
+            CamcorderOverlay.batteryLevel -=
+                    RECConfig.CLIENT.batteryDrainPerTick.get().floatValue() * haste;
             if (CamcorderOverlay.batteryLevel <= 0.0f) {
                 CamcorderOverlay.batteryLevel = 0.0f;
                 CamcorderOverlay.isBatteryDead = true;

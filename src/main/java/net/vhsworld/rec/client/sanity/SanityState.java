@@ -61,6 +61,23 @@ public final class SanityState {
     }
 
     /**
+     * O quanto a fita ja virou contra o jogador: 0.0 acima do limiar, 1.0 em sanidade zero.
+     *
+     * Uma medida so, usada por todo mundo (chiado, bateria, apagao, sons). Assim a
+     * degradacao chega junta e parece uma coisa acontecendo, nao quatro efeitos
+     * separados ligando em horas diferentes.
+     */
+    public float dread() {
+        double threshold = RECConfig.CLIENT.sanityThreshold.get();
+        if (threshold <= 0.0D) return 0.0f;
+
+        float f = fraction();
+        if (f >= threshold) return 0.0f;
+
+        return (float) ((threshold - f) / threshold);
+    }
+
+    /**
      * Amplitude do tremor agora, ja com a queda ao longo do tempo.
      *
      * Comeca forte e vai morrendo: um susto tem pico e rescaldo, nao um platô.
