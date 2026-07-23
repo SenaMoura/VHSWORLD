@@ -12,6 +12,7 @@ import net.vhsworld.rec.init.ModBlocks;
 import net.vhsworld.rec.init.ModItems;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.loot.ModLootModifiers;
+import net.vhsworld.rec.worldgen.ModChunkGenerators;
 import org.slf4j.Logger;
 
 @Mod(RECMod.MOD_ID)
@@ -34,6 +35,7 @@ public class RECMod {
         ModSounds.register(modEventBus);
 
         ModLootModifiers.register(modEventBus);
+        ModChunkGenerators.register(modEventBus);
 
         // Aqui vamos registar os Itens, Blocos e Sons no futuro!
         MinecraftForge.EVENT_BUS.register(this);

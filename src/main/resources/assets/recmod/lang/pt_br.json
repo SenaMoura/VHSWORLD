@@ -12,5 +12,6 @@
   "item.recmod.raw_aluminum": "Aluminio Bruto",
   "item.recmod.aluminum_ingot": "Lingote de Aluminio",
   "recmod.codex.aluminum.desc": "Leve, mole e sem brilho. Serve para uma coisa so: virar a carcaca de uma pilha. Quem encontra veio de aluminio numa caverna esta a poucos passos de nao precisar mais racionar bateria.",
-  "recmod.codex.aluminum.obtain": "Veios pequenos em qualquer caverna do overworld, entre a altura -32 e 60. Picareta de pedra ja quebra. Funde o bruto na fornalha para virar lingote."
+  "recmod.codex.aluminum.obtain": "Veios pequenos em qualquer caverna do overworld, entre a altura -32 e 60. Picareta de pedra ja quebra. Funde o bruto na fornalha para virar lingote.",
+  "generator.recmod.alpha": "VHSWORLD Alpha"
 }

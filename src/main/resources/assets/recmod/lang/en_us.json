@@ -12,5 +12,6 @@
   "item.recmod.raw_aluminum": "Raw Aluminum",
   "item.recmod.aluminum_ingot": "Aluminum Ingot",
   "recmod.codex.aluminum.desc": "Light, soft and dull. It is good for exactly one thing: becoming the shell of a battery. Whoever finds an aluminum vein in a cave is a few steps away from never rationing power again.",
-  "recmod.codex.aluminum.obtain": "Small veins in any overworld cave, between height -32 and 60. A stone pickaxe is enough. Smelt the raw ore into ingots."
+  "recmod.codex.aluminum.obtain": "Small veins in any overworld cave, between height -32 and 60. A stone pickaxe is enough. Smelt the raw ore into ingots.",
+  "generator.recmod.alpha": "VHSWORLD Alpha"
 }
