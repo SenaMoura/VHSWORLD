@@ -115,6 +115,21 @@ public final class SanityState {
         save();
     }
 
+    /**
+     * Devolve sanidade. Hoje so a pilha faz isso.
+     *
+     * E o unico caminho de volta, e ele passa por um recurso finito: trocar a pilha
+     * acalma tanto a camera quanto o jogador. Quem gastou tudo revelando fotos vai
+     * ter que sair procurando pilha no escuro — que e exatamente onde o jogo quer
+     * que ele esteja.
+     */
+    public void restore(float amount) {
+        if (!RECConfig.CLIENT.sanity.get() || amount <= 0.0f) return;
+
+        sanity = Math.min(MAX, sanity + amount);
+        save();
+    }
+
     public void tick() {
         if (shakeTicks > 0) shakeTicks--;
 

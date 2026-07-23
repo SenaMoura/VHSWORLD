@@ -1,5 +1,6 @@
 package net.vhsworld.rec.client;
 
+import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 
 // Só é carregada no lado do cliente (via DistExecutor) para mexer no HUD da filmadora.
@@ -12,6 +13,9 @@ public class ClientBatteryHandler {
 
     public static void recharge() {
         float amount = rechargeAmount();
+
+        // A pilha nao repoe só a câmera: repõe o jogador junto.
+        SanityState.get().restore(RECConfig.CLIENT.sanityPerBattery.get().floatValue());
 
         // Se a câmera estava desligada (apagão), religa
         if (CamcorderOverlay.isBatteryDead) {

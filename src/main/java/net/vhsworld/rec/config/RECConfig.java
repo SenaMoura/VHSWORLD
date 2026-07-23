@@ -89,6 +89,7 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue sanityShakeOnHostile;
         public final ForgeConfigSpec.DoubleValue sanityLossPerSighting;
         public final ForgeConfigSpec.DoubleValue sanityRegenPerMinute;
+        public final ForgeConfigSpec.DoubleValue sanityPerBattery;
         public final ForgeConfigSpec.DoubleValue sanityShakeSeconds;
         public final ForgeConfigSpec.DoubleValue sanityShakeStrength;
         public final ForgeConfigSpec.DoubleValue sanityThreshold;
@@ -342,9 +343,16 @@ public final class RECConfig {
                     .defineInRange("sanityLossPerSighting", 18.0D, 0.0D, 100.0D);
 
             sanityRegenPerMinute = b
-                    .comment("Quanto volta por minuto. 0.0 (padrao) = nao volta sozinha:",
-                             "o que voce viu, viu.")
+                    .comment("Quanto volta por minuto, so passando o tempo. 0.0 (padrao) =",
+                             "nao volta sozinha: o caminho de volta e a pilha, nao a espera.")
                     .defineInRange("sanityRegenPerMinute", 0.0D, 0.0D, 100.0D);
+
+            sanityPerBattery = b
+                    .comment("Quanto de sanidade (%) cada pilha usada devolve.",
+                             "12 contra 18 perdidos por avistamento: da para se recuperar,",
+                             "mas custa mais pilha do que o susto rendeu. E o unico caminho",
+                             "de volta, e ele passa por um recurso finito.")
+                    .defineInRange("sanityPerBattery", 12.0D, 0.0D, 100.0D);
 
             sanityShakeSeconds = b
                     .comment("Duracao do tremor da tela ao ver a criatura na foto.")
