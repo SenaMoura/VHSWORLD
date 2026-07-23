@@ -17,9 +17,10 @@ import java.util.Random;
 /**
  * O registro (tecla G): o que cada item faz, como se consegue e a receita animada.
  *
- * Ficha trancada nao mostra nada — nem o nome. O jogador ve uma silhueta e a
- * instrucao de fotografar. Entregar o texto de graca mataria a razao de existir do
- * flash como ferramenta de descoberta.
+ * A ficha tem duas camadas: nome, receita e "como conseguir" ficam abertos desde o
+ * comeco, porque sao informacao mecanica e serve ANTES de o jogador ter o item — e
+ * porque um item so-craftavel, trancado, nunca poderia ser descoberto. O flash abre
+ * a outra camada: o que a coisa e de verdade.
  */
 public class CodexScreen extends Screen {
 
@@ -96,36 +97,50 @@ public class CodexScreen extends Screen {
             g.fill(x - 1, slotY - 1, x + SLOT + 1, slotY + SLOT + 1, border);
             g.fill(x, slotY, x + SLOT, slotY + SLOT, 0xFF121216);
 
-            if (Codex.get().isUnlocked(entry.item)) {
-                g.renderItem(new ItemStack(entry.item), x + 1, slotY + 1);
-            } else {
-                String q = "?";
-                g.drawString(font, q, x + (SLOT - font.width(q)) / 2, slotY + 5, 0xFF666666, false);
+            // O item aparece sempre: o que se esconde e o que ele E, nao que ele existe.
+            g.renderItem(new ItemStack(entry.item), x + 1, slotY + 1);
+
+            if (!Codex.get().isUnlocked(entry.item)) {
+                g.fill(x, slotY, x + SLOT, slotY + SLOT, 0x99000000);
             }
         }
     }
 
+    /**
+     * A ficha em duas camadas.
+     *
+     * ABERTO SEMPRE: nome, como conseguir e a receita. Sao informacao mecanica, e
+     * informacao mecanica guardada atras do flash so chegaria depois de ja nao servir
+     * — pior, um item que so existisse por craft nunca poderia ser descoberto.
+     *
+     * TRANCADO ATE O FLASH: o que a coisa é. A lore, o que ela faz com voce.
+     * E o "learn MORE" da frase: o jogador nao fotografa para poder jogar, fotografa
+     * porque quer saber.
+     */
     private void renderEntry(GuiGraphics g, CodexEntry entry) {
         int x = 70;
         int y = 52;
+        int wrap = width - x - 30;
 
-        if (!Codex.get().isUnlocked(entry.item)) {
-            g.drawString(font, "FICHA TRANCADA", x, y, 0xFF888888, false);
-            drawWrapped(g, Component.translatable("recmod.tooltip.locked").getString(),
-                    x, y + 16, width - x - 30, 0xFF666666);
-            return;
-        }
+        boolean known = Codex.get().isUnlocked(entry.item);
 
         g.drawString(font, new ItemStack(entry.item).getHoverName().getString().toUpperCase(),
                 x, y, 0xFFCCCCCC, false);
 
         int cursor = y + 16;
-        cursor = drawWrapped(g, Component.translatable(entry.descKey()).getString(),
-                x, cursor, width - x - 30, 0xFFAAAAAA) + 10;
+
+        if (known) {
+            cursor = drawWrapped(g, Component.translatable(entry.descKey()).getString(),
+                    x, cursor, wrap, 0xFFAAAAAA) + 10;
+        } else {
+            g.drawString(font, "ANALISE PENDENTE", x, cursor, 0xFF886644, false);
+            cursor = drawWrapped(g, Component.translatable("recmod.tooltip.locked").getString(),
+                    x, cursor + 12, wrap, 0xFF666666) + 10;
+        }
 
         g.drawString(font, "COMO CONSEGUIR", x, cursor, 0xFF777777, false);
         cursor = drawWrapped(g, Component.translatable(entry.obtainKey()).getString(),
-                x, cursor + 12, width - x - 30, 0xFFAAAAAA) + 14;
+                x, cursor + 12, wrap, 0xFFAAAAAA) + 14;
 
         renderRecipe(g, entry, x, cursor);
     }
