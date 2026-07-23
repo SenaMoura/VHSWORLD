@@ -2,12 +2,26 @@ package net.vhsworld.rec.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.vhsworld.rec.item.ModSounds;
 
 public class VHSButton extends Button {
 
     public VHSButton(int x, int y, int width, int height, Component message, OnPress onPress) {
         super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
+    }
+
+    /**
+     * Troca o "plim" do vanilla pelo clique seco do mod.
+     *
+     * O mesmo som que abre o album e o registro dentro do jogo. Botao de menu e
+     * botao de camera passam a soar igual — e a mesma maquina.
+     */
+    @Override
+    public void playDownSound(SoundManager sounds) {
+        sounds.play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(
+                ModSounds.MENU_BUTTON.get(), 1.0f));
     }
 
     @Override
