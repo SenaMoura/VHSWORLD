@@ -24,18 +24,20 @@ public class CamcorderOverlay {
 
     // Os numeros abaixo vinham chumbados no codigo; agora saem do config (recmod-client.toml).
 
-    /**
-     * Altura de cada barra preta, em pixels.
-     *
-     * A imagem visivel fica com a proporcao pedida no config; o que sobra vira barra,
-     * metade em cima e metade embaixo. Numa tela que ja e mais larga que a proporcao
-     * (ultrawide), da 0 e nao desenha nada.
-     */
-    public static int letterboxBarHeight(int width, int height) {
-        double aspect = RECConfig.CLIENT.letterboxAspect.get();
-        int visible = (int) Math.round(width / aspect);
-        if (visible >= height) return 0;
-        return (height - visible) / 2;
+    /** Espessura da barra lateral, em pixels (0 se o modo nao usa laterais). */
+    public static int letterboxBarWidth(int width) {
+        if (!RECConfig.CLIENT.letterbox.get()) return 0;
+        RECConfig.LetterboxMode mode = RECConfig.CLIENT.letterboxMode.get();
+        if (mode == RECConfig.LetterboxMode.TOP_BOTTOM) return 0;
+        return (int) Math.round(width * RECConfig.CLIENT.letterboxThickness.get());
+    }
+
+    /** Espessura da barra de cima/baixo, em pixels (0 se o modo nao usa). */
+    public static int letterboxBarHeight(int height) {
+        if (!RECConfig.CLIENT.letterbox.get()) return 0;
+        RECConfig.LetterboxMode mode = RECConfig.CLIENT.letterboxMode.get();
+        if (mode == RECConfig.LetterboxMode.SIDES) return 0;
+        return (int) Math.round(height * RECConfig.CLIENT.letterboxThickness.get());
     }
 
     /** Quantos apertos de ESPACO religam a camera. */
@@ -73,14 +75,20 @@ public class CamcorderOverlay {
         boolean cameraOn = CameraState.isActive();
         if (!cameraOn && !isBatteryDead) return;
 
-        // 0. LETTERBOX — duas barras pretas, em cima e embaixo.
+        // 0. LETTERBOX — barras pretas recortando a imagem (laterais por padrão).
         //    Substituiu a moldura curvada (vignette.png), que escurecia a tela inteira
         //    e comia a visão periférica. Aqui a imagem fica limpa, só recortada.
-        if (cameraOn && RECConfig.CLIENT.letterbox.get()) {
-            int bar = letterboxBarHeight(width, height);
-            if (bar > 0) {
-                guiGraphics.fill(0, 0, width, bar, 0xFF000000);
-                guiGraphics.fill(0, height - bar, width, height, 0xFF000000);
+        if (cameraOn) {
+            int barX = letterboxBarWidth(width);
+            if (barX > 0) {
+                guiGraphics.fill(0, 0, barX, height, 0xFF000000);
+                guiGraphics.fill(width - barX, 0, width, height, 0xFF000000);
+            }
+
+            int barY = letterboxBarHeight(height);
+            if (barY > 0) {
+                guiGraphics.fill(0, 0, width, barY, 0xFF000000);
+                guiGraphics.fill(0, height - barY, width, height, 0xFF000000);
             }
         }
 

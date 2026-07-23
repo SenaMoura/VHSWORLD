@@ -17,6 +17,13 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class RECConfig {
 
+    /** Onde ficam as barras pretas que recortam a imagem. */
+    public enum LetterboxMode {
+        SIDES,
+        TOP_BOTTOM,
+        BOTH
+    }
+
     // ------------------------------------------------------------------ CLIENT
 
     public static final ForgeConfigSpec CLIENT_SPEC;
@@ -28,7 +35,8 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue effectsOnlyWhenHolding;
 
         public final ForgeConfigSpec.BooleanValue letterbox;
-        public final ForgeConfigSpec.DoubleValue letterboxAspect;
+        public final ForgeConfigSpec.EnumValue<LetterboxMode> letterboxMode;
+        public final ForgeConfigSpec.DoubleValue letterboxThickness;
 
         public final ForgeConfigSpec.BooleanValue fisheye;
         public final ForgeConfigSpec.DoubleValue fisheyeStrength;
@@ -80,15 +88,22 @@ public final class RECConfig {
                     .define("effectsOnlyWhenHolding", false);
 
             letterbox = b
-                    .comment("Barras pretas em cima e embaixo (cinema). Substituiu a antiga",
-                             "moldura curvada do visor, que comia a tela toda.")
+                    .comment("Barras pretas recortando a imagem. Substituiu a antiga moldura",
+                             "curvada do visor, que comia a tela toda.")
                     .define("letterbox", true);
 
-            letterboxAspect = b
-                    .comment("Proporcao da imagem entre as barras. 2.39 = cinemascope (barra fina),",
-                             "1.85 = cinema comum, 2.76 = barra bem grossa.",
-                             "Em monitor ultrawide a barra some sozinha: a tela ja e mais larga.")
-                    .defineInRange("letterboxAspect", 2.39D, 1.33D, 3.50D);
+            letterboxMode = b
+                    .comment("Onde ficam as barras:",
+                             "  SIDES       = laterais, esquerda e direita (padrao)",
+                             "  TOP_BOTTOM  = em cima e embaixo, estilo cinema",
+                             "  BOTH        = moldura fechada nos quatro lados")
+                    .defineEnum("letterboxMode", LetterboxMode.SIDES);
+
+            letterboxThickness = b
+                    .comment("Espessura da barra, como fracao da tela. 0.03 = fina (padrao),",
+                             "0.10 ja e uma tarja grossa. Nas laterais conta sobre a largura;",
+                             "em cima/embaixo, sobre a altura.")
+                    .defineInRange("letterboxThickness", 0.03D, 0.0D, 0.30D);
 
             fisheye = b
                     .comment("Distorcao de lente (aumento do FOV) enquanto a camera esta ativa.")

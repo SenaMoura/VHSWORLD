@@ -39,20 +39,23 @@ public final class VHSEffectOverlay {
 
         // A fita só suja a IMAGEM. As barras pretas do letterbox ficam limpas — elas são
         // o recorte da câmera, não parte do vídeo.
-        int bar = RECConfig.CLIENT.letterbox.get()
-                ? CamcorderOverlay.letterboxBarHeight(width, height) : 0;
-        int top = bar;
-        int bottom = height - bar;
-        if (bottom <= top) return;
+        int barX = CamcorderOverlay.letterboxBarWidth(width);
+        int barY = CamcorderOverlay.letterboxBarHeight(height);
+
+        int left = barX;
+        int right = width - barX;
+        int top = barY;
+        int bottom = height - barY;
+        if (right <= left || bottom <= top) return;
 
         if (RECConfig.CLIENT.scanlines.get()) {
-            drawScanlines(guiGraphics, width, top, bottom);
+            drawScanlines(guiGraphics, left, right, top, bottom);
         }
         if (RECConfig.CLIENT.staticNoise.get()) {
-            drawStatic(guiGraphics, width, top, bottom, wear);
+            drawStatic(guiGraphics, left, right, top, bottom, wear);
         }
         if (RECConfig.CLIENT.trackingBar.get()) {
-            drawTracking(guiGraphics, width, top, bottom, mc, partialTick, wear);
+            drawTracking(guiGraphics, left, right, top, bottom, mc, partialTick, wear);
         }
     };
 
@@ -69,7 +72,7 @@ public final class VHSEffectOverlay {
     }
 
     private static void drawScanlines(net.minecraft.client.gui.GuiGraphics g,
-                                      int width, int top, int bottom) {
+                                      int left, int right, int top, int bottom) {
         int alpha = (int) (RECConfig.CLIENT.scanlineOpacity.get() * 255.0D);
         if (alpha <= 0) return;
 
@@ -77,35 +80,37 @@ public final class VHSEffectOverlay {
         int spacing = RECConfig.CLIENT.scanlineSpacing.get();
 
         for (int y = top; y < bottom; y += spacing) {
-            g.fill(0, y, width, y + 1, color);
+            g.fill(left, y, right, y + 1, color);
         }
     }
 
     private static void drawStatic(net.minecraft.client.gui.GuiGraphics g,
-                                   int width, int top, int bottom, float wear) {
+                                   int left, int right, int top, int bottom, float wear) {
         double amount = RECConfig.CLIENT.staticAmount.get();
         if (amount <= 0.0D) return;
 
+        int span = right - left;
         int band = bottom - top;
 
         // Teto proposital: mesmo com wear alto o chiado nao vira custo de render.
         int specks = (int) Math.min(1200, amount * 700.0D * wear);
 
         for (int i = 0; i < specks; i++) {
-            int x = RANDOM.nextInt(width);
+            int x = left + RANDOM.nextInt(span);
             int y = top + RANDOM.nextInt(band);
             int w = 1 + RANDOM.nextInt(4);
             int a = 60 + RANDOM.nextInt(120);
-            g.fill(x, y, x + w, y + 1, (a << 24) | 0x00FFFFFF);
+            g.fill(x, y, Math.min(right, x + w), y + 1, (a << 24) | 0x00FFFFFF);
         }
     }
 
     private static void drawTracking(net.minecraft.client.gui.GuiGraphics g,
-                                     int width, int top, int bottom,
+                                     int left, int right, int top, int bottom,
                                      Minecraft mc, float partialTick, float wear) {
         int periodTicks = RECConfig.CLIENT.trackingPeriodSeconds.get() * 20;
         double time = (mc.level.getGameTime() + partialTick) % periodTicks;
 
+        int span = right - left;
         int band = bottom - top;
 
         // Faixa sobe de baixo para cima, saindo e entrando fora da imagem.
@@ -117,15 +122,15 @@ public final class VHSEffectOverlay {
         if (y1 <= y0) return;
 
         int bandAlpha = (int) Math.min(120, 34 * wear);
-        g.fill(0, y0, width, y1, (bandAlpha << 24) | 0x00FFFFFF);
+        g.fill(left, y0, right, y1, (bandAlpha << 24) | 0x00FFFFFF);
 
         // Linhas rasgadas dentro da faixa: o "rolo" da fita.
         int tears = 3 + (int) (wear * 2);
         for (int i = 0; i < tears; i++) {
             int y = y0 + RANDOM.nextInt(Math.max(1, y1 - y0));
-            int x = RANDOM.nextInt(Math.max(1, width / 2));
-            int w = width / 3 + RANDOM.nextInt(Math.max(1, width / 3));
-            g.fill(x, y, Math.min(width, x + w), y + 1, 0x99FFFFFF);
+            int x = left + RANDOM.nextInt(Math.max(1, span / 2));
+            int w = span / 3 + RANDOM.nextInt(Math.max(1, span / 3));
+            g.fill(x, y, Math.min(right, x + w), y + 1, 0x99FFFFFF);
         }
     }
 
