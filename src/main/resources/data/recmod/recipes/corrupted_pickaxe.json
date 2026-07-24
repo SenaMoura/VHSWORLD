@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " C ",
+    "CTC",
+    " C "
+  ],
+  "key": {
+    "C": { "item": "recmod:corrupted_stone" },
+    "T": { "item": "minecraft:diamond_pickaxe" }
+  },
+  "result": { "item": "recmod:corrupted_pickaxe", "count": 1 }
+}

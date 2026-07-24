@@ -12,6 +12,7 @@ import net.vhsworld.rec.client.photo.PhotoAlbumScreen;
 import net.vhsworld.rec.client.sanity.HostileSightWatcher;
 import net.vhsworld.rec.client.sanity.SanityHaunting;
 import net.vhsworld.rec.client.sanity.SanityState;
+import net.vhsworld.rec.client.RealityTearSense;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.RECMod;
@@ -49,6 +50,7 @@ public class ClientTickHandler {
         SanityState.get().tick();
         SanityHaunting.tick(mc);
         HostileSightWatcher.tick(mc);
+        RealityTearSense.tick(mc);
 
         // --- ÁLBUM DE FOTOS (tecla C) ---
         while (RECKeys.OPEN_ALBUM.consumeClick()) {

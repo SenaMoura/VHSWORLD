@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["III", "GCG", "AAA"],
+  "key": {
+    "I": { "item": "minecraft:iron_block" },
+    "G": { "item": "recmod:black_goo" },
+    "C": { "item": "recmod:corrupted_compass" },
+    "A": { "item": "recmod:aluminum_ingot" }
+  },
+  "result": { "item": "recmod:anchor", "count": 1 }
+}

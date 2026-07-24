@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["R", "S", "R"],
+  "key": {
+    "R": { "item": "recmod:reality_tear" },
+    "S": { "item": "recmod:iron_stick" }
+  },
+  "result": { "item": "recmod:fracture", "count": 1 }
+}

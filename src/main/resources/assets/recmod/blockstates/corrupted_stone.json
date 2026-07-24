@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "recmod:block/corrupted_stone"
+    }
+  }
+}

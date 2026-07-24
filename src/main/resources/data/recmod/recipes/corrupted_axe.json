@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " C ",
+    "CTC",
+    " C "
+  ],
+  "key": {
+    "C": { "item": "recmod:corrupted_stone" },
+    "T": { "item": "minecraft:diamond_axe" }
+  },
+  "result": { "item": "recmod:corrupted_axe", "count": 1 }
+}

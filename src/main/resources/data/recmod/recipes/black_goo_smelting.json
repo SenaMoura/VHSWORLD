@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": { "item": "recmod:corrupted_stone" },
+  "result": "recmod:black_goo",
+  "experience": 0.4,
+  "cookingtime": 200
+}

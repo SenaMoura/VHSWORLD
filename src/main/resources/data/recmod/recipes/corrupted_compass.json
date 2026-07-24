@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [" C ", "CXC", " C "],
+  "key": {
+    "C": { "item": "recmod:corrupted_stone" },
+    "X": { "item": "minecraft:compass" }
+  },
+  "result": { "item": "recmod:corrupted_compass", "count": 1 }
+}

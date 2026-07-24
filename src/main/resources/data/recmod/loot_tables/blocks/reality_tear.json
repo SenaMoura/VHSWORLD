@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "recmod:reality_tear",
+          "conditions": [
+            {
+              "condition": "minecraft:match_tool",
+              "predicate": { "items": ["recmod:corrupted_diamond_pickaxe"] }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

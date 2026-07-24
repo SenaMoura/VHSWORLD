@@ -71,3 +71,19 @@ VT323 (assets/recmod/font/vt323.ttf)
 Copyright 2011, The VT323 Project Authors (peter.hull@oikoi.com)
 Licenciada sob a SIL Open Font License 1.1.
 Texto completo da licenca em assets/recmod/font/OFL.txt
+
+
+--- Referencias de textura ---
+
+As texturas dos itens `hammer` e `pressed_iron` foram redesenhadas seguindo a
+SILHUETA de dois itens de mods licenciados sob a MIT. Os pixels sao nossos
+(gerados por tools/build_item_textures.py, na paleta do VHSWORLD); o que veio
+das referencias foi a forma.
+
+  Create — Creators-of-Create — Licenca MIT
+  https://github.com/Creators-of-Create/Create
+  Referencia da forma de: pressed_iron (a partir de create:iron_sheet)
+
+  Create Diesel Generators — george8188625 — Licenca MIT
+  https://github.com/george8188625/Create-Diesel-Generators
+  Referencia da forma de: hammer

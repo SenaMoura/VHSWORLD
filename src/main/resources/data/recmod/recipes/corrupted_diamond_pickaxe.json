@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "GEG",
+    "EPE",
+    "GEG"
+  ],
+  "key": {
+    "G": { "item": "recmod:black_goo" },
+    "E": { "item": "minecraft:emerald" },
+    "P": { "item": "minecraft:diamond_pickaxe" }
+  },
+  "result": { "item": "recmod:corrupted_diamond_pickaxe", "count": 1 }
+}

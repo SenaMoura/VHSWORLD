@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": { "particle": "recmod:item/reality_tear" }
+}

@@ -58,6 +58,10 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue showHud;
         public final ForgeConfigSpec.BooleanValue showRecBlink;
 
+        public final ForgeConfigSpec.BooleanValue vhsTooltip;
+        public final ForgeConfigSpec.BooleanValue tooltipTracking;
+        public final ForgeConfigSpec.BooleanValue tooltipHeader;
+
         // --- flash ---
         public final ForgeConfigSpec.BooleanValue screenFlash;
         public final ForgeConfigSpec.DoubleValue flashFadeSpeed;
@@ -215,6 +219,29 @@ public final class RECConfig {
             showRecBlink = b
                     .comment("Piscar do indicador REC vermelho.")
                     .define("showRecBlink", true);
+
+            b.pop();
+
+            b.comment("A caixinha que aparece quando o mouse para em cima de um item.",
+                      "Desligar aqui devolve o tooltip normal do jogo, sem perder nada de",
+                      "conteudo: so muda a moldura, nunca o texto.")
+             .push("tooltip");
+
+            vhsTooltip = b
+                    .comment("Veste o tooltip com a moldura do mod (caixa preta reta, cantos de",
+                             "enquadramento, scanlines e regua vermelha sob o nome).")
+                    .define("vhsTooltip", true);
+
+            tooltipTracking = b
+                    .comment("Linha de tracking descendo por dentro da caixa, como fita rodando.",
+                             "Desligue se distrair na hora de ler.")
+                    .define("tooltipTracking", true);
+
+            tooltipHeader = b
+                    .comment("Ficha no topo do tooltip: icone do item num encaixe, nome ao lado",
+                             "e a raridade embaixo. Desligado, o nome volta a ser so a primeira",
+                             "linha de texto, como no jogo normal.")
+                    .define("tooltipHeader", true);
 
             b.pop();
 

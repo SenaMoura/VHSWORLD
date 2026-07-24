@@ -13,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.client.codex.Codex;
+import net.vhsworld.rec.client.RealityTearSense;
 import net.vhsworld.rec.config.RECConfig;
 import org.slf4j.Logger;
 
@@ -70,6 +71,9 @@ public final class PhotoCapture {
             if (RECConfig.CLIENT.codex.get()) {
                 Codex.unlockFromFlash(mc);
             }
+
+            // O mesmo clarao que destranca a ficha revela o que nao tem forma.
+            RealityTearSense.onFlash(mc);
         } catch (Throwable t) {
             if (photo != null) photo.close();
         } finally {

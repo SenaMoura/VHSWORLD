@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " PI",
+    "PI "
+  ],
+  "key": {
+    "P": { "item": "recmod:pressed_iron" },
+    "I": { "item": "minecraft:iron_ingot" }
+  },
+  "result": {
+    "item": "recmod:sharp_scissors",
+    "count": 1
+  }
+}

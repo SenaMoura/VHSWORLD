@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["GSG", "SAS", "G G"],
+  "key": {
+    "G": { "item": "recmod:black_goo" },
+    "S": { "item": "recmod:iron_stick" },
+    "A": { "item": "recmod:aluminum_ingot" }
+  },
+  "result": { "item": "recmod:lure_clock", "count": 1 }
+}
