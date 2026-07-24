@@ -77,6 +77,22 @@ public class ModBlocks {
                             .noCollission()
                             .sound(SoundType.AMETHYST)));
 
+    /**
+     * O tripe.
+     *
+     * Um bloco leve que se planta no chao e filma por voce: chegar perto esconde o teu HUD
+     * e liga o monitor. Sem colisao (voce anda por cima dele sem tropecar) e sem ocultar a
+     * luz, porque e um armario de pernas finas, nao uma parede. Quebra rapido e na mao.
+     */
+    public static final RegistryObject<Block> TRIPOD = BLOCKS.register("tripod",
+            () -> new Block(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_GRAY)
+                            .strength(0.6F)
+                            .noOcclusion()
+                            .noCollission()
+                            .sound(SoundType.METAL)));
+
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
     }

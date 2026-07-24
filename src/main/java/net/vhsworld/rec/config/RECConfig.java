@@ -104,6 +104,24 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue sanityBlackouts;
         public final ForgeConfigSpec.BooleanValue sanityPhantomSounds;
 
+        // --- engenhocas de camera ---
+        public final ForgeConfigSpec.BooleanValue infraredLens;
+        public final ForgeConfigSpec.BooleanValue infraredTint;
+        public final ForgeConfigSpec.IntValue infraredRange;
+        public final ForgeConfigSpec.DoubleValue infraredDrainMultiplier;
+        public final ForgeConfigSpec.BooleanValue corruptedBattery;
+        public final ForgeConfigSpec.DoubleValue corruptedBatteryRecharge;
+        public final ForgeConfigSpec.DoubleValue corruptedBatterySanityCost;
+        public final ForgeConfigSpec.BooleanValue tapes;
+        public final ForgeConfigSpec.IntValue tapeSeconds;
+        public final ForgeConfigSpec.IntValue tapeFrameEveryTicks;
+        public final ForgeConfigSpec.IntValue tapeMaxReels;
+        public final ForgeConfigSpec.BooleanValue tripod;
+        public final ForgeConfigSpec.IntValue tripodRange;
+        public final ForgeConfigSpec.BooleanValue tripodHidesHud;
+        public final ForgeConfigSpec.BooleanValue tripodSeesHostiles;
+        public final ForgeConfigSpec.BooleanValue tripodBeep;
+
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
 
@@ -436,6 +454,88 @@ public final class RECConfig {
                     .comment("Passos e gritos ao redor sem nada por perto. Nao ha entidade",
                              "nenhuma: e a fita mentindo para voce.")
                     .define("sanityPhantomSounds", true);
+
+            b.pop();
+
+            b.comment("As engenhocas de camera: lente, pilha corrompida, fita/videocassete",
+                      "e tripe. Cada uma mexe em tela, som ou recurso, entao cada uma nasce",
+                      "com o seu botao aqui — a mesma regra que salvou o resto do mod.")
+             .push("engenhocas");
+
+            infraredLens = b
+                    .comment("Lente infravermelha: enquanto na mao, revela os Rasgos da Realidade",
+                             "no alcance sem precisar do flash. Nao cobra sanidade — so enxerga.")
+                    .define("infraredLens", true);
+
+            infraredTint = b
+                    .comment("Tinta verde de visao noturna na tela enquanto a lente esta na mao.")
+                    .define("infraredTint", true);
+
+            infraredRange = b
+                    .comment("Alcance da revelacao da lente, em blocos.")
+                    .defineInRange("infraredRange", 12, 1, 48);
+
+            infraredDrainMultiplier = b
+                    .comment("Quanto a lente acelera a descarga da bateria enquanto na mao.",
+                             "2.0 = o dobro do normal. O preco de enxergar o invisivel.")
+                    .defineInRange("infraredDrainMultiplier", 2.0D, 1.0D, 10.0D);
+
+            corruptedBattery = b
+                    .comment("Pilha corrompida: recarrega a camera de vez, mas come sanidade.")
+                    .define("corruptedBattery", true);
+
+            corruptedBatteryRecharge = b
+                    .comment("Quanto de carga (%) a pilha corrompida devolve. 100 = enche tudo.")
+                    .defineInRange("corruptedBatteryRecharge", 100.0D, 1.0D, 100.0D);
+
+            corruptedBatterySanityCost = b
+                    .comment("Quanto de sanidade (%) a pilha corrompida cobra por uso.",
+                             "15 contra os 12 que a pilha limpa devolve: da para usar na emergencia,",
+                             "mas quem vive dela afunda.")
+                    .defineInRange("corruptedBatterySanityCost", 15.0D, 0.0D, 100.0D);
+
+            tapes = b
+                    .comment("Fita virgem + videocassete: grava alguns segundos de imagem e so",
+                             "deixa rever depois, no videocassete. O terror e o atraso.")
+                    .define("tapes", true);
+
+            tapeSeconds = b
+                    .comment("Duracao da gravacao de uma fita, em segundos.")
+                    .defineInRange("tapeSeconds", 10, 1, 60);
+
+            tapeFrameEveryTicks = b
+                    .comment("Um quadro a cada tantos ticks (20 = 1s). 10 = dois quadros por",
+                             "segundo, cara de fita velha. Menor = mais quadros e mais disco.")
+                    .defineInRange("tapeFrameEveryTicks", 10, 2, 40);
+
+            tapeMaxReels = b
+                    .comment("Quantas fitas gravadas o videocassete guarda. Passou disto, a mais",
+                             "antiga e apagada do disco.")
+                    .defineInRange("tapeMaxReels", 12, 1, 64);
+
+            tripod = b
+                    .comment("Tripe: plantado no chao, filma por voce. Chegar perto esconde o teu",
+                             "HUD e liga o monitor; ele avisa quando algo se mexe no raio.")
+                    .define("tripod", true);
+
+            tripodRange = b
+                    .comment("Raio de vigilancia do tripe, em blocos. Vale tanto para ligar o",
+                             "monitor quanto para o que ele enxerga.")
+                    .defineInRange("tripodRange", 16, 2, 64);
+
+            tripodHidesHud = b
+                    .comment("Com um tripe por perto, o HUD normal da camera (REC/bateria) some:",
+                             "voce esta atras da camera agora, nao na frente.")
+                    .define("tripodHidesHud", true);
+
+            tripodSeesHostiles = b
+                    .comment("O tripe tambem marca MOTION para mobs hostis do jogo, nao so para",
+                             "Rasgos e criaturas do mod. Bom para testar antes de haver anomalia.")
+                    .define("tripodSeesHostiles", true);
+
+            tripodBeep = b
+                    .comment("O bipe do monitor quando o tripe ve movimento.")
+                    .define("tripodBeep", true);
 
             b.pop();
 

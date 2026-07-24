@@ -61,6 +61,18 @@ public final class Codex {
         register(new CodexEntry(ModItems.ALUMINUM_INGOT.get(), "aluminum", null,
                 CodexCategory.CAMERA));
 
+        // As engenhocas de camera.
+        register(new CodexEntry(ModItems.INFRARED_LENS.get(), "infrared_lens",
+                new ResourceLocation(RECMod.MOD_ID, "infrared_lens"), CodexCategory.CAMERA));
+        register(new CodexEntry(ModItems.CORRUPTED_BATTERY.get(), "corrupted_battery",
+                new ResourceLocation(RECMod.MOD_ID, "corrupted_battery"), CodexCategory.CAMERA));
+        register(new CodexEntry(ModItems.BLANK_TAPE.get(), "blank_tape",
+                new ResourceLocation(RECMod.MOD_ID, "blank_tape"), CodexCategory.CAMERA));
+        register(new CodexEntry(ModItems.VIDEOCASSETTE.get(), "videocassette",
+                new ResourceLocation(RECMod.MOD_ID, "videocassette"), CodexCategory.CAMERA));
+        register(new CodexEntry(ModItems.TRIPOD_ITEM.get(), "tripod",
+                new ResourceLocation(RECMod.MOD_ID, "tripod"), CodexCategory.CAMERA));
+
         // --- SURVIVE: a cadeia de materiais e os dispositivos de fuga/orientacao ---
         // O ferro prensado nao tem receita para animar porque nao sai de bancada
         // nenhuma — a ficha dele explica a bigorna por texto.

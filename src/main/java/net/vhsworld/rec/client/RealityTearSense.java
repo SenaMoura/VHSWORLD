@@ -42,6 +42,9 @@ public final class RealityTearSense {
     /** Quanto tempo o rasgo fica visivel depois do disparo, em ticks. */
     private static final int REVEAL_TICKS = 120;
 
+    /** Validade curta da revelacao pela lente: renovada a cada tick que ela esta na mao. */
+    private static final int LENS_REVEAL_TICKS = 12;
+
     /** Espera entre duas frases, para o aviso nao virar spam. */
     private static final long HINT_COOLDOWN = 400L;
 
@@ -116,6 +119,26 @@ public final class RealityTearSense {
 
         if (found) {
             SanityState.get().sighting(0.0F);
+        }
+    }
+
+    /**
+     * A lente infravermelha, todo tick: mantem revelados os rasgos no alcance enquanto
+     * ela estiver na mao. Ao contrario do flash, NAO cobra sanidade nem sacode a tela —
+     * a lente so ENXERGA o que ja estava ali; o susto continua sendo o do flash achando
+     * um rasgo do nada. A revelacao recebe uma validade curta (LENS_REVEAL_TICKS), entao
+     * apaga sozinha meio segundo depois de guardar a lente.
+     */
+    public static void keepRevealed(Minecraft mc, int range) {
+        if (mc.player == null || mc.level == null) return;
+
+        BlockPos center = mc.player.blockPosition();
+        for (BlockPos pos : BlockPos.betweenClosed(
+                center.offset(-range, -range, -range),
+                center.offset(range, range, range))) {
+
+            if (!mc.level.getBlockState(pos).is(ModBlocks.REALITY_TEAR.get())) continue;
+            revealed.put(pos.immutable(), LENS_REVEAL_TICKS);
         }
     }
 

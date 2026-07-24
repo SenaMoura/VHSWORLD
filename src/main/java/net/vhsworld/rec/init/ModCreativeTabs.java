@@ -14,6 +14,11 @@ public class ModCreativeTabs {
     public static void addToTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItems.BATTERY);
+            event.accept(ModItems.INFRARED_LENS);
+            event.accept(ModItems.CORRUPTED_BATTERY);
+            event.accept(ModItems.BLANK_TAPE);
+            event.accept(ModItems.VIDEOCASSETTE);
+            event.accept(ModItems.TRIPOD_ITEM);
             event.accept(ModItems.HAMMER);
             event.accept(ModItems.SHARP_SCISSORS);
             event.accept(ModItems.CORRUPTED_SWORD);

@@ -97,8 +97,11 @@ public class CamcorderOverlay {
         //    Agora corre por TICK, no ClientTickHandler: mesmo tempo para todo mundo.
 
         // 2. HUD NORMAL (Bateria Ligada)
+        // Com um tripe plantado por perto, o HUD do jogador some: voce esta atras da
+        // camera agora, olhando o monitor, nao na frente dela.
+        boolean hudHiddenByTripod = GadgetState.tripodActive && RECConfig.CLIENT.tripodHidesHud.get();
         if (!isBatteryDead) {
-          if (RECConfig.CLIENT.showHud.get()) {
+          if (RECConfig.CLIENT.showHud.get() && !hudHiddenByTripod) {
             long seconds = (gameTime / 20) % 60;
             long minutes = (gameTime / 1200) % 60;
             long hours = (gameTime / 7200);

@@ -17,6 +17,25 @@ public class ClientBatteryHandler {
         // A pilha nao repoe só a câmera: repõe o jogador junto.
         SanityState.get().restore(RECConfig.CLIENT.sanityPerBattery.get().floatValue());
 
+        apply(amount);
+    }
+
+    /**
+     * A pilha corrompida: enche a bateria (mais que a limpa) mas cobra do juizo, em vez
+     * de devolver. Mesmo caminho client-side da pilha comum — por isso nao precisou de
+     * rede nem de capability: quem ja mexia na sanidade daqui continua mexendo daqui.
+     */
+    public static void rechargeCorrupted() {
+        if (!RECConfig.CLIENT.corruptedBattery.get()) return;
+
+        float amount = RECConfig.CLIENT.corruptedBatteryRecharge.get().floatValue();
+
+        SanityState.get().drain(RECConfig.CLIENT.corruptedBatterySanityCost.get().floatValue());
+
+        apply(amount);
+    }
+
+    private static void apply(float amount) {
         // Se a câmera estava desligada (apagão), religa
         if (CamcorderOverlay.isBatteryDead) {
             CamcorderOverlay.isBatteryDead = false;

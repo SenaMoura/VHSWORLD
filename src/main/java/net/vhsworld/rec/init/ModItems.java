@@ -14,10 +14,13 @@ import net.minecraftforge.registries.RegistryObject;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.item.AnchorItem;
 import net.vhsworld.rec.item.BatteryItem;
+import net.vhsworld.rec.item.BlankTapeItem;
+import net.vhsworld.rec.item.CorruptedBatteryItem;
 import net.vhsworld.rec.item.CorruptedCompassItem;
 import net.vhsworld.rec.item.FractureItem;
 import net.vhsworld.rec.item.LureClockItem;
 import net.vhsworld.rec.item.ModTiers;
+import net.vhsworld.rec.item.VideocassetteItem;
 
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
@@ -43,6 +46,28 @@ public class ModItems {
     // Pilha: recarrega a bateria da camera ao usar (botão direito)
     public static final RegistryObject<Item> BATTERY = ITEMS.register("battery",
             () -> new BatteryItem(new Item.Properties().stacksTo(16)));
+
+    // --- Engenhocas de camera ---
+
+    /** Lente infravermelha: na mao, revela o invisivel e come o dobro de bateria. */
+    public static final RegistryObject<Item> INFRARED_LENS = ITEMS.register("infrared_lens",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+
+    /** Pilha corrompida: enche a bateria de vez, mas cobra sanidade. */
+    public static final RegistryObject<Item> CORRUPTED_BATTERY = ITEMS.register("corrupted_battery",
+            () -> new CorruptedBatteryItem(new Item.Properties().stacksTo(16)));
+
+    /** Fita virgem: usar comeca a gravar alguns segundos de imagem. */
+    public static final RegistryObject<Item> BLANK_TAPE = ITEMS.register("blank_tape",
+            () -> new BlankTapeItem(new Item.Properties().stacksTo(16)));
+
+    /** Videocassete: usar abre o cofre de fitas para rever as gravacoes. */
+    public static final RegistryObject<Item> VIDEOCASSETTE = ITEMS.register("videocassette",
+            () -> new VideocassetteItem(new Item.Properties().stacksTo(1)));
+
+    /** Tripe: bloco que se planta e filma por voce. */
+    public static final RegistryObject<Item> TRIPOD_ITEM = ITEMS.register("tripod",
+            () -> new BlockItem(ModBlocks.TRIPOD.get(), new Item.Properties()));
 
     // --- Pedra corrompida: a raiz da cadeia de itens ---
     public static final RegistryObject<Item> CORRUPTED_STONE_ITEM = ITEMS.register("corrupted_stone",

@@ -13,7 +13,9 @@ import net.vhsworld.rec.client.sanity.HostileSightWatcher;
 import net.vhsworld.rec.client.sanity.SanityHaunting;
 import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.client.RealityTearSense;
+import net.vhsworld.rec.client.tape.TapeRecorder;
 import net.vhsworld.rec.config.RECConfig;
+import net.vhsworld.rec.init.ModItems;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.RECMod;
 
@@ -26,6 +28,13 @@ public class ClientTickHandler {
     private static float soundVolume = 2.0f;
     private static boolean hasScreamed = false;
     private static boolean wasBatteryDead = false;
+
+    /** A lente infravermelha esta em uma das maos? */
+    private static boolean holdingInfrared(Minecraft mc) {
+        if (mc.player == null) return false;
+        return mc.player.getMainHandItem().is(ModItems.INFRARED_LENS.get())
+                || mc.player.getOffhandItem().is(ModItems.INFRARED_LENS.get());
+    }
 
     /** O clique seco de abrir album ou registro. Passa pelo horrorVolume como o resto. */
     private static void playMenuClick(Minecraft mc) {
@@ -51,6 +60,16 @@ public class ClientTickHandler {
         SanityHaunting.tick(mc);
         HostileSightWatcher.tick(mc);
         RealityTearSense.tick(mc);
+
+        // --- ENGENHOCAS que ligam por presenca (lente na mao, tripe por perto) ---
+        boolean infrared = RECConfig.CLIENT.infraredLens.get() && holdingInfrared(mc);
+        GadgetState.infraredActive = infrared;
+        if (infrared) {
+            RealityTearSense.keepRevealed(mc, RECConfig.CLIENT.infraredRange.get());
+        }
+
+        TripodMonitor.tick(mc);
+        TapeRecorder.tick(mc);
 
         // --- ÁLBUM DE FOTOS (tecla C) ---
         while (RECKeys.OPEN_ALBUM.consumeClick()) {
@@ -86,8 +105,14 @@ public class ClientTickHandler {
                     ? 1.0f + SanityState.get().dread()
                     : 1.0f;
 
+            // A lente infravermelha come o dobro (ou o que o config disser): o preco
+            // de enxergar o invisivel e a bateria indo embora mais rapido.
+            float lens = GadgetState.infraredActive
+                    ? RECConfig.CLIENT.infraredDrainMultiplier.get().floatValue()
+                    : 1.0f;
+
             CamcorderOverlay.batteryLevel -=
-                    RECConfig.CLIENT.batteryDrainPerTick.get().floatValue() * haste;
+                    RECConfig.CLIENT.batteryDrainPerTick.get().floatValue() * haste * lens;
             if (CamcorderOverlay.batteryLevel <= 0.0f) {
                 CamcorderOverlay.batteryLevel = 0.0f;
                 CamcorderOverlay.isBatteryDead = true;

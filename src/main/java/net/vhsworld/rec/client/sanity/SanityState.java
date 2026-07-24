@@ -133,6 +133,20 @@ public final class SanityState {
         save();
     }
 
+    /**
+     * Tira sanidade sem o estardalhaco de um avistamento (nao treme nem estala).
+     *
+     * E o preco silencioso da pilha corrompida: ela enche a bateria mas cobra do juizo,
+     * e a cobranca vem quieta, so a barra caindo. O susto continua sendo exclusividade
+     * da foto revelada.
+     */
+    public void drain(float amount) {
+        if (!RECConfig.CLIENT.sanity.get() || amount <= 0.0f) return;
+
+        sanity = Math.max(0.0f, sanity - amount);
+        save();
+    }
+
     public void tick() {
         if (shakeTicks > 0) shakeTicks--;
 
