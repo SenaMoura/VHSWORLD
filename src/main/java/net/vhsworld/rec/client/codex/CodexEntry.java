@@ -19,10 +19,14 @@ public class CodexEntry {
     /** Receita a mostrar na animacao, ou null se o item nao se craftar. */
     public final ResourceLocation recipe;
 
-    public CodexEntry(Item item, String key, ResourceLocation recipe) {
+    /** Em qual card o item aparece. */
+    public final CodexCategory category;
+
+    public CodexEntry(Item item, String key, ResourceLocation recipe, CodexCategory category) {
         this.item = item;
         this.key = key;
         this.recipe = recipe;
+        this.category = category;
     }
 
     public String descKey() {

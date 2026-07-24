@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.client.ClientWorldData;
 import net.vhsworld.rec.config.RECConfig;
 import org.slf4j.Logger;
 
@@ -40,7 +41,7 @@ public final class PhotoAlbum {
     private final List<Photo> photos = new ArrayList<>();
 
     private PhotoAlbum() {
-        this.folder = Minecraft.getInstance().gameDirectory.toPath().resolve("vhsworld_photos");
+        this.folder = ClientWorldData.worldDir().resolve("photos");
         this.index = folder.resolve("index.json");
         load();
     }
@@ -48,6 +49,18 @@ public final class PhotoAlbum {
     public static PhotoAlbum get() {
         if (instance == null) instance = new PhotoAlbum();
         return instance;
+    }
+
+    /**
+     * Trocou de mundo: solta as texturas carregadas na GPU e esquece o album; o proximo
+     * get() reabre lendo a pasta do mundo novo. Sem soltar as texturas elas vazariam a
+     * cada mundo aberto na mesma sessao.
+     */
+    public static void reset() {
+        if (instance != null) {
+            for (Photo photo : instance.photos) instance.releaseTexture(photo);
+            instance = null;
+        }
     }
 
     /** Da mais nova para a mais velha — o carretel mostra a ultima primeiro. */
