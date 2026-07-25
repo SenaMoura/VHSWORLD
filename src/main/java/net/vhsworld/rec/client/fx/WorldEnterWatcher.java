@@ -10,14 +10,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
 
 /**
- * Quem percebe que a tela de "loading terrain" acabou, e solta a mancha.
+ * O relogio da mancha, e quem manda ela comecar.
  *
- * Nao existe evento para "o mundo terminou de carregar". O que existe e a
- * {@link ReceivingLevelScreen} — a tela de terreno do proprio jogo. Entao a regra e
- * de borda: no tick em que ela ESTAVA aberta e deixou de estar, a mancha comeca.
+ * A mancha nasce assim que a tela de terreno do jogo APARECE — ela come o fundo de
+ * terra na frente do jogador, e nao depois. Dai para a frente o preto se sustenta
+ * ate o mundo estar pronto; quando a tela de terreno se fecha sozinha, a imagem por
+ * baixo ja e outra e a troca nao tem costura.
  *
- * Assim a transicao nao depende de temporizador nenhum: ela nasce exatamente quando
- * o jogo diz que acabou de carregar, seja em 1 segundo ou em 40.
+ * Enquanto a tela de terreno estiver de pe, este watcher SEGURA o preto. Sem isso a
+ * mancha se recolheria em meio segundo e o fundo de terra voltaria a aparecer no meio
+ * do carregamento.
  */
 @Mod.EventBusSubscriber(modid = RECMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class WorldEnterWatcher {
@@ -33,9 +35,16 @@ public final class WorldEnterWatcher {
         Minecraft mc = Minecraft.getInstance();
         boolean loading = mc.screen instanceof ReceivingLevelScreen;
 
-        if (wasLoading && !loading && mc.level != null) {
+        // Borda de subida: a tela de terreno acabou de abrir -> solta a mancha.
+        if (loading && !wasLoading) {
             InkTransition.consume();
         }
+
+        // Enquanto ela estiver de pe, o preto fica.
+        if (loading) {
+            InkTransition.hold();
+        }
+
         wasLoading = loading;
 
         InkTransition.tick();

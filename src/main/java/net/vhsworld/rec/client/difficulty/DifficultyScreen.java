@@ -12,9 +12,8 @@ import net.vhsworld.rec.client.VHSScreenHelper;
 import net.vhsworld.rec.client.fx.CardStyle;
 import net.vhsworld.rec.client.fx.InkTransition;
 import net.vhsworld.rec.client.fx.TentacleFx;
+import net.vhsworld.rec.client.fx.VHSScreenStatic;
 import net.vhsworld.rec.item.ModSounds;
-
-import java.util.Random;
 
 /**
  * A tela que abre quando o jogador entra no mundo pela primeira vez.
@@ -30,8 +29,6 @@ public class DifficultyScreen extends Screen {
     private static final int CARD_W = 150;
     private static final int CARD_H = 118;
     private static final int CARD_GAP = 26;
-
-    private static final Random RANDOM = new Random();
 
     private final float[] hover = new float[GameDifficulty.values().length];
     private final long openedAt = System.currentTimeMillis();
@@ -123,33 +120,9 @@ public class DifficultyScreen extends Screen {
         g.pose().popPose();
     }
 
-    /** Fundo: preto sujo, scanlines e MUITO chiado — mais denso que o do menu. */
+    /** Fundo: preto sujo, scanlines, chiado pesado e tracking — tudo do VHSScreenStatic. */
     private void renderStatic(GuiGraphics g) {
-        int tone = 4 + RANDOM.nextInt(5);
-        g.fill(0, 0, width, height, (0xFF << 24) | (tone << 16) | (tone << 8) | (tone + 6));
-
-        for (int y = 0; y < height; y += 2) {
-            g.fill(0, y, width, y + 1, 0x77000000);
-        }
-
-        int grains = Math.max(700, (width * height) / 260);
-        for (int i = 0; i < grains; i++) {
-            int rx = RANDOM.nextInt(width);
-            int ry = RANDOM.nextInt(height);
-            int v = 90 + RANDOM.nextInt(166);
-            int a = 60 + RANDOM.nextInt(120);
-            int w = RANDOM.nextInt(10) == 0 ? 2 + RANDOM.nextInt(3) : 1;
-            g.fill(rx, ry, rx + w, ry + 1, (a << 24) | (v << 16) | (v << 8) | v);
-        }
-
-        // Barras de tracking: faixas claras que descem, o defeito classico da fita.
-        float t = (System.currentTimeMillis() - openedAt) / 1000.0f;
-        for (int b = 0; b < 2; b++) {
-            int by = (int) (((t * (38 + b * 27)) + b * height / 2f) % (height + 40)) - 20;
-            int bh = 8 + b * 5;
-            g.fill(0, by, width, by + bh, 0x14FFFFFF);
-            g.fill(0, by + bh, width, by + bh + 1, 0x33FFFFFF);
-        }
+        VHSScreenStatic.full(g, width, height, (System.currentTimeMillis() - openedAt) / 1000.0f);
     }
 
     private void renderCard(GuiGraphics g, GameDifficulty d, int x, int baseY, float lift) {

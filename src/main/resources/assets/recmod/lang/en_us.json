@@ -156,5 +156,6 @@
   "recmod.difficulty.normal.tag": "",
   "recmod.difficulty.hard": "HARD",
   "recmod.difficulty.hard.desc": "Looking costs more, the battery dies sooner, and the tape turns on you while the meter is still half full.",
-  "recmod.difficulty.hard.tag": "RECOMMENDED FOR YOUTUBERS"
+  "recmod.difficulty.hard.tag": "RECOMMENDED FOR YOUTUBERS",
+  "recmod.loading.tape": "TAPE RUNNING"
 }

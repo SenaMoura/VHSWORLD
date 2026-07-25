@@ -2,6 +2,7 @@ package net.vhsworld.rec.client.fx;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.vhsworld.rec.config.RECConfig;
 
@@ -113,7 +114,22 @@ public final class InkTransition {
 
     // ------------------------------------------------------------------ desenho
 
-    public static final IGuiOverlay INK = (gui, g, partialTick, width, height) -> render(g, width, height, partialTick);
+    /**
+     * A camada do HUD.
+     *
+     * Fica calada enquanto a tela de terreno estiver de pe: la quem desenha a mancha
+     * e o {@link LoadingScreenInk}, POR CIMA da tela. Se os dois desenhassem, o grao
+     * da borda sairia dobrado.
+     */
+    public static final IGuiOverlay INK = (gui, g, partialTick, width, height) -> {
+        if (Minecraft.getInstance().screen instanceof ReceivingLevelScreen) return;
+        render(g, width, height, partialTick);
+    };
+
+    /** Desenha a mancha por cima de uma tela (usado na tela de carregamento). */
+    public static void renderOver(GuiGraphics g, int width, int height, float partialTick) {
+        render(g, width, height, partialTick);
+    }
 
     private static void render(GuiGraphics g, int width, int height, float partialTick) {
         if (phase == Phase.IDLE) return;
