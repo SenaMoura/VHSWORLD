@@ -45,9 +45,17 @@ public final class ClientWorldData {
     private static String worldKey(Minecraft mc) {
         IntegratedServer single = mc.getSingleplayerServer();
         if (single != null) {
-            Path save = single.getWorldPath(LevelResource.ROOT);
+            // 🐛 O .normalize() e obrigatorio: LevelResource.ROOT tem id ".", entao
+            // getWorldPath(ROOT) devolve "<save>/." e getFileName() disso da "." —
+            // que o sanitize virava "_". Resultado: TODO mundo singleplayer caia na
+            // mesma pasta "sp-_", e codex, fotos e dificuldade eram compartilhados
+            // entre saves. Era exatamente o bug que esta classe existe para evitar.
+            // normalize() come o "." e devolve a pasta do save de verdade.
+            Path save = single.getWorldPath(LevelResource.ROOT).normalize();
             Path name = save.getFileName();
-            return "sp-" + sanitize(name != null ? name.toString() : "world");
+            String folder = name == null ? "" : name.toString();
+            if (folder.isEmpty() || folder.equals(".")) folder = "world";
+            return "sp-" + sanitize(folder);
         }
 
         ServerData server = mc.getCurrentServer();
