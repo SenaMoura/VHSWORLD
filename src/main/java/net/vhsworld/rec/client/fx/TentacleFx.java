@@ -16,10 +16,19 @@ public final class TentacleFx {
 
     private TentacleFx() {}
 
-    /** Roxo escuro da corrupcao (com alfa) — o corpo do tentaculo. */
-    public static final int BODY = 0xCC1B0F26;
-    /** Um tom de brasa esverdeada para a ponta. */
-    public static final int TIP = 0x99356B4B;
+    // A corrupcao nao tem cor propria: ela TIRA a cor. Por isso o tentaculo sai do
+    // preto na base e vai clareando para um cinza de cinza na ponta — o mesmo
+    // caminho de uma fita que perdeu o sinal. (Antes era roxo com brasa verde, o
+    // que dava um ar de magia; aqui nao ha magia, ha imagem estragada.)
+
+    /** Base: preto sujo, quase o fundo. */
+    public static final int BODY = 0xE6070708;
+
+    /** Meio do caminho: cinza-chumbo. */
+    public static final int MID = 0xD22A2A2E;
+
+    /** Ponta: cinza de cinza, o unico ponto que ainda reflete luz. */
+    public static final int TIP = 0xB2757580;
 
     /**
      * Desenha um tentaculo.
@@ -51,11 +60,28 @@ public final class TentacleFx {
             double y = baseY + dirY * along + perpY * wave;
 
             double radius = girth * (1.0 - t) * 0.5 + 0.7;   // afina ate a ponta
-            disc(g, x, y, radius, BODY);
 
-            // Ultimo terco recebe o brilho de brasa por cima, mais fino.
-            if (t > 0.66) disc(g, x, y, radius * 0.5, TIP);
+            // Preto na base -> chumbo -> cinza na ponta, sem degrau visivel.
+            disc(g, x, y, radius, t < 0.5 ? blend(BODY, MID, (float) (t * 2.0)) : MID);
+
+            // O ultimo terco recebe o cinza claro por cima, mais fino: e o brilho
+            // seco da ponta, nao uma brasa.
+            if (t > 0.66) disc(g, x, y, radius * 0.55, TIP);
         }
+    }
+
+    /** Mistura duas cores ARGB. */
+    public static int blend(int from, int to, float t) {
+        t = Math.max(0.0f, Math.min(1.0f, t));
+        int a = ch(from, 24, to, t), r = ch(from, 16, to, t);
+        int g = ch(from, 8, to, t), b = ch(from, 0, to, t);
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    private static int ch(int from, int shift, int to, float t) {
+        int a = (from >> shift) & 0xFF;
+        int b = (to >> shift) & 0xFF;
+        return Math.round(a + (b - a) * t);
     }
 
     /** Disco cheio de raio r centrado em (cx,cy), montado por linhas de fill. */

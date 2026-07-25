@@ -136,6 +136,10 @@ public final class RECConfig {
         public final ForgeConfigSpec.DoubleValue hardHauntingMultiplier;
         public final ForgeConfigSpec.IntValue hardThresholdBonus;
 
+        // --- transicao ---
+        public final ForgeConfigSpec.BooleanValue inkTransition;
+        public final ForgeConfigSpec.DoubleValue inkSeconds;
+
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
 
@@ -614,6 +618,22 @@ public final class RECConfig {
                              "limiar e onde a fita comeca a apodrecer — subir faz a degradacao",
                              "comecar antes, com o medidor ainda cheio. NAO tira sanidade.")
                     .defineInRange("hardThresholdBonus", 15, 0, 60);
+
+            b.pop();
+
+            b.comment("A mancha preta que come a tela quando o terreno termina de carregar.",
+                      "E a transicao de entrada: sob o preto a escolha de dificuldade abre,",
+                      "ou a mancha se recolhe e o mundo ja esta ali.")
+             .push("transicao");
+
+            inkTransition = b
+                    .comment("Liga a mancha. Desligada, o mundo entra seco, como no vanilla.")
+                    .define("inkTransition", true);
+
+            inkSeconds = b
+                    .comment("Quanto tempo a mancha leva para comer a tela (e, depois, para se",
+                             "recolher). Ela tem que ser RAPIDA: acima de ~1s vira espera.")
+                    .defineInRange("inkSeconds", 0.60D, 0.15D, 3.0D);
 
             b.pop();
 

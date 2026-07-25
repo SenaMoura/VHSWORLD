@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.vhsworld.rec.client.VHSButton;
+import net.vhsworld.rec.client.fx.CardStyle;
 import net.vhsworld.rec.client.fx.TentacleFx;
 
 import java.util.List;
@@ -167,19 +168,13 @@ public class CodexScreen extends Screen {
         TentacleFx.cluster(g, x + CARD_W + 2, y + CARD_H * 0.65, Math.atan2(0, 1), 2, 1.2, 24 + hover * 10, 6, t + 30, wig);
         TentacleFx.cluster(g, x + CARD_W / 2.0, y + CARD_H + 2, Math.atan2(1, 0), 2, 1.4, 26 + hover * 10, 6, t + 45, wig);
 
-        // Corpo do card + brilho de contorno no hover.
-        int glow = 0x22000000 | (cat.accent & 0x00FFFFFF);
-        if (hover > 0.02f) {
-            int a = (int) (hover * 90) << 24;
-            g.fill(x - 3, y - 3, x + CARD_W + 3, y + CARD_H + 3, a | (cat.accent & 0x00FFFFFF));
-        }
-        g.fill(x - 1, y - 1, x + CARD_W + 1, y + CARD_H + 1, cat.accent);
-        g.fill(x, y, x + CARD_W, y + CARD_H, 0xFF101016);
+        // Corpo do card: preto com moldura branca, igual em toda tela do mod.
+        CardStyle.frame(g, x, y, CARD_W, CARD_H, hover);
 
         // Titulo da categoria.
         String title = Component.translatable(cat.titleKey).getString();
         int tw = font.width(title);
-        g.drawString(font, title, x + (CARD_W - tw) / 2, y + 12, cat.accent, false);
+        g.drawString(font, title, x + (CARD_W - tw) / 2, y + 12, CardStyle.TITLE, false);
 
         // Capa: o primeiro item da categoria, ampliado ao centro.
         List<CodexEntry> entries = Codex.entries(cat);
@@ -210,7 +205,7 @@ public class CodexScreen extends Screen {
         int known = known(entries);
         String count = Component.translatable("recmod.codex.count", known, entries.size()).getString();
         int cw = font.width(count);
-        g.drawString(font, count, x + (CARD_W - cw) / 2, y + CARD_H - 16, 0xFF888888, false);
+        g.drawString(font, count, x + (CARD_W - cw) / 2, y + CARD_H - 16, CardStyle.TEXT_DIM, false);
 
         // Varredura descendo, so no card sob o mouse.
         if (hover > 0.02f) {

@@ -9,6 +9,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.vhsworld.rec.client.VHSScreenHelper;
+import net.vhsworld.rec.client.fx.CardStyle;
+import net.vhsworld.rec.client.fx.InkTransition;
 import net.vhsworld.rec.client.fx.TentacleFx;
 import net.vhsworld.rec.item.ModSounds;
 
@@ -159,35 +161,32 @@ public class DifficultyScreen extends Screen {
         TentacleFx.cluster(g, x - 2, y + CARD_H * 0.5, Math.atan2(0, -1), 2, 1.2, 22 + lift * 10, 6, t + 15, wig);
         TentacleFx.cluster(g, x + CARD_W + 2, y + CARD_H * 0.5, Math.atan2(0, 1), 2, 1.2, 22 + lift * 10, 6, t + 30, wig);
 
-        if (lift > 0.02f) {
-            int a = (int) (lift * 90) << 24;
-            g.fill(x - 3, y - 3, x + CARD_W + 3, y + CARD_H + 3, a | (d.accent & 0x00FFFFFF));
-        }
-        g.fill(x - 1, y - 1, x + CARD_W + 1, y + CARD_H + 1, d.accent);
-        g.fill(x, y, x + CARD_W, y + CARD_H, 0xFF0B0B10);
+        CardStyle.frame(g, x, y, CARD_W, CARD_H, lift);
 
         String name = Component.translatable(d.key).getString();
         g.pose().pushPose();
         g.pose().translate(x + CARD_W / 2.0, y + 14, 0);
         g.pose().scale(1.5f, 1.5f, 1f);
-        g.drawString(font, name, -font.width(name) / 2, 0, d.accent, false);
+        g.drawString(font, name, -font.width(name) / 2, 0, CardStyle.TITLE, false);
         g.pose().popPose();
 
         // Descricao, quebrada na largura do card.
         int ty = y + 40;
         for (FormattedCharSequence line : font.split(Component.translatable(d.key + ".desc"), CARD_W - 20)) {
-            g.drawString(font, line, x + 10, ty, 0xFF9A9AA2, false);
+            g.drawString(font, line, x + 10, ty, CardStyle.TEXT, false);
             ty += 10;
         }
 
-        // A etiqueta do dificil: e o recado que o Pedro pediu, nao um enfeite.
+        // A etiqueta do dificil: e o recado, nao um enfeite. Ela e a UNICA coisa
+        // invertida da tela (fundo branco, letra preta), justamente para saltar
+        // sem precisar de cor.
         String tag = Component.translatable(d.key + ".tag").getString();
         if (!tag.isEmpty()) {
             int tagW = font.width(tag) + 8;
             int tagX = x + (CARD_W - tagW) / 2;
             int tagY = y + CARD_H - 20;
-            g.fill(tagX, tagY, tagX + tagW, tagY + 12, 0x66000000 | (d.accent & 0x00FFFFFF));
-            g.drawString(font, tag, tagX + 4, tagY + 2, 0xFF101010, false);
+            g.fill(tagX, tagY, tagX + tagW, tagY + 12, CardStyle.border(lift));
+            g.drawString(font, tag, tagX + 4, tagY + 2, 0xFF060607, false);
         }
 
         if (lift > 0.02f) {
@@ -219,5 +218,8 @@ public class DifficultyScreen extends Screen {
         Minecraft mc = Minecraft.getInstance();
         mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSounds.MENU_BUTTON.get(), 1.0f));
         mc.setScreen(null);
+
+        // A mesma mancha que trouxe a tela agora se recolhe e entrega o mundo.
+        InkTransition.open();
     }
 }
