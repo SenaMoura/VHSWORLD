@@ -44,6 +44,9 @@ public class ModCreativeTabs {
             event.accept(ModItems.FRACTURE_LEGGINGS);
             event.accept(ModItems.FRACTURE_BOOTS);
         }
+        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
+            event.accept(ModItems.STONEMAN_SPAWN_EGG);
+        }
         if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(ModItems.ALUMINUM_ORE_ITEM);
             event.accept(ModItems.DEEPSLATE_ALUMINUM_ORE_ITEM);

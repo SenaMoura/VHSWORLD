@@ -662,6 +662,9 @@ public final class RECConfig {
         public final ForgeConfigSpec.IntValue scatterMaxRadius;
         public final ForgeConfigSpec.IntValue scatterMaxNearby;
 
+        // --- criaturas ---
+        public final ForgeConfigSpec.DoubleValue stonemanWatchRange;
+
         Common(ForgeConfigSpec.Builder b) {
             b.comment("Pilhas espalhadas pelo chao perto dos jogadores, para achar explorando.")
              .push("pilhas");
@@ -690,6 +693,18 @@ public final class RECConfig {
             scatterMaxNearby = b
                     .comment("Nao gera mais pilhas se ja existirem tantas soltas na area.")
                     .defineInRange("scatterMaxNearby", 3, 1, 64);
+
+            b.pop();
+
+            b.comment("As criaturas do mod. Isto e COMMON (vale no servidor): entidade nunca",
+                      "pode ler config de CLIENT, senao derruba servidor dedicado.")
+             .push("criaturas");
+
+            stonemanWatchRange = b
+                    .comment("Homem de Pedra: de quantos blocos o olhar de um jogador ainda o",
+                             "congela. Sem teto, alguem do outro lado do mapa apontado por acaso",
+                             "na direcao dele o prenderia para sempre. Parede corta o olhar.")
+                    .defineInRange("stonemanWatchRange", 24.0D, 4.0D, 128.0D);
 
             b.pop();
         }

@@ -107,5 +107,7 @@
   "recmod.difficulty.hard": "DIFICIL",
   "recmod.difficulty.hard.desc": "Olhar custa mais, a pilha morre antes, e a fita vira contra voce com o medidor ainda pela metade.",
   "recmod.difficulty.hard.tag": "RECOMENDADA PARA YOUTUBERS",
-  "recmod.loading.tape": "FITA CORRENDO"
+  "recmod.loading.tape": "FITA CORRENDO",
+  "entity.recmod.stoneman": "Homem de Pedra",
+  "item.recmod.stoneman_spawn_egg": "Ovo de Homem de Pedra"
 }

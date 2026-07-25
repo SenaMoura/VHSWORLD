@@ -157,5 +157,7 @@
   "recmod.difficulty.hard": "HARD",
   "recmod.difficulty.hard.desc": "Looking costs more, the battery dies sooner, and the tape turns on you while the meter is still half full.",
   "recmod.difficulty.hard.tag": "RECOMMENDED FOR YOUTUBERS",
-  "recmod.loading.tape": "TAPE RUNNING"
+  "recmod.loading.tape": "TAPE RUNNING",
+  "entity.recmod.stoneman": "Stoneman",
+  "item.recmod.stoneman_spawn_egg": "Stoneman Spawn Egg"
 }

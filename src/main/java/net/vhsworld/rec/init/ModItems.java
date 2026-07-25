@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -264,6 +265,17 @@ public class ModItems {
 
     public static final RegistryObject<Item> FRACTURE_BOOTS = ITEMS.register("fracture_boots",
             () -> new FractureArmorItem(ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    // ===== CRIATURAS =====
+
+    /**
+     * Ovo do Homem de Pedra.
+     *
+     * ForgeSpawnEggItem, e nao SpawnEggItem: o vanilla resolve o EntityType na hora da
+     * construcao, e o nosso ainda nao existe quando o item e criado.
+     */
+    public static final RegistryObject<Item> STONEMAN_SPAWN_EGG = ITEMS.register("stoneman_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntities.STONEMAN, 0x7A7A7A, 0x1A1A1A, new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

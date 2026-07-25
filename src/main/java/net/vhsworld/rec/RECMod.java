@@ -9,6 +9,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.init.ModBlocks;
+import net.vhsworld.rec.init.ModEntities;
 import net.vhsworld.rec.init.ModItems;
 import net.vhsworld.rec.init.ModMenus;
 import net.vhsworld.rec.init.ModRecipes;
@@ -33,6 +34,7 @@ public class RECMod {
         //Registra os itens no clico de vida do mod
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
+        ModEntities.register(modEventBus);
 
         ModSounds.register(modEventBus);
 
