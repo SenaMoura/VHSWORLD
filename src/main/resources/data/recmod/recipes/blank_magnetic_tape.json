@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "recmod:magnetized_copper_tape" },
+    { "item": "minecraft:paper" }
+  ],
+  "result": { "item": "recmod:blank_magnetic_tape", "count": 1 }
+}

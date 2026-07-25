@@ -10,6 +10,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.init.ModBlocks;
 import net.vhsworld.rec.init.ModItems;
+import net.vhsworld.rec.init.ModMenus;
+import net.vhsworld.rec.init.ModRecipes;
 import net.vhsworld.rec.item.ModSounds;
 import net.vhsworld.rec.loot.ModLootModifiers;
 import net.vhsworld.rec.worldgen.ModChunkGenerators;
@@ -33,6 +35,10 @@ public class RECMod {
         ModItems.register(modEventBus);
 
         ModSounds.register(modEventBus);
+
+        // Bancada do mod: menu (tela com slots) + tipo de receita proprio.
+        ModMenus.register(modEventBus);
+        ModRecipes.register(modEventBus);
 
         ModLootModifiers.register(modEventBus);
         ModChunkGenerators.register(modEventBus);

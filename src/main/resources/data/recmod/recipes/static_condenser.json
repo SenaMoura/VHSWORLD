@@ -1,0 +1,9 @@
+{
+  "type": "recmod:rf_receiver",
+  "ingredients": [
+    { "item": "recmod:static_residue", "count": 4 },
+    { "item": "recmod:blank_magnetic_tape", "count": 1 },
+    { "item": "minecraft:redstone", "count": 1 }
+  ],
+  "result": { "item": "recmod:static_condenser", "count": 1 }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "P P",
+    "R R"
+  ],
+  "key": {
+    "R": {
+      "item": "recmod:reality_tear"
+    },
+    "P": {
+      "item": "recmod:pressed_iron"
+    }
+  },
+  "result": {
+    "item": "recmod:fracture_boots",
+    "count": 1
+  }
+}

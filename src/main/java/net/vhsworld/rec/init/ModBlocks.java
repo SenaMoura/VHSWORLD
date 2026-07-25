@@ -12,6 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.block.RealityTearBlock;
+import net.vhsworld.rec.block.RFReceiverBlock;
 
 /**
  * Blocos do mod.
@@ -91,6 +92,21 @@ public class ModBlocks {
                             .strength(0.6F)
                             .noOcclusion()
                             .noCollission()
+                            .sound(SoundType.METAL)));
+
+    /**
+     * O Receptor de Frequencia: a bancada do mod.
+     *
+     * Uma carcaca de aparelho velho (TV/receptor) que se abre no botao direito. Metal,
+     * quebra na picareta, olha para a frente. Onde se processa sinal e se funde
+     * eletronico anomalo.
+     */
+    public static final RegistryObject<Block> RF_RECEIVER = BLOCKS.register("rf_receiver",
+            () -> new RFReceiverBlock(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_GRAY)
+                            .strength(2.5F, 3.0F)
+                            .requiresCorrectToolForDrops()
                             .sound(SoundType.METAL)));
 
     public static void register(IEventBus eventBus) {

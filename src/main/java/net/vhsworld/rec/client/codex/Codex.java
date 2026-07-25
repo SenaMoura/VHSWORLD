@@ -90,8 +90,38 @@ public final class Codex {
                 new ResourceLocation(RECMod.MOD_ID, "anchor"), CodexCategory.SURVIVE));
         register(new CodexEntry(ModItems.LURE_CLOCK.get(), "lure_clock",
                 new ResourceLocation(RECMod.MOD_ID, "lure_clock"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.ORE_TRACKER.get(), "ore_tracker",
+                new ResourceLocation(RECMod.MOD_ID, "ore_tracker"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.STRUCTURE_LOCATOR.get(), "structure_locator",
+                new ResourceLocation(RECMod.MOD_ID, "structure_locator"), CodexCategory.SURVIVE));
         register(new CodexEntry(ModItems.REALITY_TEAR.get(), "reality_tear", null,
                 CodexCategory.SURVIVE));
+
+        // --- SURVIVE / REBOOT: a cadeia de sucata eletronica e a bancada do mod ---
+        // Tudo passa por aqui para nenhum item nascer com o tooltip preso em "use o flash"
+        // sem nunca destravar. A bancada e os Tier 1/2/3 do documento de itens finais.
+        register(new CodexEntry(ModItems.RF_RECEIVER_ITEM.get(), "rf_receiver",
+                new ResourceLocation(RECMod.MOD_ID, "rf_receiver"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.CIRCUIT_SCRAP.get(), "circuit_scrap",
+                new ResourceLocation(RECMod.MOD_ID, "circuit_scrap"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.MAGNETIZED_COPPER_TAPE.get(), "magnetized_copper_tape",
+                new ResourceLocation(RECMod.MOD_ID, "magnetized_copper_tape"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.BLANK_MAGNETIC_TAPE.get(), "blank_magnetic_tape",
+                new ResourceLocation(RECMod.MOD_ID, "blank_magnetic_tape"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.STATIC_RESIDUE.get(), "static_residue",
+                new ResourceLocation(RECMod.MOD_ID, "static_residue"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.STATIC_CONDENSER.get(), "static_condenser",
+                new ResourceLocation(RECMod.MOD_ID, "static_condenser"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.BUSTED_TUNER.get(), "busted_tuner",
+                new ResourceLocation(RECMod.MOD_ID, "busted_tuner"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.CRT_TUBE.get(), "crt_tube",
+                new ResourceLocation(RECMod.MOD_ID, "crt_tube"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.REINFORCED_SYRINGE.get(), "reinforced_syringe",
+                new ResourceLocation(RECMod.MOD_ID, "reinforced_syringe"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.CONTAMINATED_BLOOD.get(), "contaminated_blood",
+                new ResourceLocation(RECMod.MOD_ID, "contaminated_blood"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.CORRUPTED_CRT_TUBE.get(), "corrupted_crt_tube",
+                new ResourceLocation(RECMod.MOD_ID, "corrupted_crt_tube"), CodexCategory.SURVIVE));
 
         // --- KILL: o que se empunha para ferir ---
         register(new CodexEntry(ModItems.HAMMER.get(), "hammer",
@@ -116,6 +146,20 @@ public final class Codex {
                 new ResourceLocation(RECMod.MOD_ID, "corrupted_diamond_pickaxe"), CodexCategory.KILL));
         register(new CodexEntry(ModItems.FRACTURE.get(), "fracture",
                 new ResourceLocation(RECMod.MOD_ID, "fracture"), CodexCategory.KILL));
+        register(new CodexEntry(ModItems.FRACTURE_PICKAXE.get(), "fracture_pickaxe",
+                new ResourceLocation(RECMod.MOD_ID, "fracture_pickaxe"), CodexCategory.KILL));
+        register(new CodexEntry(ModItems.FRACTURE_AXE.get(), "fracture_axe",
+                new ResourceLocation(RECMod.MOD_ID, "fracture_axe"), CodexCategory.KILL));
+        register(new CodexEntry(ModItems.FRACTURE_SHOVEL.get(), "fracture_shovel",
+                new ResourceLocation(RECMod.MOD_ID, "fracture_shovel"), CodexCategory.KILL));
+        register(new CodexEntry(ModItems.FRACTURE_HELMET.get(), "fracture_suit",
+                new ResourceLocation(RECMod.MOD_ID, "fracture_helmet"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.FRACTURE_CHESTPLATE.get(), "fracture_suit",
+                new ResourceLocation(RECMod.MOD_ID, "fracture_chestplate"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.FRACTURE_LEGGINGS.get(), "fracture_suit",
+                new ResourceLocation(RECMod.MOD_ID, "fracture_leggings"), CodexCategory.SURVIVE));
+        register(new CodexEntry(ModItems.FRACTURE_BOOTS.get(), "fracture_suit",
+                new ResourceLocation(RECMod.MOD_ID, "fracture_boots"), CodexCategory.SURVIVE));
     }
 
     private Codex() {

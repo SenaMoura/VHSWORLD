@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "recmod:block/rf_receiver_top",
+    "front": "recmod:block/rf_receiver_front",
+    "side": "recmod:block/rf_receiver_side"
+  }
+}

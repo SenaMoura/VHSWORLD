@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " E ",
+    "GCG",
+    "AAA"
+  ],
+  "key": {
+    "E": { "item": "minecraft:ender_eye" },
+    "C": { "item": "recmod:corrupted_compass" },
+    "G": { "item": "recmod:black_goo" },
+    "A": { "item": "recmod:aluminum_ingot" }
+  },
+  "result": { "item": "recmod:structure_locator", "count": 1 }
+}

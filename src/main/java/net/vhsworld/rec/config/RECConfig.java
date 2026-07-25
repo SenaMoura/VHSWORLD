@@ -122,6 +122,13 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue tripodSeesHostiles;
         public final ForgeConfigSpec.BooleanValue tripodBeep;
 
+        // --- localizadores (rastreador de minerio / localizador de estrutura) ---
+        public final ForgeConfigSpec.BooleanValue oreTracker;
+        public final ForgeConfigSpec.BooleanValue structureLocator;
+        public final ForgeConfigSpec.IntValue trackerScanRadius;
+        public final ForgeConfigSpec.BooleanValue trackerMarker;
+        public final ForgeConfigSpec.BooleanValue trackerHeartbeat;
+
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
 
@@ -536,6 +543,37 @@ public final class RECConfig {
             tripodBeep = b
                     .comment("O bipe do monitor quando o tripe ve movimento.")
                     .define("tripodBeep", true);
+
+            b.pop();
+
+            b.comment("Os localizadores: depois do rito, 6 min de ponto vermelho atravessando",
+                      "parede + o coracao que acelera perto do alvo. A duracao e o rito vivem no",
+                      "codigo (server-safe); aqui ficam so os botoes de tela e som.")
+             .push("localizadores");
+
+            oreTracker = b
+                    .comment("Rastreador de Minerios: marca o minerio valioso mais proximo",
+                             "(diamante, esmeralda, ouro, escombro antigo, aluminio e pedra corrompida).")
+                    .define("oreTracker", true);
+
+            structureLocator = b
+                    .comment("Localizador de Estruturas: marca no horizonte a estrutura mais",
+                             "proxima da tag recmod:locatable (vila, mansao, monumento...).")
+                    .define("structureLocator", true);
+
+            trackerScanRadius = b
+                    .comment("Alcance, em blocos, da varredura do Rastreador de Minerios.",
+                             "Tambem e o alcance em que o coracao dele comeca a bater. Maior = mais",
+                             "caro de varrer no teu PC enquanto o item esta ativo.")
+                    .defineInRange("trackerScanRadius", 24, 4, 64);
+
+            trackerMarker = b
+                    .comment("Desenha o ponto vermelho atraves da parede. Desligado, sobra so o coracao.")
+                    .define("trackerMarker", true);
+
+            trackerHeartbeat = b
+                    .comment("O som do coracao que acelera conforme voce chega perto do alvo.")
+                    .define("trackerHeartbeat", true);
 
             b.pop();
 

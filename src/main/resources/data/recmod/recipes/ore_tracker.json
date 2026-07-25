@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " R ",
+    "GEG",
+    "AAA"
+  ],
+  "key": {
+    "R": { "item": "minecraft:redstone" },
+    "E": { "item": "minecraft:ender_pearl" },
+    "G": { "item": "recmod:black_goo" },
+    "A": { "item": "recmod:aluminum_ingot" }
+  },
+  "result": { "item": "recmod:ore_tracker", "count": 1 }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "RRR",
+    "P P"
+  ],
+  "key": {
+    "R": {
+      "item": "recmod:reality_tear"
+    },
+    "P": {
+      "item": "recmod:pressed_iron"
+    }
+  },
+  "result": {
+    "item": "recmod:fracture_helmet",
+    "count": 1
+  }
+}

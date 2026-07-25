@@ -26,7 +26,18 @@ public enum ModTiers implements Tier {
 
     /** Acima do netherite em alcance. Conserta com gosma preta, nao com pedra. */
     CORRUPTED_DIAMOND(4, 2200, 9.0F, 4.0F, 15,
-            () -> Ingredient.of(ModItems.BLACK_GOO.get()));
+            () -> Ingredient.of(ModItems.BLACK_GOO.get())),
+
+    /**
+     * FRATURA: o topo, feito do proprio rasgo.
+     *
+     * Existe para a familia da FRACTURE nao ser um diamante corrompido repintado —
+     * se a picareta da fratura tivesse os mesmos numeros da corrupted_diamond, nao
+     * haveria motivo para gastar um caco de realidade nela. Mais rapida e mais
+     * forte, e so se conserta com outro caco.
+     */
+    FRACTURE(4, 3400, 12.0F, 5.0F, 22,
+            () -> Ingredient.of(ModItems.REALITY_TEAR.get()));
 
     private final int level;
     private final int uses;

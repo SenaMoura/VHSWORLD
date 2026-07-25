@@ -30,7 +30,19 @@ public class ModCreativeTabs {
             event.accept(ModItems.CORRUPTED_COMPASS);
             event.accept(ModItems.ANCHOR);
             event.accept(ModItems.LURE_CLOCK);
+            event.accept(ModItems.ORE_TRACKER);
+            event.accept(ModItems.STRUCTURE_LOCATOR);
+            event.accept(ModItems.RF_RECEIVER_ITEM);
             event.accept(ModItems.FRACTURE);
+            event.accept(ModItems.FRACTURE_PICKAXE);
+            event.accept(ModItems.FRACTURE_AXE);
+            event.accept(ModItems.FRACTURE_SHOVEL);
+        }
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+            event.accept(ModItems.FRACTURE_HELMET);
+            event.accept(ModItems.FRACTURE_CHESTPLATE);
+            event.accept(ModItems.FRACTURE_LEGGINGS);
+            event.accept(ModItems.FRACTURE_BOOTS);
         }
         if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(ModItems.ALUMINUM_ORE_ITEM);
@@ -44,6 +56,16 @@ public class ModCreativeTabs {
             event.accept(ModItems.PRESSED_IRON);
             event.accept(ModItems.BLACK_GOO);
             event.accept(ModItems.REALITY_TEAR);
+            event.accept(ModItems.CIRCUIT_SCRAP);
+            event.accept(ModItems.MAGNETIZED_COPPER_TAPE);
+            event.accept(ModItems.BLANK_MAGNETIC_TAPE);
+            event.accept(ModItems.STATIC_RESIDUE);
+            event.accept(ModItems.STATIC_CONDENSER);
+            event.accept(ModItems.BUSTED_TUNER);
+            event.accept(ModItems.CRT_TUBE);
+            event.accept(ModItems.REINFORCED_SYRINGE);
+            event.accept(ModItems.CONTAMINATED_BLOOD);
+            event.accept(ModItems.CORRUPTED_CRT_TUBE);
         }
     }
 }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "GGG",
+    "CBC",
+    "ITI"
+  ],
+  "key": {
+    "G": { "item": "minecraft:glass_pane" },
+    "C": { "item": "recmod:circuit_scrap" },
+    "B": { "item": "recmod:busted_tuner" },
+    "I": { "item": "minecraft:iron_ingot" },
+    "T": { "item": "minecraft:crafting_table" }
+  },
+  "result": { "item": "recmod:rf_receiver", "count": 1 }
+}

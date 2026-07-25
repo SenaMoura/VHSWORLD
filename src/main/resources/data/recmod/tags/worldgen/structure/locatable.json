@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "minecraft:village_plains", "required": false },
+    { "id": "minecraft:village_desert", "required": false },
+    { "id": "minecraft:village_savanna", "required": false },
+    { "id": "minecraft:village_snowy", "required": false },
+    { "id": "minecraft:village_taiga", "required": false },
+    { "id": "minecraft:mansion", "required": false },
+    { "id": "minecraft:monument", "required": false },
+    { "id": "minecraft:stronghold", "required": false },
+    { "id": "minecraft:ancient_city", "required": false },
+    { "id": "minecraft:pillager_outpost", "required": false },
+    { "id": "minecraft:ruined_portal", "required": false },
+    { "id": "minecraft:desert_pyramid", "required": false },
+    { "id": "minecraft:jungle_pyramid", "required": false },
+    { "id": "minecraft:swamp_hut", "required": false },
+    { "id": "minecraft:igloo", "required": false },
+    { "id": "minecraft:shipwreck", "required": false },
+    { "id": "minecraft:shipwreck_beached", "required": false },
+    { "id": "minecraft:ocean_ruin_cold", "required": false },
+    { "id": "minecraft:ocean_ruin_warm", "required": false },
+    { "id": "minecraft:trail_ruins", "required": false }
+  ]
+}

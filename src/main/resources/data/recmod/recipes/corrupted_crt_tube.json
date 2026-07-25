@@ -1,0 +1,9 @@
+{
+  "type": "recmod:rf_receiver",
+  "ingredients": [
+    { "item": "recmod:crt_tube", "count": 1 },
+    { "item": "recmod:static_condenser", "count": 1 },
+    { "item": "recmod:contaminated_blood", "count": 1 }
+  ],
+  "result": { "item": "recmod:corrupted_crt_tube", "count": 1 }
+}

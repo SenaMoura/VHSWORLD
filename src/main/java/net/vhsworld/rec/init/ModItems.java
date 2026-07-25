@@ -1,5 +1,6 @@
 package net.vhsworld.rec.init;
 
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.HoeItem;
@@ -17,9 +18,15 @@ import net.vhsworld.rec.item.BatteryItem;
 import net.vhsworld.rec.item.BlankTapeItem;
 import net.vhsworld.rec.item.CorruptedBatteryItem;
 import net.vhsworld.rec.item.CorruptedCompassItem;
+import net.vhsworld.rec.item.FractureArmorItem;
+import net.vhsworld.rec.item.FractureAxeItem;
 import net.vhsworld.rec.item.FractureItem;
+import net.vhsworld.rec.item.FracturePickaxeItem;
+import net.vhsworld.rec.item.FractureShovelItem;
 import net.vhsworld.rec.item.LureClockItem;
 import net.vhsworld.rec.item.ModTiers;
+import net.vhsworld.rec.item.OreTrackerItem;
+import net.vhsworld.rec.item.StructureLocatorItem;
 import net.vhsworld.rec.item.VideocassetteItem;
 
 public class ModItems {
@@ -146,6 +153,76 @@ public class ModItems {
     public static final RegistryObject<Item> LURE_CLOCK = ITEMS.register("lure_clock",
             () -> new LureClockItem(new Item.Properties().stacksTo(1)));
 
+    // --- Localizadores: rito de acesso, poder temporario, expiracao ---
+
+    /** Rastreador de Minerios: 6 min apontando o minerio valioso mais perto, atraves da parede. */
+    public static final RegistryObject<Item> ORE_TRACKER = ITEMS.register("ore_tracker",
+            () -> new OreTrackerItem(new Item.Properties().stacksTo(1)));
+
+    /** Localizador de Estruturas: 6 min apontando a estrutura mais proxima no horizonte. */
+    public static final RegistryObject<Item> STRUCTURE_LOCATOR = ITEMS.register("structure_locator",
+            () -> new StructureLocatorItem(new Item.Properties().stacksTo(1)));
+
+    // === REBOOT: cadeia de sucata eletronica / VHS (ver vault "VHSWORLD - REBOOT") ===
+
+    /** A bancada do mod: item do bloco Receptor de Frequencia. */
+    public static final RegistryObject<Item> RF_RECEIVER_ITEM = ITEMS.register("rf_receiver",
+            () -> new BlockItem(ModBlocks.RF_RECEIVER.get(), new Item.Properties()));
+
+    // --- Tier 1: sucata e eletronicos basicos ---
+
+    /** Sucata de Placa de Circuito. No futuro dropa de monitores/TVs quebrados. */
+    public static final RegistryObject<Item> CIRCUIT_SCRAP = ITEMS.register("circuit_scrap",
+            () -> new Item(new Item.Properties()));
+
+    /** Cobre Magnetizado: fita de cobre imantada, base dos aparelhos. */
+    public static final RegistryObject<Item> MAGNETIZED_COPPER_TAPE = ITEMS.register("magnetized_copper_tape",
+            () -> new Item(new Item.Properties()));
+
+    /** Fita Magnetica Virgem: o rolo em branco onde o sinal e gravado. */
+    public static final RegistryObject<Item> BLANK_MAGNETIC_TAPE = ITEMS.register("blank_magnetic_tape",
+            () -> new Item(new Item.Properties()));
+
+    // --- Tier 2/3: captura de sinal e fusao anomala ---
+
+    /** Residuo de Estatica. No futuro largado pela manifestacao de anomalias. */
+    public static final RegistryObject<Item> STATIC_RESIDUE = ITEMS.register("static_residue",
+            () -> new Item(new Item.Properties()));
+
+    /** Condensador de Estatica: primeiro fruto do Receptor de Frequencia. */
+    public static final RegistryObject<Item> STATIC_CONDENSER = ITEMS.register("static_condenser",
+            () -> new Item(new Item.Properties()));
+
+    // --- Tier 2: captura de sinal ---
+
+    /** Sintonizador de Radio Danificado: o radio quebrado que capta o sinal anomalo. */
+    public static final RegistryObject<Item> BUSTED_TUNER = ITEMS.register("busted_tuner",
+            () -> new Item(new Item.Properties()));
+
+    // --- Tier 3: fusao anomala e biomecanica ---
+
+    /** Tubo CRT Normal: o cinescopio limpo, componente das telas. No futuro dropa de TVs. */
+    public static final RegistryObject<Item> CRT_TUBE = ITEMS.register("crt_tube",
+            () -> new Item(new Item.Properties()));
+
+    /**
+     * Seringa de Vidro Reforcada.
+     *
+     * Craftavel ja; a mecanica de "usar em si mesmo para tirar Sangue Contaminado" espera
+     * o medidor de Infeccao existir (o preco e so pagavel acima de 50%). Fica pronta
+     * esperando, como a tesoura afiada.
+     */
+    public static final RegistryObject<Item> REINFORCED_SYRINGE = ITEMS.register("reinforced_syringe",
+            () -> new Item(new Item.Properties().stacksTo(16)));
+
+    /** Sangue Contaminado: a seringa cheia. No futuro tirada de si mesmo com Infeccao alta. */
+    public static final RegistryObject<Item> CONTAMINATED_BLOOD = ITEMS.register("contaminated_blood",
+            () -> new Item(new Item.Properties().stacksTo(16)));
+
+    /** Tubo CRT Corrompido: o cinescopio infectado, base dos aparelhos de topo. */
+    public static final RegistryObject<Item> CORRUPTED_CRT_TUBE = ITEMS.register("corrupted_crt_tube",
+            () -> new Item(new Item.Properties()));
+
     // --- O rasgo e a arma que sai dele ---
 
     /** O caco arrancado da parede. So a Corrupted Diamond Pickaxe consegue tirar. */
@@ -159,6 +236,34 @@ public class ModItems {
     public static final RegistryObject<Item> FRACTURE = ITEMS.register("fracture",
             () -> new FractureItem(ModTiers.CORRUPTED_DIAMOND, 3, -2.4F,
                     new Item.Properties().stacksTo(1)));
+
+    // ===== A FAMILIA DA FRATURA =====
+    // Mesmo elemento da espada: haste de ferro batido, cabeca de energia que pulsa
+    // em 8 quadros, e o brilho de encantamento por cima (isFoil).
+
+    public static final RegistryObject<Item> FRACTURE_PICKAXE = ITEMS.register("fracture_pickaxe",
+            () -> new FracturePickaxeItem(ModTiers.FRACTURE, 1, -2.8F, new Item.Properties()));
+
+    public static final RegistryObject<Item> FRACTURE_AXE = ITEMS.register("fracture_axe",
+            () -> new FractureAxeItem(ModTiers.FRACTURE, 5.0F, -3.0F, new Item.Properties()));
+
+    public static final RegistryObject<Item> FRACTURE_SHOVEL = ITEMS.register("fracture_shovel",
+            () -> new FractureShovelItem(ModTiers.FRACTURE, 1.5F, -3.0F, new Item.Properties()));
+
+    // O traje. Sem .stacksTo(): peca de armadura ja nasce com durabilidade, e no
+    // 1.20.1 durabilidade + stacksTo derruba o jogo na inicializacao.
+
+    public static final RegistryObject<Item> FRACTURE_HELMET = ITEMS.register("fracture_helmet",
+            () -> new FractureArmorItem(ArmorItem.Type.HELMET, new Item.Properties()));
+
+    public static final RegistryObject<Item> FRACTURE_CHESTPLATE = ITEMS.register("fracture_chestplate",
+            () -> new FractureArmorItem(ArmorItem.Type.CHESTPLATE, new Item.Properties()));
+
+    public static final RegistryObject<Item> FRACTURE_LEGGINGS = ITEMS.register("fracture_leggings",
+            () -> new FractureArmorItem(ArmorItem.Type.LEGGINGS, new Item.Properties()));
+
+    public static final RegistryObject<Item> FRACTURE_BOOTS = ITEMS.register("fracture_boots",
+            () -> new FractureArmorItem(ArmorItem.Type.BOOTS, new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

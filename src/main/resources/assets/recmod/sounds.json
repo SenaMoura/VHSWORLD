@@ -67,5 +67,11 @@
     "sounds": [
       "recmod:tape_player"
     ]
+  },
+  "heartbeat": {
+    "category": "player",
+    "sounds": [
+      "recmod:heartbeat"
+    ]
   }
 }

@@ -61,6 +61,11 @@ public class ModSounds {
             SOUND_EVENTS.register("tape_player",
                     () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "tape_player")));
 
+    /** O baque do coracao dos localizadores. Acelera perto do alvo. */
+    public static final RegistryObject<SoundEvent> HEARTBEAT =
+            SOUND_EVENTS.register("heartbeat",
+                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "heartbeat")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }
