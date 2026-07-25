@@ -8,6 +8,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.client.codex.CodexScreen;
+import net.vhsworld.rec.client.difficulty.DifficultyState;
 import net.vhsworld.rec.client.photo.PhotoAlbumScreen;
 import net.vhsworld.rec.client.sanity.HostileSightWatcher;
 import net.vhsworld.rec.client.sanity.SanityHaunting;
@@ -112,7 +113,8 @@ public class ClientTickHandler {
                     : 1.0f;
 
             CamcorderOverlay.batteryLevel -=
-                    RECConfig.CLIENT.batteryDrainPerTick.get().floatValue() * haste * lens;
+                    RECConfig.CLIENT.batteryDrainPerTick.get().floatValue() * haste * lens
+                            * DifficultyState.current().batteryDrainMultiplier();
             if (CamcorderOverlay.batteryLevel <= 0.0f) {
                 CamcorderOverlay.batteryLevel = 0.0f;
                 CamcorderOverlay.isBatteryDead = true;

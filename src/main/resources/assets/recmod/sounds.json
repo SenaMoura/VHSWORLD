@@ -73,5 +73,11 @@
     "sounds": [
       "recmod:heartbeat"
     ]
+  },
+  "tape_static": {
+    "category": "ambient",
+    "sounds": [
+      "recmod:tape_static"
+    ]
   }
 }

@@ -66,6 +66,11 @@ public class ModSounds {
             SOUND_EVENTS.register("heartbeat",
                     () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "heartbeat")));
 
+    /** Chiado de fita em loop. Hoje: o fundo da tela de dificuldade. */
+    public static final RegistryObject<SoundEvent> TAPE_STATIC =
+            SOUND_EVENTS.register("tape_static",
+                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "tape_static")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

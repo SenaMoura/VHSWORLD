@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.vhsworld.rec.client.VHSButton;
+import net.vhsworld.rec.client.difficulty.DifficultyState;
 import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 
@@ -127,7 +128,8 @@ public class PhotoAlbumScreen extends Screen {
             // Havia alguma coisa ali com voce. O preco vem agora.
             if (open.subject != null) {
                 SanityState.get().sighting(
-                        RECConfig.CLIENT.sanityLossPerSighting.get().floatValue());
+                        RECConfig.CLIENT.sanityLossPerSighting.get().floatValue()
+                                * DifficultyState.current().sanityLossMultiplier());
             }
         }
     }

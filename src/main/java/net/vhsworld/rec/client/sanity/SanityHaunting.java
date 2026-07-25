@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import net.vhsworld.rec.client.CameraState;
 import net.vhsworld.rec.client.CamcorderOverlay;
+import net.vhsworld.rec.client.difficulty.DifficultyState;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
 
@@ -48,7 +49,8 @@ public final class SanityHaunting {
     private static void maybeBlackout(Minecraft mc, float dread) {
         if (!RECConfig.CLIENT.sanityBlackouts.get()) return;
         if (CamcorderOverlay.isBatteryDead) return;
-        if (RANDOM.nextDouble() > BLACKOUT_CHANCE * dread) return;
+        if (RANDOM.nextDouble() > BLACKOUT_CHANCE * dread
+                * DifficultyState.current().hauntingMultiplier()) return;
 
         CamcorderOverlay.isBatteryDead = true;
         CamcorderOverlay.miniGameProgress = 0.0f;
@@ -58,7 +60,8 @@ public final class SanityHaunting {
     private static void maybePhantomSound(Minecraft mc, float dread) {
         if (!RECConfig.CLIENT.sanityPhantomSounds.get()) return;
         if (!CameraState.audible()) return;
-        if (RANDOM.nextDouble() > SOUND_CHANCE * dread) return;
+        if (RANDOM.nextDouble() > SOUND_CHANCE * dread
+                * DifficultyState.current().hauntingMultiplier()) return;
 
         // Atras ou ao lado, nunca na frente: o que se ve nao assusta.
         double angle = RANDOM.nextDouble() * Math.PI * 2.0;

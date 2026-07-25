@@ -129,6 +129,13 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue trackerMarker;
         public final ForgeConfigSpec.BooleanValue trackerHeartbeat;
 
+        // --- dificuldade ---
+        public final ForgeConfigSpec.BooleanValue difficultyPrompt;
+        public final ForgeConfigSpec.DoubleValue hardSanityMultiplier;
+        public final ForgeConfigSpec.DoubleValue hardBatteryMultiplier;
+        public final ForgeConfigSpec.DoubleValue hardHauntingMultiplier;
+        public final ForgeConfigSpec.IntValue hardThresholdBonus;
+
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
 
@@ -574,6 +581,39 @@ public final class RECConfig {
             trackerHeartbeat = b
                     .comment("O som do coracao que acelera conforme voce chega perto do alvo.")
                     .define("trackerHeartbeat", true);
+
+            b.pop();
+
+            b.comment("A escolha de dificuldade que abre ao entrar no mundo pela primeira vez.",
+                      "A escolha e guardada POR MUNDO. O dificil nao adiciona castigo novo: ele",
+                      "aperta o que ja existe. Em NENHUMA das duas se morre de sanidade.")
+             .push("dificuldade");
+
+            difficultyPrompt = b
+                    .comment("Mostra a tela dos dois cards ao entrar num mundo em que ainda nao",
+                             "se escolheu. Desligado, o mundo roda no NORMAL sem perguntar.")
+                    .define("difficultyPrompt", true);
+
+            hardSanityMultiplier = b
+                    .comment("DIFICIL: quanto revelar uma foto custa de sanidade, vezes isto.",
+                             "1.55 leva os 18 pontos do normal para ~28.")
+                    .defineInRange("hardSanityMultiplier", 1.55D, 1.0D, 4.0D);
+
+            hardBatteryMultiplier = b
+                    .comment("DIFICIL: quanto a bateria gasta por tick, vezes isto.",
+                             "1.55 faz a pilha durar cerca de dois tercos do que dura no normal.")
+                    .defineInRange("hardBatteryMultiplier", 1.55D, 1.0D, 4.0D);
+
+            hardHauntingMultiplier = b
+                    .comment("DIFICIL: frequencia dos apagoes espontaneos e dos sons fantasma da",
+                             "sanidade baixa, vezes isto.")
+                    .defineInRange("hardHauntingMultiplier", 2.60D, 1.0D, 8.0D);
+
+            hardThresholdBonus = b
+                    .comment("DIFICIL: quantos pontos percentuais o limiar da sanidade sobe. O",
+                             "limiar e onde a fita comeca a apodrecer — subir faz a degradacao",
+                             "comecar antes, com o medidor ainda cheio. NAO tira sanidade.")
+                    .defineInRange("hardThresholdBonus", 15, 0, 60);
 
             b.pop();
 

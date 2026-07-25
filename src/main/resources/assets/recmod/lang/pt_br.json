@@ -98,5 +98,13 @@
   "recmod.codex.fracture_shovel.desc": "Um caco so, numa haste. A menor peca da familia, e ainda assim a pa mais rapida que existe.",
   "recmod.codex.fracture_shovel.obtain": "Um caco de realidade sobre duas hastes de ferro.",
   "recmod.codex.fracture_suit.desc": "A chapa de ferro segura a armacao; quem cobre e o rasgo. Ele deixa o seu rosto de fora de proposito — um traje feito de um buraco no mundo nunca ia ser lugar de se esconder.",
-  "recmod.codex.fracture_suit.obtain": "Cacos de realidade e chapa de ferro. O traje inteiro custa doze cacos; conserta com outro caco."
+  "recmod.codex.fracture_suit.obtain": "Cacos de realidade e chapa de ferro. O traje inteiro custa doze cacos; conserta com outro caco.",
+  "recmod.difficulty.title": "ESCOLHA A VELOCIDADE DA FITA",
+  "recmod.difficulty.hint": "A fita ja esta rodando. Escolha uma — nao da para voltar e regravar o comeco.",
+  "recmod.difficulty.normal": "NORMAL",
+  "recmod.difficulty.normal.desc": "A fita aguenta. A sanidade cai pelo preco de sempre, a pilha dura, e a imagem so apodrece la no fundo.",
+  "recmod.difficulty.normal.tag": "",
+  "recmod.difficulty.hard": "DIFICIL",
+  "recmod.difficulty.hard.desc": "Olhar custa mais, a pilha morre antes, e a fita vira contra voce com o medidor ainda pela metade.",
+  "recmod.difficulty.hard.tag": "RECOMENDADA PARA YOUTUBERS"
 }

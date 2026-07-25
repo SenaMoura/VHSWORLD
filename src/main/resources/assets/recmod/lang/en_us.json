@@ -148,5 +148,13 @@
   "recmod.codex.fracture_shovel.desc": "A single tear on a haft. The smallest piece of the family, and still the fastest shovel there is.",
   "recmod.codex.fracture_shovel.obtain": "One reality tear over two iron sticks.",
   "recmod.codex.fracture_suit.desc": "Pressed iron holds the frame; the tear does the covering. It leaves your face open on purpose — a suit made of a hole in the world was never going to be a place to hide.",
-  "recmod.codex.fracture_suit.obtain": "Reality tears and pressed iron. The whole set costs twelve tears; repaired with another tear."
+  "recmod.codex.fracture_suit.obtain": "Reality tears and pressed iron. The whole set costs twelve tears; repaired with another tear.",
+  "recmod.difficulty.title": "SELECT TAPE SPEED",
+  "recmod.difficulty.hint": "The tape is already rolling. Pick one — there is no going back and re-recording the start.",
+  "recmod.difficulty.normal": "NORMAL",
+  "recmod.difficulty.normal.desc": "The tape holds. Sanity falls at the usual price, the battery lasts, and the picture only rots near the bottom.",
+  "recmod.difficulty.normal.tag": "",
+  "recmod.difficulty.hard": "HARD",
+  "recmod.difficulty.hard.desc": "Looking costs more, the battery dies sooner, and the tape turns on you while the meter is still half full.",
+  "recmod.difficulty.hard.tag": "RECOMMENDED FOR YOUTUBERS"
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.vhsworld.rec.client.CameraState;
+import net.vhsworld.rec.client.difficulty.DifficultyState;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
 import org.slf4j.Logger;
@@ -71,7 +72,11 @@ public final class SanityState {
      * separados ligando em horas diferentes.
      */
     public float dread() {
-        double threshold = RECConfig.CLIENT.sanityThreshold.get();
+        // No dificil o limiar sobe: a fita comeca a apodrecer com o medidor ainda
+        // cheio. Nao tira sanidade nenhuma — so adianta o comeco da degradacao.
+        double threshold = RECConfig.CLIENT.sanityThreshold.get()
+                + DifficultyState.current().thresholdBonus() / 100.0D;
+        threshold = Math.min(1.0D, threshold);
         if (threshold <= 0.0D) return 0.0f;
 
         float f = fraction();
