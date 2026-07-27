@@ -9,6 +9,8 @@ import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.client.photo.PhotoCapture;
 import net.vhsworld.rec.config.RECConfig;
 import net.vhsworld.rec.item.ModSounds;
+import net.vhsworld.rec.net.FlashPacket;
+import net.vhsworld.rec.net.RECNetwork;
 import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = RECMod.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -68,6 +70,15 @@ public class InputHandler {
                 if (RECConfig.CLIENT.photos.get()) {
                     PhotoCapture.request();
                 }
+
+                // E, desde a 1.63.0, o clarão também EXISTE para o servidor.
+                //
+                // Até aqui o flash era coisa só desta máquina (sobe o gamma, tira o
+                // print, destranca a ficha) — a câmera podia olhar, mas nunca agir.
+                // Este aviso é o que deixa o clarão queimar o olho do Ofanim e comprar
+                // alguns segundos. Vai sem carga nenhuma: o servidor já sabe onde você
+                // está e para onde aponta, e é ele quem decide o que foi atingido.
+                RECNetwork.toServer(new FlashPacket());
             }
         }
     }

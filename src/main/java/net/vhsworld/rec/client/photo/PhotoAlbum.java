@@ -74,8 +74,9 @@ public final class PhotoAlbum {
      * Guarda uma imagem recem-capturada. A NativeImage e consumida aqui (fechada no fim).
      *
      * @param subject o que o filme pegou, ou null se nao pegou nada
+     * @param anomaly o id da anomalia fotografada, ou null se nao foi uma delas
      */
-    public void add(NativeImage image, String subject) {
+    public void add(NativeImage image, String subject, String anomaly) {
         try {
             Files.createDirectories(folder);
 
@@ -84,6 +85,7 @@ public final class PhotoAlbum {
 
             Photo photo = new Photo(name, System.currentTimeMillis());
             photo.subject = subject;
+            photo.anomaly = anomaly;
             photos.add(0, photo);
 
             trim();

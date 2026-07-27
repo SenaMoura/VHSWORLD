@@ -67,9 +67,9 @@ import net.vhsworld.rec.entity.StonemanEntity;
  * export nao entrega prontas: os nomes das partes vinham COM ESPACO ("Right Arm"),
  * que nao compila em Java, e o namespace era o placeholder "modid".
  *
- * As tres variantes tem o MESMO esqueleto (cintura -> cabeca, tronco, dois bracos;
- * raiz -> duas pernas), entao uma classe so serve as tres: muda a LayerDefinition e
- * a textura, nao o codigo.
+ * Ele teve tres variantes de geometria ate a v1.38.0. Foram removidas: um monstro
+ * com tres corpos diferentes vira "qual delas e essa?" na cabeca do jogador, e a
+ * duvida que interessa aqui e outra — se ele se mexeu ou nao.
  *
  * A animacao e escrita aqui porque o formato modded_entity nao guarda animacao —
  * o setupAnim do export vem vazio.
@@ -78,10 +78,6 @@ public class StonemanModel extends EntityModel<StonemanEntity> {
 
     public static final ModelLayerLocation BASE =
             new ModelLayerLocation(new ResourceLocation(RECMod.MOD_ID, "stoneman"), "main");
-    public static final ModelLayerLocation VARIANT_1 =
-            new ModelLayerLocation(new ResourceLocation(RECMod.MOD_ID, "stoneman_variant1"), "main");
-    public static final ModelLayerLocation VARIANT_2 =
-            new ModelLayerLocation(new ResourceLocation(RECMod.MOD_ID, "stoneman_variant2"), "main");
 
     private final ModelPart waist;
     private final ModelPart head;
@@ -151,9 +147,10 @@ TAIL = '''
 '''
 
 parts = [HEAD]
-for name, method in (("Stoneman", "createBase"),
-                     ("Stoneman_variant1", "createVariant1"),
-                     ("Stoneman_variant2", "createVariant2")):
+# So a geometria base. As variantes sairam na v1.38.0; para trazer de volta, basta
+# reacrescentar ("Stoneman_variant1", "createVariant1") aqui e a ModelLayerLocation
+# no HEAD — os .java exportados continuam em Downloads/vhsworldentities.
+for name, method in (("Stoneman", "createBase"),):
     geom = body_of(os.path.join(SRC, name + ".java"))
     parts.append(f"\n    /** Geometria de {name}.bbmodel. */\n"
                  f"    public static LayerDefinition {method}() {{\n{geom}\n"

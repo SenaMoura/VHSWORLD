@@ -17,7 +17,9 @@ import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.item.AnchorItem;
 import net.vhsworld.rec.item.BatteryItem;
 import net.vhsworld.rec.item.BlankTapeItem;
+import net.vhsworld.rec.item.CallerItem;
 import net.vhsworld.rec.item.CorruptedBatteryItem;
+import net.vhsworld.rec.item.DimensionTapeItem;
 import net.vhsworld.rec.item.CorruptedCompassItem;
 import net.vhsworld.rec.item.FractureArmorItem;
 import net.vhsworld.rec.item.FractureAxeItem;
@@ -72,6 +74,33 @@ public class ModItems {
     /** Videocassete: usar abre o cofre de fitas para rever as gravacoes. */
     public static final RegistryObject<Item> VIDEOCASSETTE = ITEMS.register("videocassette",
             () -> new VideocassetteItem(new Item.Properties().stacksTo(1)));
+
+    /**
+     * Fita DATA: a primeira das 21. Usar leva para a dimensao; usar la dentro volta.
+     *
+     * Uma fita por dimensao, todas do mesmo tipo de item — o que muda e a dimensao
+     * de destino no construtor. E o que evita 21 blocos de portal.
+     */
+    public static final RegistryObject<Item> TAPE_DATA = ITEMS.register("tape_data",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "data"));
+
+    /**
+     * O CALLER. Chama o apocalipse — uma vez por mundo, sem desfazer.
+     *
+     * Nao tem receita: so sai de bau, e raro. Uma coisa que muda o mundo inteiro nao
+     * pode ser algo que se decide fabricar; tem que ser algo que se ACHA, e a partir
+     * dali fica no inventario pesando.
+     */
+    public static final RegistryObject<Item> CALLER = ITEMS.register("caller",
+            () -> new CallerItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC)));
+
+    /** Fita CHUNKS: os pedacos de mundo boiando, ligados por pontes de madeira. */
+    public static final RegistryObject<Item> TAPE_CHUNKS = ITEMS.register("tape_chunks",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "chunks"));
+
+    /** Fita INSIDIOUS: os saloes de pedra sem teto, e a sala unica escondida neles. */
+    public static final RegistryObject<Item> TAPE_INSIDIOUS = ITEMS.register("tape_insidious",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "insidious"));
 
     /** Tripe: bloco que se planta e filma por voce. */
     public static final RegistryObject<Item> TRIPOD_ITEM = ITEMS.register("tripod",
@@ -276,6 +305,10 @@ public class ModItems {
      */
     public static final RegistryObject<Item> STONEMAN_SPAWN_EGG = ITEMS.register("stoneman_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntities.STONEMAN, 0x7A7A7A, 0x1A1A1A, new Item.Properties()));
+
+    /** Ovo das anomalias. Sorteia qual das tres no finalizeSpawn. */
+    public static final RegistryObject<Item> ANOMALY_SPAWN_EGG = ITEMS.register("anomaly_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntities.ANOMALY, 0x0D0D10, 0xC9C4B4, new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

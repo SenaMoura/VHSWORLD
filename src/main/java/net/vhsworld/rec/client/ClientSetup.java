@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.client.entity.AnomalyRenderer;
 import net.vhsworld.rec.client.entity.StonemanModel;
 import net.vhsworld.rec.client.entity.StonemanRenderer;
 import net.vhsworld.rec.client.screen.RFReceiverScreen;
@@ -23,17 +24,16 @@ public final class ClientSetup {
                 MenuScreens.register(ModMenus.RF_RECEIVER.get(), RFReceiverScreen::new));
     }
 
-    /** As tres geometrias do Homem de Pedra (a 1 e a 2 tem pedras a mais). */
+    /** A geometria do Homem de Pedra. Uma so: ele nao tem mais variantes. */
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(StonemanModel.BASE, StonemanModel::createBase);
-        event.registerLayerDefinition(StonemanModel.VARIANT_1, StonemanModel::createVariant1);
-        event.registerLayerDefinition(StonemanModel.VARIANT_2, StonemanModel::createVariant2);
     }
 
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.STONEMAN.get(), StonemanRenderer::new);
+        event.registerEntityRenderer(ModEntities.ANOMALY.get(), AnomalyRenderer::new);
     }
 
     private ClientSetup() {}

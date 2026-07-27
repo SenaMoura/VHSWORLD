@@ -1,0 +1,31 @@
+bulletstorm-burnouts: nenhum modelo encontrado (zip aninhado?)
+
+corpser
+    arquivo   : scream.fbx
+    malhas    : 1   triangulos: 19,818
+    esqueleto : SIM (137 ossos)
+    animacao  : SIM | acoes: Armature|C4D Animation Take|Layer0(1-85)
+    tamanho   : [10.87, 20.64, 10.65] (unidades do arquivo)
+
+greyface: nenhum modelo encontrado (zip aninhado?)
+
+horror-creature-character
+    arquivo   : maya2sketchfab.fbx
+    malhas    : 1   triangulos: 67,824
+    esqueleto : NAO
+    animacao  : SIM | acoes: Merged_head low1_3_oPP|Take 001|BaseLayer(1-201)
+    tamanho   : [0.76, 0.72, 1.55] (unidades do arquivo)
+
+moldman-in-shell
+    arquivo   : moldman.fbx
+    malhas    : 2   triangulos: 88,269
+    esqueleto : SIM (309 ossos)
+    animacao  : NAO
+    tamanho   : [1.9, 2.0, 2.0] (unidades do arquivo)
+
+ophanim-angel
+    arquivo   : opaawmea.fbx
+    malhas    : 6   triangulos: 147,208
+    esqueleto : SIM (24 ossos)
+    animacao  : SIM | acoes: Armature.001|Armature.001|Armature.002Action.002(1-228)
+    tamanho   : [4.71, 5.09, 4.88] (unidades do arquivo)

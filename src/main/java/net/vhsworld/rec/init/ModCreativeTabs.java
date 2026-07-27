@@ -18,6 +18,9 @@ public class ModCreativeTabs {
             event.accept(ModItems.CORRUPTED_BATTERY);
             event.accept(ModItems.BLANK_TAPE);
             event.accept(ModItems.VIDEOCASSETTE);
+            event.accept(ModItems.TAPE_DATA);
+            event.accept(ModItems.TAPE_CHUNKS);
+            event.accept(ModItems.CALLER);
             event.accept(ModItems.TRIPOD_ITEM);
             event.accept(ModItems.HAMMER);
             event.accept(ModItems.SHARP_SCISSORS);

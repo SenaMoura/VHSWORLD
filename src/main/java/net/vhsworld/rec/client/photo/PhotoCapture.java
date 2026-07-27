@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.entity.AnomalyEntity;
 import net.vhsworld.rec.client.codex.Codex;
 import net.vhsworld.rec.client.RealityTearSense;
 import net.vhsworld.rec.config.RECConfig;
@@ -46,6 +47,19 @@ public final class PhotoCapture {
         pending = true;
     }
 
+    /**
+     * Estamos no frame que vai virar fotografia?
+     *
+     * As anomalias de fita leem isto para se deixarem desenhar. Funciona porque a
+     * captura acontece no AFTER_WEATHER, ou seja DEPOIS das entidades: enquanto elas
+     * sao desenhadas, este metodo ainda devolve true. E o mesmo frame que o jogador
+     * ve — o lampejo de "acho que vi alguma coisa" nao e efeito, e a propria foto
+     * sendo tirada.
+     */
+    public static boolean isCapturing() {
+        return pending;
+    }
+
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (!pending) return;
@@ -63,7 +77,10 @@ public final class PhotoCapture {
             photo = new NativeImage(PHOTO_WIDTH, PHOTO_HEIGHT, false);
             frame.resizeSubRectTo(0, 0, frame.getWidth(), frame.getHeight(), photo);
 
-            PhotoAlbum.get().add(photo, findSubject(mc));
+            Entity subject = findSubject(mc);
+            String name = subject == null ? null : subject.getDisplayName().getString();
+            String anomaly = subject instanceof AnomalyEntity a ? a.type().id() : null;
+            PhotoAlbum.get().add(photo, name, anomaly);
             photo = null; // o album fecha a imagem
 
             // O mesmo disparo que guarda a foto tambem destranca o registro do que
@@ -88,7 +105,7 @@ public final class PhotoCapture {
      * proprias e mobs comuns nao interessam. Quando as entidades existirem, elas
      * ja caem aqui sozinhas — nao ha nada a mudar neste metodo.
      */
-    private static String findSubject(Minecraft mc) {
+    private static Entity findSubject(Minecraft mc) {
         Vec3 eye = mc.player.getEyePosition();
         Vec3 look = mc.player.getLookAngle();
 
@@ -141,7 +158,7 @@ public final class PhotoCapture {
         }
 
         LOG.info("[REC] foto com assunto: {}", best.getDisplayName().getString());
-        return best.getDisplayName().getString();
+        return best;
     }
 
     /**

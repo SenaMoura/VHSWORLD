@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.entity.AnomalyEntity;
 import net.vhsworld.rec.entity.StonemanEntity;
 
 /** As criaturas do mod. */
@@ -29,6 +30,23 @@ public class ModEntities {
                     .clientTrackingRange(16)
                     .updateInterval(2)
                     .build("stoneman"));
+
+    /**
+     * As anomalias 2D.
+     *
+     * A caixa e pequena de proposito (1.0 x 2.6) e nao acompanha o cartaz: ela nao
+     * colide com nada, entao a caixa so serve para o jogo saber onde a criatura
+     * esta e se ela cabe no frustum. Caixa do tamanho do desenho faria a aranha, que
+     * e larga, sumir da tela quando o centro dela saisse de vista.
+     */
+    public static final RegistryObject<EntityType<AnomalyEntity>> ANOMALY =
+            ENTITIES.register("anomaly", () -> EntityType.Builder
+                    .of(AnomalyEntity::new, MobCategory.MONSTER)
+                    .sized(1.0F, 2.6F)
+                    .clientTrackingRange(16)
+                    .updateInterval(3)
+                    .fireImmune()
+                    .build("anomaly"));
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);

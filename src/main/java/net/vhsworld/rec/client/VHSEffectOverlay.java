@@ -2,6 +2,7 @@ package net.vhsworld.rec.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.vhsworld.rec.client.entity.StonemanSurgeFx;
 import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 
@@ -57,9 +58,19 @@ public final class VHSEffectOverlay {
         if (RECConfig.CLIENT.scanlines.get() || corrupted) {
             drawScanlines(guiGraphics, left, right, top, bottom, corrupted ? dread : 0.0f);
         }
-        if (RECConfig.CLIENT.staticNoise.get() || corrupted) {
+        // Uma criatura de pedra andando com voce olhando para ela suja a fita na
+        // marra, igual a sanidade baixa: e aviso, nao enfeite — quem desligou o
+        // chiado desligou o enfeite.
+        double surge = StonemanSurgeFx.staticAmount();
+        // O mesmo caminho serve para o Ofanim: enquanto ele enche o medidor de olhar,
+        // a fita vai sujando. Duas criaturas, dois motivos, uma unica regra — quando
+        // uma delas esta perto de quebrar a sua vez, a imagem avisa.
+        surge = Math.max(surge, net.vhsworld.rec.client.entity.OphanimGazeFx.staticAmount());
+
+        if (RECConfig.CLIENT.staticNoise.get() || corrupted || surge > 0.0D) {
             double amount = RECConfig.CLIENT.staticAmount.get();
             if (corrupted) amount = Math.max(amount, dread * 0.55D);
+            if (surge > 0.0D) amount = Math.max(amount, surge);
             drawStatic(guiGraphics, left, right, top, bottom, wear, amount);
         }
         if (RECConfig.CLIENT.trackingBar.get() || corrupted) {

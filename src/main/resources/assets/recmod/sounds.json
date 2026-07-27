@@ -79,5 +79,128 @@
     "sounds": [
       "recmod:tape_static"
     ]
+  },
+  "sight_tall": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:sight_tall"
+    ]
+  },
+  "sight_spider": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:sight_spider"
+    ]
+  },
+  "sight_claws": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:sight_claws"
+    ]
+  },
+  "sight_stoneman": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:sight_stoneman"
+    ]
+  },
+  "dread_speech": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:dread_speech"
+    ]
+  },
+  "dread_broken": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:dread_broken"
+    ]
+  },
+  "dread_glitch": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:dread_glitch"
+    ]
+  },
+  "dread_steps": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:dread_steps"
+    ]
+  },
+  "dread_burnt": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:dread_burnt"
+    ]
+  },
+  "dread_flesh": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:dread_flesh"
+    ]
+  },
+  "sight_greyface": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:sight_greyface"
+    ]
+  },
+  "sight_ophanim": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:sight_ophanim"
+    ]
+  },
+  "greyface_chase": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "recmod:greyface_chase",
+        "stream": true
+      }
+    ]
+  },
+  "greyface_step": {
+    "category": "hostile",
+    "sounds": [
+      "recmod:greyface_step"
+    ]
+  },
+  "ophanim_drone": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "recmod:ophanim_drone",
+        "stream": true
+      }
+    ]
+  },
+  "music_data": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music_data",
+        "stream": true
+      }
+    ]
+  },
+  "music_chunks": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music_chunks",
+        "stream": true
+      }
+    ]
+  },
+  "music_insidious": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music_insidious",
+        "stream": true
+      }
+    ]
   }
 }

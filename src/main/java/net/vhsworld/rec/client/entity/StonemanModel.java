@@ -20,13 +20,13 @@ import net.vhsworld.rec.entity.StonemanEntity;
  * O modelo do Homem de Pedra.
  *
  * A geometria e a que o Pedro modelou no Blockbench, transcrita por script a partir
- * dos tres exports (tools/… no scratchpad) — nao foi redigitada. Duas coisas o
+ * do export (tools/build_stoneman_model.py) — nao foi redigitada. Duas coisas o
  * export nao entrega prontas: os nomes das partes vinham COM ESPACO ("Right Arm"),
  * que nao compila em Java, e o namespace era o placeholder "modid".
  *
- * As tres variantes tem o MESMO esqueleto (cintura -> cabeca, tronco, dois bracos;
- * raiz -> duas pernas), entao uma classe so serve as tres: muda a LayerDefinition e
- * a textura, nao o codigo.
+ * Ele teve tres variantes de geometria ate a v1.38.0. Foram removidas: um monstro
+ * com tres corpos diferentes vira "qual delas e essa?" na cabeca do jogador, e a
+ * duvida que interessa aqui e outra — se ele se mexeu ou nao.
  *
  * A animacao e escrita aqui porque o formato modded_entity nao guarda animacao —
  * o setupAnim do export vem vazio.
@@ -35,10 +35,6 @@ public class StonemanModel extends EntityModel<StonemanEntity> {
 
     public static final ModelLayerLocation BASE =
             new ModelLayerLocation(new ResourceLocation(RECMod.MOD_ID, "stoneman"), "main");
-    public static final ModelLayerLocation VARIANT_1 =
-            new ModelLayerLocation(new ResourceLocation(RECMod.MOD_ID, "stoneman_variant1"), "main");
-    public static final ModelLayerLocation VARIANT_2 =
-            new ModelLayerLocation(new ResourceLocation(RECMod.MOD_ID, "stoneman_variant2"), "main");
 
     private final ModelPart waist;
     private final ModelPart head;
@@ -81,63 +77,6 @@ public class StonemanModel extends EntityModel<StonemanEntity> {
         .texOffs(0, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
 
         PartDefinition leftLeg = root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
-        .texOffs(0, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(1.9F, 12.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 64);
-    }
-
-    /** Geometria de Stoneman_variant1.bbmodel. */
-    public static LayerDefinition createVariant1() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-
-        PartDefinition waist = root.addOrReplaceChild("waist", CubeListBuilder.create(), PartPose.offset(0.0F, 12.0F, 0.0F));
-
-        PartDefinition head = waist.addOrReplaceChild("head", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, -12.0F, 0.0F));
-
-        PartDefinition headR1 = head.addOrReplaceChild("head_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.0F, 3.0F, -0.3491F, 0.0F, 0.0F));
-
-        PartDefinition body = waist.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, -12.0F, 0.0F));
-
-        PartDefinition bodyR1 = body.addOrReplaceChild("body_r1", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, -6.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
-
-        PartDefinition rightArm = waist.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(40, 32).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(-5.0F, -10.0F, 0.0F));
-
-        PartDefinition leftArm = waist.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(48, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(5.0F, -10.0F, 0.0F));
-
-        PartDefinition rightLeg = root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
-        .texOffs(0, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
-
-        PartDefinition leftLeg = root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(1.9F, 12.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 64);
-    }
-
-    /** Geometria de Stoneman_variant2.bbmodel. */
-    public static LayerDefinition createVariant2() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-
-        PartDefinition waist = root.addOrReplaceChild("waist", CubeListBuilder.create(), PartPose.offset(0.0F, 12.0F, 0.0F));
-
-        PartDefinition head = waist.addOrReplaceChild("head", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, -12.0F, 0.0F));
-
-        PartDefinition headR1 = head.addOrReplaceChild("head_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, -3.0F, 0.3054F, 0.0F, 0.0F));
-
-        PartDefinition body = waist.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, -12.0F, 0.0F));
-
-        PartDefinition bodyR1 = body.addOrReplaceChild("body_r1", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, -24.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 24.0F, 2.0F, 0.1745F, 0.0F, 0.0F));
-
-        PartDefinition rightArm = waist.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(40, 32).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(-5.0F, -10.0F, 0.0F));
-
-        PartDefinition rightArmR1 = rightArm.addOrReplaceChild("right_arm_r1", CubeListBuilder.create().texOffs(40, 16).addBox(-8.0F, -21.0F, -2.0F, 4.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(5.0F, 22.0F, 0.0F, 0.0873F, 0.0F, 0.0F));
-
-        PartDefinition leftArm = waist.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(48, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(5.0F, -10.0F, 0.0F));
-
-        PartDefinition leftArmR1 = leftArm.addOrReplaceChild("left_arm_r1", CubeListBuilder.create().texOffs(32, 48).addBox(4.0F, -24.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-5.0F, 25.0F, 2.0F, 0.1309F, 0.0F, 0.0F));
-
-        PartDefinition rightLeg = root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
-        .texOffs(0, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
-
-        PartDefinition leftLeg = root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
         .texOffs(0, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(1.9F, 12.0F, 0.0F));
         return LayerDefinition.create(mesh, 64, 64);
     }

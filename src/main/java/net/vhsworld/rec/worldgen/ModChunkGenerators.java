@@ -24,6 +24,22 @@ public class ModChunkGenerators {
     public static final RegistryObject<Codec<? extends BiomeSource>> ALPHA_BIOMES =
             BIOME_SOURCES.register("alpha", () -> AlphaBiomeSource.CODEC);
 
+    /**
+     * A dimensao DATA. Nao usa fonte de biomas propria: e um bioma so no mapa
+     * inteiro (`minecraft:fixed`), porque a variacao dela vem das construcoes, nao
+     * do terreno — nao ha terreno.
+     */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> DATA =
+            GENERATORS.register("data", () -> net.vhsworld.rec.worldgen.dim.DataChunkGenerator.CODEC);
+
+    /** CHUNKS: pedacos de mundo boiando, ligados por pontes. Mesmo esquema da DATA. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> CHUNKS =
+            GENERATORS.register("chunks", () -> net.vhsworld.rec.worldgen.dim.ChunksChunkGenerator.CODEC);
+
+    /** INSIDIOUS: saloes de pedra sem teto sobre o vazio, em labirinto com becos. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> INSIDIOUS =
+            GENERATORS.register("insidious", () -> net.vhsworld.rec.worldgen.dim.InsidiousChunkGenerator.CODEC);
+
     public static void register(IEventBus eventBus) {
         GENERATORS.register(eventBus);
         BIOME_SOURCES.register(eventBus);

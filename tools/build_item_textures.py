@@ -715,6 +715,92 @@ def reality_tear():
     return img
 
 
+# --------------------------------------------------------------------- fitas
+#
+# AS FITAS DAS DIMENSOES sao variacoes da fita virgem, de proposito: no inventario
+# elas tem que se ler como "a mesma coisa, outra etiqueta". Quem ve uma fita sabe
+# na hora que aquilo se poe no aparelho — o que muda e a cor da etiqueta e o
+# rabisco escrito nela.
+#
+# A silhueta e copiada da blank_tape.png (12x9 de casco, com dois carreteis), e nao
+# redesenhada: duas fitas com contornos diferentes pareceriam itens de mods
+# diferentes.
+
+TAPE_SHELL = (16, 16, 20, 255)
+TAPE_EDGE = (10, 10, 12, 255)
+TAPE_INNER = (28, 28, 32, 255)
+TAPE_REEL = (70, 70, 78, 255)
+
+
+def dimension_tape(label, scrawl):
+    """Uma fita de dimensao. `label` e a cor da etiqueta; `scrawl` a do rabisco.
+
+    A caixa aqui e 3..12 por 5..11 porque o `outline` engorda um pixel para cada
+    lado: o resultado cai exatamente sobre 2..13 por 4..12, que e a pegada da
+    blank_tape.png. Sem essa conta a fita sai maior que a virgem e as duas param de
+    parecer o mesmo objeto na barra de itens.
+    """
+    img = blank()
+    rect(img, 3, 5, 12, 11, TAPE_SHELL)
+
+    # etiqueta: a faixa de cima, onde estaria o nome escrito a mao. O rabisco e
+    # ralo de proposito — cheio demais, a etiqueta le como uma barra colorida.
+    rect(img, 3, 5, 12, 6, label)
+    for x in (5, 7, 10):
+        put(img, x, 5, scrawl)
+    put(img, 8, 6, scrawl)
+
+    # os dois carreteis, com o furo do eixo no meio
+    for cx in (6, 10):
+        rect(img, cx - 1, 8, cx + 1, 10, TAPE_REEL)
+        put(img, cx, 9, TAPE_EDGE)
+    rect(img, 7, 9, 9, 9, TAPE_REEL)
+    put(img, 8, 9, TAPE_INNER)
+
+    outline(img, TAPE_EDGE)
+    return img
+
+
+# ---------------------------------------------------------------------- CALLER
+#
+# O item que liga o apocalipse. Ele NAO parece magico de proposito: e o mesmo
+# metal batido do resto da cadeia, com uma antena torta e uma luz vermelha. O
+# terror do CALLER nao esta na aparencia dele, esta em saber o que ele faz — e um
+# objeto feio que se acha num bau e que decide o mundo.
+#
+# A antena sai por cima da caixa e passa do topo do quadro: e o unico detalhe que
+# quebra a silhueta retangular, e e o que faz ele nao se confundir com a pilha nem
+# com o videocassete na barra de itens.
+
+CALLER_BODY = (44, 42, 46, 255)
+CALLER_DARK = (22, 21, 24, 255)
+CALLER_METAL = (128, 124, 118, 255)
+CALLER_LIGHT = (206, 44, 38, 255)
+
+
+def caller():
+    img = blank()
+
+    # antena: haste fina saindo do canto de cima e uma bolinha na ponta
+    line(img, 11, 8, 11, 3, CALLER_METAL)
+    put(img, 11, 2, CALLER_LIGHT)
+    put(img, 10, 3, CALLER_DARK)
+
+    # corpo
+    rect(img, 3, 8, 12, 13, CALLER_BODY)
+
+    # a luz, e o mostrador ao lado dela
+    rect(img, 4, 9, 5, 10, CALLER_LIGHT)
+    rect(img, 7, 9, 11, 10, CALLER_DARK)
+
+    # grade de baixo: so tres riscos, para nao virar textura de ruido
+    for x in (5, 7, 9):
+        put(img, x, 12, CALLER_DARK)
+
+    outline(img, CALLER_DARK)
+    return img
+
+
 def main():
     print("blocos:")
     save(corrupted_stone(), BLOCK_DIR, "corrupted_stone")
@@ -736,6 +822,17 @@ def main():
     save(anchor(), ITEM_DIR, "anchor")
     save(lure_clock(), ITEM_DIR, "lure_clock")
     save(reality_tear(), ITEM_DIR, "reality_tear")
+
+    # Uma cor de etiqueta por dimensao. Elas so se distinguem por isso, e e o
+    # bastante: na barra de itens o que o olho pega e a mancha de cor, nao o desenho.
+    # DATA: verde de fosforo de monitor (os corredores de andesito).
+    # CHUNKS: o marrom da terra exposta na borda dos pedacos de mundo.
+    print("fitas de dimensao:")
+    save(dimension_tape((122, 196, 132, 255), (18, 44, 24, 255)), ITEM_DIR, "tape_data")
+    save(dimension_tape((176, 134, 88, 255), (52, 32, 18, 255)), ITEM_DIR, "tape_chunks")
+
+    print("caller:")
+    save(caller(), ITEM_DIR, "caller")
 
     print("fenda animada:")
     save(fracture_animated(), ITEM_DIR, "fracture")

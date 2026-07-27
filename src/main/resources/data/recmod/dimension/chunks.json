@@ -1,0 +1,10 @@
+{
+  "type": "recmod:chunks",
+  "generator": {
+    "type": "recmod:chunks",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:chunks"
+    }
+  }
+}

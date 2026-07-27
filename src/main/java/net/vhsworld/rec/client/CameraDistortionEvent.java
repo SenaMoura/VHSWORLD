@@ -7,6 +7,8 @@ import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.client.entity.OphanimGazeFx;
+import net.vhsworld.rec.client.entity.StonemanSurgeFx;
 import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
 
@@ -49,6 +51,36 @@ public class CameraDistortionEvent {
             event.setYaw(event.getYaw() + other * panic * 1.6f);
             // O roll é o que dá o enjoo: o horizonte deixa de ser confiável.
             event.setRoll(event.getRoll() + fast * panic * 0.9f);
+        }
+
+        // 3. O chão treme: alguma coisa de pedra se soltou perto de você.
+        // Tremor mais grosso e mais lento que o do susto — não é o teu pulso, é peso
+        // caminhando. E entra sem pedir sanidade nem câmera ligada: é o mundo.
+        float quake = StonemanSurgeFx.shakeAmount();
+        if (quake > 0.0f) {
+            float heavy = (float) Math.sin(time * 0.9) + (float) Math.sin(time * 1.4) * 0.5f;
+            float side = (float) Math.cos(time * 1.1);
+
+            event.setPitch(event.getPitch() + heavy * quake * 1.1f);
+            event.setYaw(event.getYaw() + side * quake * 0.8f);
+            event.setRoll(event.getRoll() + side * quake * 0.6f);
+        }
+
+        // 4. O horizonte ENTORTA: o Ofanim está com os olhos em você.
+        //
+        // Este é o único dos quatro que mora quase todo no ROLL, e de propósito. Os
+        // outros tremem — pulso, susto, peso batendo no chão — e tremor o jogador lê
+        // como "algo aconteceu". Entortar devagar não é um acontecimento: é o mundo
+        // deixando de estar de pé, e é exatamente isso que se sente antes de cair.
+        // Numa dimensão que é só abismo e ponte de oito blocos, o horizonte torto vale
+        // mais que qualquer dano.
+        float tilt = OphanimGazeFx.tiltAmount();
+        if (tilt > 0.0f) {
+            float slow = (float) Math.sin(time * 0.11) + (float) Math.sin(time * 0.19) * 0.5f;
+            float drift = (float) Math.cos(time * 0.07);
+
+            event.setRoll(event.getRoll() + slow * tilt * 9.0f);
+            event.setPitch(event.getPitch() + drift * tilt * 1.2f);
         }
     }
 }

@@ -9,6 +9,7 @@ import net.vhsworld.rec.client.VHSButton;
 import net.vhsworld.rec.client.difficulty.DifficultyState;
 import net.vhsworld.rec.client.sanity.SanityState;
 import net.vhsworld.rec.config.RECConfig;
+import net.vhsworld.rec.entity.AnomalyType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -130,6 +131,14 @@ public class PhotoAlbumScreen extends Screen {
                 SanityState.get().sighting(
                         RECConfig.CLIENT.sanityLossPerSighting.get().floatValue()
                                 * DifficultyState.current().sanityLossMultiplier());
+            }
+
+            // E se o que estava ali era uma anomalia, esta revelacao conta. Passado o
+            // limite, ela deixa de precisar da fita para existir. O jogador nao e
+            // avisado: descobrir que olhar demais tem consequencia E a descoberta.
+            if (open.anomaly != null) {
+                AnomalyType type = AnomalyType.byId(open.anomaly);
+                if (type != null) AnomalySightings.get().note(type);
             }
         }
     }

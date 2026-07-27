@@ -140,8 +140,31 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue inkTransition;
         public final ForgeConfigSpec.DoubleValue inkSeconds;
 
+        // --- neblina ---
+        public final ForgeConfigSpec.BooleanValue oldFog;
+        public final ForgeConfigSpec.DoubleValue oldFogDensity;
+
         // --- audio ---
         public final ForgeConfigSpec.DoubleValue horrorVolume;
+
+        // --- criaturas (so o que a tela faz; a REGRA fica no COMMON) ---
+        public final ForgeConfigSpec.BooleanValue stonemanSurgeShake;
+        public final ForgeConfigSpec.BooleanValue stonemanSurgeStatic;
+        public final ForgeConfigSpec.BooleanValue anomalies;
+        public final ForgeConfigSpec.IntValue anomalyRevealsToManifest;
+        public final ForgeConfigSpec.BooleanValue sightSounds;
+        public final ForgeConfigSpec.IntValue sightSoundRest;
+        public final ForgeConfigSpec.BooleanValue ambientDread;
+        public final ForgeConfigSpec.IntValue ambientDreadMinSeconds;
+        public final ForgeConfigSpec.IntValue ambientDreadMaxSeconds;
+        public final ForgeConfigSpec.DoubleValue ambientDreadVolume;
+        public final ForgeConfigSpec.BooleanValue chaseMusic;
+        public final ForgeConfigSpec.DoubleValue chaseMusicVolume;
+        public final ForgeConfigSpec.BooleanValue ophanimDrone;
+        public final ForgeConfigSpec.DoubleValue ophanimDroneVolume;
+        public final ForgeConfigSpec.BooleanValue ophanimVertigo;
+        public final ForgeConfigSpec.DoubleValue ophanimVertigoStrength;
+        public final ForgeConfigSpec.BooleanValue ophanimGazeStatic;
 
         Client(ForgeConfigSpec.Builder b) {
             b.comment("Visual da filmadora. Tudo aqui e client-side: nao muda regra de jogo,",
@@ -637,12 +660,144 @@ public final class RECConfig {
 
             b.pop();
 
+            b.comment("A neblina antiga (alpha / r1.6.4) DENTRO das dimensoes do mod.",
+                      "No overworld quem faz isto e o NostalgicTweaks, mas ele so trata",
+                      "overworld e nether — dimensao de mod ficava com a neblina moderna e o",
+                      "jogador via o mundo trocar de linguagem visual ao atravessar a fita.",
+                      "Nao mexe na COR: essa vem do bioma de cada dimensao.")
+             .push("neblina");
+
+            oldFog = b
+                    .comment("Liga a neblina antiga nas dimensoes recmod:*. Desligada, elas voltam",
+                             "a usar a neblina do jogo (nitido de perto, corte seco no fim).")
+                    .define("oldFog", true);
+
+            oldFogDensity = b
+                    .comment("Aperta ou solta a bruma. 1.0 = a curva original do alpha.",
+                             "ABAIXO de 1.0 fecha mais perto (0.6 e bem sufocante); acima abre.",
+                             "Isto multiplica so a distancia FINAL — o inicio e sempre zero, que",
+                             "e o que da o ar de foto velha em vez de parede de neblina.")
+                    .defineInRange("oldFogDensity", 1.0D, 0.2D, 2.0D);
+
+            b.pop();
+
             b.comment("Volume dos sons de terror do mod.").push("audio");
 
             horrorVolume = b
                     .comment("Multiplicador dos sons do mod (grito, passos, camera).",
                              "0.0 silencia so o REC, sem mexer no volume do Minecraft.")
                     .defineInRange("horrorVolume", 1.0D, 0.0D, 2.0D);
+
+            b.pop();
+
+            b.comment("O que a TELA faz quando uma criatura quebra a propria regra.",
+                      "Aqui so mora o aviso; quando e com que frequencia ela quebra fica",
+                      "no COMMON, senao cliente e servidor discordariam do jogo.")
+             .push("criaturas");
+
+            stonemanSurgeShake = b
+                    .comment("Homem de Pedra: a tela treme quando ele anda sendo olhado.")
+                    .define("stonemanSurgeShake", true);
+
+            stonemanSurgeStatic = b
+                    .comment("Homem de Pedra: chiado por cima da imagem durante o surto.",
+                             "Vale mesmo com o chiado normal desligado — este e o aviso de",
+                             "que a regra caiu, nao enfeite de fita.")
+                    .define("stonemanSurgeStatic", true);
+
+            anomalies = b
+                    .comment("Desenha as anomalias 2D. Isto e CLIENT de proposito: elas",
+                             "existem no mundo de qualquer jeito, e o que muda aqui e se os",
+                             "teus olhos as alcancam. Desligado, o mundo fica com criaturas",
+                             "que voce nunca ve — inclusive nas fotos.")
+                    .define("anomalies", true);
+
+            anomalyRevealsToManifest = b
+                    .comment("Quantas fotos de uma anomalia voce precisa REVELAR para ela",
+                             "passar a aparecer a olho nu (so vale para as que sao 'so na",
+                             "fita ate voce insistir'). Conta por mundo. Baixo demais e o",
+                             "truque queima na primeira noite; alto demais e o jogador nunca",
+                             "descobre que insistir tem preco.")
+                    .defineInRange("anomalyRevealsToManifest", 3, 1, 64);
+
+            sightSounds = b
+                    .comment("Cada criatura tem um som proprio quando entra no teu campo",
+                             "de visao. E o que faz o jogador aprender a associar aquele",
+                             "ruido AQUELA coisa — depois de um tempo o som sozinho ja",
+                             "carrega o medo, sem precisar ver de novo.")
+                    .define("sightSounds", true);
+
+            sightSoundRest = b
+                    .comment("Segundos ate a MESMA criatura poder assustar de novo. Baixo",
+                             "demais e olhar fixo vira metralhadora de susto e o efeito",
+                             "morre em dez segundos.")
+                    .defineInRange("sightSoundRest", 45, 1, 3600);
+
+            ambientDread = b
+                    .comment("Ruidos que tocam do nada, sem criatura nenhuma por perto.",
+                             "A maior parte do medo acontece quando NAO esta acontecendo",
+                             "nada; isto e o que ocupa esse silencio.")
+                    .define("ambientDread", true);
+
+            ambientDreadMinSeconds = b
+                    .comment("Menor espera entre dois ruidos de fundo.")
+                    .defineInRange("ambientDreadMinSeconds", 90, 5, 3600);
+
+            ambientDreadMaxSeconds = b
+                    .comment("Maior espera entre dois ruidos de fundo. A DISTANCIA entre os",
+                             "dois numeros e a mecanica: intervalo fixo vira metronomo, e",
+                             "metronomo nao assusta ninguem.")
+                    .defineInRange("ambientDreadMaxSeconds", 300, 5, 3600);
+
+            ambientDreadVolume = b
+                    .comment("Volume dos ruidos de fundo. Baixo de proposito: tem que caber",
+                             "a duvida de ter ouvido mesmo.")
+                    .defineInRange("ambientDreadVolume", 0.55D, 0.0D, 1.0D);
+
+            chaseMusic = b
+                    .comment("A trilha que toca enquanto o Cara Cinza esta atras de voce, e",
+                             "para quando ele desiste. Ela nao e enfeite: e o unico jeito de",
+                             "saber que foi VISTO — a criatura nao grita nem muda de pose.",
+                             "Desligada, a perseguicao vira silenciosa (mais cruel, e uma",
+                             "escolha valida).")
+                    .define("chaseMusic", true);
+
+            chaseMusicVolume = b
+                    .comment("Volume da trilha da cacada. Ela toca colada no ouvido (nao vem",
+                             "da criatura), como trilha de filme, entao um pouco abaixo do",
+                             "teto ja e alto.")
+                    .defineInRange("chaseMusicVolume", 0.75D, 0.0D, 1.0D);
+
+            ophanimDrone = b
+                    .comment("O zumbido do Ofanim, que cresce conforme voce se aproxima. E o",
+                             "que da PESO a uma criatura que nunca se mexe do lugar; sem ele",
+                             "uma coisa de treze blocos de altura fica muda como cenario.")
+                    .define("ophanimDrone", true);
+
+            ophanimDroneVolume = b
+                    .comment("Volume do zumbido no ponto mais perto. Ele ja cai com a",
+                             "distancia sozinho.")
+                    .defineInRange("ophanimDroneVolume", 0.85D, 0.0D, 1.0D);
+
+            ophanimVertigo = b
+                    .comment("O horizonte entorta enquanto o Ofanim esta com os olhos em",
+                             "voce, e da um estouro quando ele cobra. Isto e o AVISO da",
+                             "mecanica dele: desligado, a criatura continua igual, mas o",
+                             "julgamento passa a chegar sem nenhum sinal antes — o que e",
+                             "mais cruel e bem menos justo.")
+                    .define("ophanimVertigo", true);
+
+            ophanimVertigoStrength = b
+                    .comment("Quanto a camera entorta. E o knob de quem passa mal com",
+                             "movimento de tela: em 0.3 o efeito ainda se percebe, e a",
+                             "informacao (ele esta te olhando) continua chegando.")
+                    .defineInRange("ophanimVertigoStrength", 1.0D, 0.0D, 3.0D);
+
+            ophanimGazeStatic = b
+                    .comment("A fita suja quando o medidor de olhar dele passa dos 60%.",
+                             "Vale mesmo com o chiado normal desligado, pelo mesmo motivo do",
+                             "Homem de Pedra: aqui o chiado nao e enfeite, e o relogio.")
+                    .define("ophanimGazeStatic", true);
 
             b.pop();
         }
@@ -664,6 +819,44 @@ public final class RECConfig {
 
         // --- criaturas ---
         public final ForgeConfigSpec.DoubleValue stonemanWatchRange;
+        public final ForgeConfigSpec.BooleanValue stonemanSurge;
+        public final ForgeConfigSpec.IntValue stonemanSurgeIntervalMin;
+        public final ForgeConfigSpec.IntValue stonemanSurgeIntervalMax;
+        public final ForgeConfigSpec.DoubleValue stonemanStareBreakSeconds;
+        public final ForgeConfigSpec.DoubleValue stonemanSurgeMinSeconds;
+        public final ForgeConfigSpec.DoubleValue stonemanSurgeMaxSeconds;
+        public final ForgeConfigSpec.DoubleValue stonemanAmbushRange;
+        public final ForgeConfigSpec.DoubleValue stonemanAmbushDamage;
+        public final ForgeConfigSpec.BooleanValue stonemanBuilds;
+        public final ForgeConfigSpec.IntValue stonemanBuildMaxBlocks;
+        public final ForgeConfigSpec.IntValue stonemanBuildCooldown;
+        public final ForgeConfigSpec.IntValue anomalyLifetimeSeconds;
+        public final ForgeConfigSpec.DoubleValue anomalyVanishRange;
+        public final ForgeConfigSpec.DoubleValue greyfaceSpeed;
+        public final ForgeConfigSpec.DoubleValue greyfaceChaseRange;
+        public final ForgeConfigSpec.BooleanValue greyfaceSteps;
+        public final ForgeConfigSpec.DoubleValue greyfaceStepVolume;
+
+        // --- o Ofanim: o olhar reciproco ---
+        public final ForgeConfigSpec.BooleanValue ophanimInChunks;
+        public final ForgeConfigSpec.BooleanValue ophanimGaze;
+        public final ForgeConfigSpec.DoubleValue ophanimGazeSeconds;
+        public final ForgeConfigSpec.DoubleValue ophanimReleaseFactor;
+        public final ForgeConfigSpec.DoubleValue ophanimGazeRange;
+        public final ForgeConfigSpec.DoubleValue ophanimApproach;
+        public final ForgeConfigSpec.DoubleValue ophanimHoverAbove;
+        public final ForgeConfigSpec.DoubleValue ophanimContactRange;
+        public final ForgeConfigSpec.BooleanValue ophanimEscalates;
+        public final ForgeConfigSpec.DoubleValue ophanimVertigoSeconds;
+        public final ForgeConfigSpec.DoubleValue ophanimBlindSeconds;
+        public final ForgeConfigSpec.DoubleValue ophanimSanityCost;
+        public final ForgeConfigSpec.DoubleValue ophanimReturnSeconds;
+        public final ForgeConfigSpec.DoubleValue ophanimSwarmChance;
+        public final ForgeConfigSpec.IntValue ophanimSwarmSize;
+        public final ForgeConfigSpec.BooleanValue ophanimFlashBurn;
+        public final ForgeConfigSpec.DoubleValue ophanimFlashRange;
+        public final ForgeConfigSpec.DoubleValue ophanimFlashPushback;
+        public final ForgeConfigSpec.DoubleValue ophanimFlashBlindSeconds;
 
         Common(ForgeConfigSpec.Builder b) {
             b.comment("Pilhas espalhadas pelo chao perto dos jogadores, para achar explorando.")
@@ -705,6 +898,238 @@ public final class RECConfig {
                              "congela. Sem teto, alguem do outro lado do mapa apontado por acaso",
                              "na direcao dele o prenderia para sempre. Parede corta o olhar.")
                     .defineInRange("stonemanWatchRange", 24.0D, 4.0D, 128.0D);
+
+            stonemanSurge = b
+                    .comment("Liga o SURTO: de vez em quando ele anda mesmo sendo olhado.",
+                             "Desligado, ele volta a ser uma estatua honesta que sempre para",
+                             "sob o olhar — mais justo, e bem menos assustador.")
+                    .define("stonemanSurge", true);
+
+            stonemanSurgeIntervalMin = b
+                    .comment("Menor espera entre surtos espontaneos, em segundos.",
+                             "O relogio so corre com um jogador por perto: o susto e do",
+                             "encontro, nao do bicho sozinho no meio do mato.")
+                    .defineInRange("stonemanSurgeIntervalMin", 15, 1, 3600);
+
+            stonemanSurgeIntervalMax = b
+                    .comment("Maior espera entre surtos espontaneos, em segundos.",
+                             "A distancia entre os dois numeros e a mecanica inteira: se forem",
+                             "iguais, o jogador aprende a contar e o medo vira cronometro.")
+                    .defineInRange("stonemanSurgeIntervalMax", 45, 1, 3600);
+
+            stonemanStareBreakSeconds = b
+                    .comment("Encarar sem piscar por tantos segundos FORCA um surto.",
+                             "E o que impede a solucao chata de fitar o bicho para sempre:",
+                             "olhar prende, mas olhar demais quebra a regra.")
+                    .defineInRange("stonemanStareBreakSeconds", 5.0D, 0.5D, 120.0D);
+
+            stonemanSurgeMinSeconds = b
+                    .comment("Duracao minima do surto, em segundos.")
+                    .defineInRange("stonemanSurgeMinSeconds", 2.0D, 0.2D, 30.0D);
+
+            stonemanSurgeMaxSeconds = b
+                    .comment("Duracao maxima do surto, em segundos. Curto de proposito: o",
+                             "terror e a regra falhar por um instante, nao ele virar mob comum.")
+                    .defineInRange("stonemanSurgeMaxSeconds", 4.0D, 0.2D, 30.0D);
+
+            stonemanAmbushRange = b
+                    .comment("A que distancia, em blocos, ele da a paulada imediata quando se",
+                             "solta — ao surtar colado em voce ou quando voce desvia os olhos",
+                             "com ele ja em cima. Fora disso ele so persegue.")
+                    .defineInRange("stonemanAmbushRange", 3.0D, 0.0D, 16.0D);
+
+            stonemanAmbushDamage = b
+                    .comment("Multiplicador do dano da emboscada sobre o golpe normal.")
+                    .defineInRange("stonemanAmbushDamage", 1.75D, 0.5D, 5.0D);
+
+            stonemanBuilds = b
+                    .comment("Ele empilha pedregulho para subir atras de voce e poe chao",
+                             "para atravessar buraco. Desligado, a torre de terra volta a",
+                             "ser um esconderijo perfeito — e ele, um problema resolvido.",
+                             "Obedece TAMBEM ao gamerule mobGriefing.")
+                    .define("stonemanBuilds", true);
+
+            stonemanBuildMaxBlocks = b
+                    .comment("Quantos blocos ele poe de uma vez antes de desistir e",
+                             "descansar. E o teto que impede a obra infinita atras de quem",
+                             "esta voando ou fora de alcance.")
+                    .defineInRange("stonemanBuildMaxBlocks", 12, 1, 256);
+
+            stonemanBuildCooldown = b
+                    .comment("Ticks entre um bloco e o proximo (20 = 1 segundo). Baixo",
+                             "demais e a torre nasce num piscar; a graca e voce voltar a",
+                             "olhar e ela ja estar mais alta.")
+                    .defineInRange("stonemanBuildCooldown", 8, 1, 200);
+
+            anomalyLifetimeSeconds = b
+                    .comment("Quanto tempo uma anomalia fica no mundo antes de se apagar.",
+                             "Elas sao efemeras de proposito: anomalia que espera parada de",
+                             "ser examinada vira estatua de museu.")
+                    .defineInRange("anomalyLifetimeSeconds", 180, 5, 3600);
+
+            anomalyVanishRange = b
+                    .comment("A que distancia, em blocos, ela se desfaz quando voce avanca.",
+                             "Nunca deixe o jogador ALCANCAR uma anomalia: de perto, o cartaz",
+                             "2D se entrega e o medo acaba junto.")
+                    .defineInRange("anomalyVanishRange", 4.0D, 0.0D, 32.0D);
+
+            greyfaceSpeed = b
+                    .comment("Velocidade do Cara Cinza, a unica que caca (0.23 = zumbi,",
+                             "0.30 = aranha, 0.42 = lobo). Ela precisa ser mais rapida que",
+                             "o jogador andando e por volta do jogador correndo: se der para",
+                             "fugir andando, ela nao assusta; se for rapida demais, correr",
+                             "deixa de ser uma saida e ai nao ha jogo, so castigo.")
+                    .defineInRange("greyfaceSpeed", 0.52D, 0.05D, 1.0D);
+
+            greyfaceChaseRange = b
+                    .comment("A que distancia, em blocos, a perseguicao conta como perseguicao",
+                             "— e a trilha toca. Alem disto ela pode continuar te procurando,",
+                             "mas em silencio.")
+                    .defineInRange("greyfaceChaseRange", 40.0D, 4.0D, 128.0D);
+
+            greyfaceSteps = b
+                    .comment("Passos altos do Cara Cinza. Servem de radar honesto: da para",
+                             "saber de onde ela vem sem ter visto nada. Isto e COMMON porque o",
+                             "som sai do servidor — passo pesado todo mundo ouve.")
+                    .define("greyfaceSteps", true);
+
+            greyfaceStepVolume = b
+                    .comment("Volume do passo. Acima de 1.0 o Minecraft tambem AUMENTA O",
+                             "ALCANCE do som, e e isso que se quer aqui: ouvir de longe.")
+                    .defineInRange("greyfaceStepVolume", 1.8D, 0.0D, 4.0D);
+
+            ophanimInChunks = b
+                    .comment("O Ofanim mora no ceu da dimensao CHUNKS, mantido em UM por um",
+                             "Diretor. Desligado, a CHUNKS volta a ser paisagem vazia — o que",
+                             "e uma escolha valida se voce so quer explorar as colunas.",
+                             "NAO ligue spawn natural no lugar disto: num bioma onde ela e o",
+                             "unico monstro, a anomalia enche o teto de spawn do jogo sozinha",
+                             "(foi assim que a DATA chegou a mais de cem e 1 fps).")
+                    .define("ophanimInChunks", true);
+
+            ophanimGaze = b
+                    .comment("A REGRA DO OFANIM: ele so se mexe enquanto voce esta olhando",
+                             "para ele, e olhar demais tem preco. Desligado, ele volta a ser",
+                             "a presenca parada que era antes da 1.63.0 — continua enorme e",
+                             "continua zumbindo, mas nao vem, nao cobra e nao tem saida",
+                             "porque nao tem ameaca.")
+                    .define("ophanimGaze", true);
+
+            ophanimGazeSeconds = b
+                    .comment("Segundos de olhar CONTINUO ate ele cobrar. E o cronometro que o",
+                             "jogador aprende a sentir sem nunca ver: baixo demais e olhar",
+                             "para o ceu vira roleta, alto demais e da para encarar a coisa a",
+                             "vontade e a fuga deixa de existir.")
+                    .defineInRange("ophanimGazeSeconds", 8.0D, 1.0D, 120.0D);
+
+            ophanimReleaseFactor = b
+                    .comment("Quao mais devagar o medidor DESCE quando voce desvia os olhos.",
+                             "0.5 = leva o dobro do tempo para esvaziar do que levou para",
+                             "encher. Isto e o coracao do balanceamento: em 1.0 a jogada otima",
+                             "vira piscar em ritmo e a criatura vira um jogo de compasso; em",
+                             "0.5 desviar alivia, mas voce continua devendo o que ja deu.")
+                    .defineInRange("ophanimReleaseFactor", 0.5D, 0.05D, 4.0D);
+
+            ophanimGazeRange = b
+                    .comment("De quantos blocos o olhar dele ainda alcanca voce. Coluna no meio",
+                             "do caminho corta — e, na CHUNKS, coluna e o unico esconderijo.")
+                    .defineInRange("ophanimGazeRange", 96.0D, 8.0D, 256.0D);
+
+            ophanimApproach = b
+                    .comment("Blocos por tick que ele desliza na sua direcao ENQUANTO esta",
+                             "sendo olhado (0.09 = 1.8 blocos por segundo, pouco mais lento",
+                             "que um jogador andando). Ele atravessa o vazio em linha reta,",
+                             "porque o vazio nao e obstaculo para quem voa.")
+                    .defineInRange("ophanimApproach", 0.09D, 0.0D, 1.0D);
+
+            ophanimHoverAbove = b
+                    .comment("Quantos blocos acima dos SEUS OLHOS ele mira ao se aproximar.",
+                             "Chegando por cima, quanto mais perto mais voce precisa levantar",
+                             "a cabeca — e levantar a cabeca e continuar olhando. A propria",
+                             "aproximacao dele cobra mais medidor.")
+                    .defineInRange("ophanimHoverAbove", 9.0D, 0.0D, 64.0D);
+
+            ophanimContactRange = b
+                    .comment("Deixar ele chegar a esta distancia cobra na hora, com o medidor",
+                             "pela metade ou vazio. Sem isto, correr para debaixo dele seria",
+                             "uma forma de escapar do julgamento — e deixar a coisa encostar",
+                             "tem que ser o pior desfecho, nao o melhor.")
+                    .defineInRange("ophanimContactRange", 6.0D, 0.0D, 32.0D);
+
+            ophanimEscalates = b
+                    .comment("O castigo SOBE a cada julgamento: vertigem, depois cegueira,",
+                             "depois ele te leva para outra coluna — e volta ao comeco.",
+                             "Desligado, e sempre vertigem. Sempre no maximo tambem nao seria",
+                             "melhor: o jogador aprenderia a nunca mais chegar perto, e a",
+                             "criatura viraria uma parede em vez de um encontro.")
+                    .define("ophanimEscalates", true);
+
+            ophanimVertigoSeconds = b
+                    .comment("Duracao da VERTIGEM (o primeiro castigo). A tela perde o prumo,",
+                             "mas voce continua enxergando tudo — inclusive onde acaba o chao.")
+                    .defineInRange("ophanimVertigoSeconds", 9.0D, 0.5D, 60.0D);
+
+            ophanimBlindSeconds = b
+                    .comment("Duracao da CEGUEIRA (o segundo castigo). Cinco segundos parado",
+                             "no meio de uma ponte de oito blocos e o castigo exato desta",
+                             "dimensao: ele nao te mata, voce e que pode se matar. Subir muito",
+                             "isto passa de tensao para castigo puro.")
+                    .defineInRange("ophanimBlindSeconds", 5.0D, 0.5D, 60.0D);
+
+            ophanimSanityCost = b
+                    .comment("Sanidade que um julgamento custa (o terceiro estagio cobra o",
+                             "dobro do primeiro).",
+                             "⚠️ ATE A 1.62.0 REVELAR UMA FOTO ERA A UNICA FONTE DE PERDA DE",
+                             "SANIDADE NO MOD. Esta e a segunda, e ela obedece ao mesmo",
+                             "principio: so cobra de quem ESCOLHEU olhar. Em 0 a mecanica",
+                             "inteira continua de pe sem tocar na sanidade.")
+                    .defineInRange("ophanimSanityCost", 6.0D, 0.0D, 100.0D);
+
+            ophanimReturnSeconds = b
+                    .comment("Segundos que ele fica fora depois de cobrar. E o PISO DE",
+                             "SILENCIO: sem ele o Ofanim voltaria no mesmo minuto e o castigo",
+                             "perderia o peso de ter acabado. O terror mora no intervalo.")
+                    .defineInRange("ophanimReturnSeconds", 45.0D, 0.0D, 600.0D);
+
+            ophanimSwarmChance = b
+                    .comment("Chance de o Diretor mandar um CERCO em vez de um Ofanim so:",
+                             "tres de uma vez, um em cada lado do jogador, e mais perto.",
+                             "No cerco, OLHAR PARA UM FAZ OS TRES ANDAREM — mas so o que voce",
+                             "olhou enche o medidor. A saida continua sendo a mesma (nao olhar",
+                             "para nenhum), so que agora ela custa de verdade.",
+                             "Raro de proposito: se todo encontro fosse cerco, o Ofanim",
+                             "solitario deixaria de assustar e o cerco viraria a rotina.")
+                    .defineInRange("ophanimSwarmChance", 0.15D, 0.0D, 1.0D);
+
+            ophanimSwarmSize = b
+                    .comment("Quantos vem no cerco. Tres e o numero que cerca sem entupir o",
+                             "ceu — sao treze blocos de cartaz cada um. Se a planta nao tiver",
+                             "coluna que sirva para todos, entram menos.")
+                    .defineInRange("ophanimSwarmSize", 3, 2, 6);
+
+            ophanimFlashBurn = b
+                    .comment("O CLARAO QUEIMA O OLHO DELE: zera o medidor, empurra ele para",
+                             "longe e o deixa cego por uns segundos. E a unica coisa no mod",
+                             "que empurra uma anomalia, e existe para a camera poder AGIR, e",
+                             "nao so olhar. Desligado, a unica saida volta a ser baixar os",
+                             "olhos e andar.")
+                    .define("ophanimFlashBurn", true);
+
+            ophanimFlashRange = b
+                    .comment("De quantos blocos o flash ainda o alcanca. Ele precisa estar",
+                             "ENQUADRADO: clarao de costas nao queima nada.")
+                    .defineInRange("ophanimFlashRange", 64.0D, 4.0D, 256.0D);
+
+            ophanimFlashPushback = b
+                    .comment("Quantos blocos ele recua com o clarao. Recua na linha do teu",
+                             "olhar e mantendo a altura — o que se quer e ve-lo ficar PEQUENO.")
+                    .defineInRange("ophanimFlashPushback", 28.0D, 0.0D, 128.0D);
+
+            ophanimFlashBlindSeconds = b
+                    .comment("Segundos em que ele fica cego depois do clarao: nao ganha medidor",
+                             "e nao anda. E a janela em que da para atravessar a ponte olhando",
+                             "para a frente. O preco ja foi pago na bateria.")
+                    .defineInRange("ophanimFlashBlindSeconds", 6.0D, 0.0D, 60.0D);
 
             b.pop();
         }

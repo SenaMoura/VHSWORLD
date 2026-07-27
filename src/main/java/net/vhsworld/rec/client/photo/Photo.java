@@ -24,6 +24,15 @@ public class Photo {
      */
     public String subject;
 
+    /**
+     * O id da anomalia que saiu no filme, se foi uma delas.
+     *
+     * Fica separado do `subject` (que e texto de tela, traduzido) porque quem le
+     * isto e maquina: e por ele que a revelacao sobe o contador que um dia traz a
+     * criatura para fora da fita.
+     */
+    public String anomaly;
+
     /** Revelada = da para ver a imagem. */
     public boolean developed;
 

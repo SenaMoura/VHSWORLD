@@ -71,6 +71,106 @@ public class ModSounds {
             SOUND_EVENTS.register("tape_static",
                     () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "tape_static")));
 
+
+    // ---------------------------------------------------------------- criaturas
+    //
+    // Sons que o Pedro separou. ⚠️ Eles chegaram como .mp3 e foram convertidos para
+    // .ogg pelo tools/import_sounds.py — o Minecraft nao toca mp3, e o sintoma disso
+    // e um som que simplesmente nunca sai, sem erro nenhum no log.
+
+    /** Um por criatura: o jogador precisa aprender a associar o som AQUELA coisa. */
+    public static final RegistryObject<SoundEvent> SIGHT_TALL =
+            SOUND_EVENTS.register("sight_tall", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "sight_tall")));
+
+    public static final RegistryObject<SoundEvent> SIGHT_SPIDER =
+            SOUND_EVENTS.register("sight_spider", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "sight_spider")));
+
+    public static final RegistryObject<SoundEvent> SIGHT_CLAWS =
+            SOUND_EVENTS.register("sight_claws", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "sight_claws")));
+
+    public static final RegistryObject<SoundEvent> SIGHT_STONEMAN =
+            SOUND_EVENTS.register("sight_stoneman", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "sight_stoneman")));
+
+    /** Fundo: tocam do nada, sem criatura nenhuma por perto. */
+    public static final RegistryObject<SoundEvent> DREAD_SPEECH =
+            SOUND_EVENTS.register("dread_speech", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "dread_speech")));
+
+    public static final RegistryObject<SoundEvent> DREAD_BROKEN =
+            SOUND_EVENTS.register("dread_broken", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "dread_broken")));
+
+    public static final RegistryObject<SoundEvent> DREAD_GLITCH =
+            SOUND_EVENTS.register("dread_glitch", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "dread_glitch")));
+
+    public static final RegistryObject<SoundEvent> DREAD_STEPS =
+            SOUND_EVENTS.register("dread_steps", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "dread_steps")));
+
+    public static final RegistryObject<SoundEvent> DREAD_BURNT =
+            SOUND_EVENTS.register("dread_burnt", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "dread_burnt")));
+
+    public static final RegistryObject<SoundEvent> DREAD_FLESH =
+            SOUND_EVENTS.register("dread_flesh", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "dread_flesh")));
+
+    /** As duas esculturas nao tinham som de avistamento nenhum. Agora tem. */
+    public static final RegistryObject<SoundEvent> SIGHT_GREYFACE =
+            SOUND_EVENTS.register("sight_greyface", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "sight_greyface")));
+
+    public static final RegistryObject<SoundEvent> SIGHT_OPHANIM =
+            SOUND_EVENTS.register("sight_ophanim", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "sight_ophanim")));
+
+    /**
+     * A TRILHA DA CACADA. Toca em loop enquanto o Cara Cinza esta atras de voce.
+     *
+     * Ela nao e enfeite: e o unico jeito de o jogador saber que foi VISTO. A criatura
+     * nao muda de pose nem grita para avisar — quem avisa e a musica, e quando ela
+     * para, a perseguicao acabou.
+     */
+    public static final RegistryObject<SoundEvent> GREYFACE_CHASE =
+            SOUND_EVENTS.register("greyface_chase", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "greyface_chase")));
+
+    /** O passo dela. Alto de proposito: da para ouvir de onde ela vem sem ver. */
+    public static final RegistryObject<SoundEvent> GREYFACE_STEP =
+            SOUND_EVENTS.register("greyface_step", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "greyface_step")));
+
+    /** O zumbido do Ofanim: presenca gigante nao precisa se mover para pesar. */
+    public static final RegistryObject<SoundEvent> OPHANIM_DRONE =
+            SOUND_EVENTS.register("ophanim_drone", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "ophanim_drone")));
+
+    // ---------------------------------------------------------------- dimensoes
+    //
+    // Uma trilha por dimensao, pendurada no campo `music` do bioma: o jogo a toca
+    // sozinho, com pausa entre as voltas, e ela some quando o jogador sai. Nao
+    // precisa de codigo nenhum do nosso lado — so o evento existir.
+
+    /** DATA: os corredores de andesito. */
+    public static final RegistryObject<SoundEvent> MUSIC_DATA =
+            SOUND_EVENTS.register("music_data", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "music_data")));
+
+    /** CHUNKS: os pedacos de mundo e as pontes. */
+    public static final RegistryObject<SoundEvent> MUSIC_CHUNKS =
+            SOUND_EVENTS.register("music_chunks", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "music_chunks")));
+
+    /** INSIDIOUS: os saloes sem teto sobre o vazio. */
+    public static final RegistryObject<SoundEvent> MUSIC_INSIDIOUS =
+            SOUND_EVENTS.register("music_insidious", () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(RECMod.MOD_ID, "music_insidious")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

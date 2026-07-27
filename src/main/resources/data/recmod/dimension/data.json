@@ -1,0 +1,10 @@
+{
+  "type": "recmod:data",
+  "generator": {
+    "type": "recmod:data",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:data"
+    }
+  }
+}

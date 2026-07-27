@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.client.codex.Codex;
 import net.vhsworld.rec.client.difficulty.DifficultyState;
+import net.vhsworld.rec.client.photo.AnomalySightings;
 import net.vhsworld.rec.client.photo.PhotoAlbum;
 
 import java.nio.file.Path;
@@ -91,6 +92,7 @@ public final class ClientWorldData {
     private static void clearCaches() {
         Codex.reset();
         PhotoAlbum.reset();
+        AnomalySightings.reset();
         DifficultyState.reset();
     }
 }
