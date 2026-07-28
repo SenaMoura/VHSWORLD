@@ -33,15 +33,15 @@ VHSWORLD is my project that I have been working on since 2025, the main ideia of
 Now i'm working on a fully and complete rework to the modpack, creating my own mod called Vhsworld version-1.0, it's an  reboot, so everything that I have created to VHSWORLD will be removed and changed. A lot of new mechanics are going to be implemented to the modpack, here it's some of them:
 
 ## 💡WORKING ON IT:
-- [ ] New main menu
-- [ ] New first person visual
+- [x] New main menu
+- [x] New first person visual
 - [ ] New entities
 - [ ] New Dimensions
 - [ ] New events
 - [ ] Working and planning an ARG
 - [ ] Voicelines
 - [ ] Ambient Interaction
-- [ ] Flash System
+- [x] Flash System
 - [ ] New items
 
 Those all are going to be on my own mod Vhsworld version-1.0.
