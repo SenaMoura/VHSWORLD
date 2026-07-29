@@ -29,7 +29,6 @@ public class ModRecipes {
                     return RECMod.MOD_ID + ":rf_receiver";
                 }
             });
-
     public static final RegistryObject<RecipeSerializer<RFReceiverRecipe>> RF_RECEIVER_SERIALIZER =
             RECIPE_SERIALIZERS.register("rf_receiver", RFReceiverRecipe.Serializer::new);
 

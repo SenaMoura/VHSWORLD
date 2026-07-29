@@ -1,0 +1,11 @@
+{
+  "type": "recmod:grassrooms_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "layers": [],
+      "biome": "recmod:grassrooms",
+      "structures": {}
+    }
+  }
+}
