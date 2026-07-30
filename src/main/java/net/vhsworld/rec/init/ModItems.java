@@ -102,6 +102,36 @@ public class ModItems {
     public static final RegistryObject<Item> TAPE_INSIDIOUS = ITEMS.register("tape_insidious",
             () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "insidious"));
 
+    // --- As seis fitas de 2026-07-29 ---
+    //
+    // O nome depois da virgula tem que ser IGUAL ao arquivo em
+    // `data/recmod/dimension/<nome>.json`. Errar ali nao da erro de compilacao: da uma
+    // fita que gira em falso, e a mensagem que o jogador ve e "nao ha nada gravado nela".
+
+    /** Fita VILLAGE: a rua de casas identicas, ao meio-dia, para sempre. */
+    public static final RegistryObject<Item> TAPE_VILLAGE = ITEMS.register("tape_village",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "village"));
+
+    /** Fita GRASSROOMS: o liminal space branco em que cresce grama. */
+    public static final RegistryObject<Item> TAPE_GRASSROOMS = ITEMS.register("tape_grassrooms",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "grassrooms"));
+
+    /** Fita TRAIN: a linha de trem sobre o vazio, e os safe spots dela. */
+    public static final RegistryObject<Item> TAPE_TRAIN = ITEMS.register("tape_train",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "train"));
+
+    /** Fita UNDER PRESSURE: 92 blocos de agua, e submarinos dentro. */
+    public static final RegistryObject<Item> TAPE_UNDER_PRESSURE = ITEMS.register("tape_under_pressure",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "under_pressure"));
+
+    /** Fita BIBLIOTECA: as estantes no breu, sem porta e sem fim. */
+    public static final RegistryObject<Item> TAPE_BIBLIOTECA = ITEMS.register("tape_biblioteca",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "biblioteca"));
+
+    /** Fita PARKOURLAND: a gaiola. A unica dimensao de que se cai para fora. */
+    public static final RegistryObject<Item> TAPE_PARKOURLAND = ITEMS.register("tape_parkourland",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "parkourland"));
+
     /** Tripe: bloco que se planta e filma por voce. */
     public static final RegistryObject<Item> TRIPOD_ITEM = ITEMS.register("tripod",
             () -> new BlockItem(ModBlocks.TRIPOD.get(), new Item.Properties()));

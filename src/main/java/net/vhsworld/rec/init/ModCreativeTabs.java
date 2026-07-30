@@ -18,8 +18,19 @@ public class ModCreativeTabs {
             event.accept(ModItems.CORRUPTED_BATTERY);
             event.accept(ModItems.BLANK_TAPE);
             event.accept(ModItems.VIDEOCASSETTE);
+            // As fitas, juntas e na ordem em que as dimensoes foram feitas. Uma dimensao
+            // que existe e nao esta nesta lista e uma dimensao inalcancavel: a fita nao
+            // tem receita, entao o criativo e o UNICO lugar de onde ela sai. Foi o que
+            // aconteceu com a INSIDIOUS — pronta no codigo, invisivel no jogo.
             event.accept(ModItems.TAPE_DATA);
             event.accept(ModItems.TAPE_CHUNKS);
+            event.accept(ModItems.TAPE_INSIDIOUS);
+            event.accept(ModItems.TAPE_VILLAGE);
+            event.accept(ModItems.TAPE_GRASSROOMS);
+            event.accept(ModItems.TAPE_TRAIN);
+            event.accept(ModItems.TAPE_UNDER_PRESSURE);
+            event.accept(ModItems.TAPE_BIBLIOTECA);
+            event.accept(ModItems.TAPE_PARKOURLAND);
             event.accept(ModItems.CALLER);
             event.accept(ModItems.TRIPOD_ITEM);
             event.accept(ModItems.HAMMER);

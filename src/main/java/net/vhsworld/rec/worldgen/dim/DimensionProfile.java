@@ -46,7 +46,17 @@ public record DimensionProfile(
         /** Pedacos de chao boiando: quem manda e o vazio entre eles. */
         ISLANDS,
         /** Saloes abertos ligados por corredor, sem teto, sobre o vazio. */
-        HALLS
+        HALLS,
+        /** Chao plano aberto sem fim, com construcao repetida em cima. */
+        STREETS,
+        /** Salas fechadas encostadas umas nas outras, com porta entre elas. */
+        ROOMS,
+        /** Um caminho de largura de pessoa sobre o vazio, e mais nada. */
+        LINE,
+        /** Debaixo da agua: quem entrar aqui gasta ar antes de gastar coragem. */
+        FLOODED,
+        /** Uma torre fechada e FINITA: sobe-se, ou cai-se para fora da dimensao. */
+        TOWER
     }
 
     /**
@@ -86,6 +96,27 @@ public record DimensionProfile(
         // o coracao que ele vai modelar. Ate la, `anomaly` nulo quer dizer "aqui vale
         // o sorteio normal", e `Director.NONE` quer dizer "ninguem repoe nada".
         put(new DimensionProfile("insidious", Mold.HALLS, null, Director.NONE));
+
+        // ------------------------------------------------------------------ o lote de 6
+        //
+        // As seis de 2026-07-29. Todas com `Director.NONE` e `anomaly` nulo, e isso e
+        // decisao e nao pendencia: quem mora em cada uma e escolha do Pedro, e por a
+        // caçadora nas nove so porque ela existe apagaria o que distingue uma da outra.
+        // A LICAO Nº2 vale para as seis quando a hora chegar — dimensao de criatura unica
+        // usa DIRETOR, nunca tabela de spawn. Os biomas delas nascem com `spawners` vazio
+        // justamente para nao dar para esquecer disso.
+
+        put(new DimensionProfile("village", Mold.STREETS, null, Director.NONE));
+        put(new DimensionProfile("grassrooms", Mold.ROOMS, null, Director.NONE));
+        put(new DimensionProfile("train", Mold.LINE, null, Director.NONE));
+        put(new DimensionProfile("under_pressure", Mold.FLOODED, null, Director.NONE));
+        put(new DimensionProfile("biblioteca", Mold.ROOMS, null, Director.NONE));
+        put(new DimensionProfile("parkourland", Mold.TOWER, null, Director.NONE));
+    }
+
+    /** Todas as dimensoes do mod, na ordem em que foram feitas. */
+    public static java.util.Collection<DimensionProfile> all() {
+        return BY_ID.values();
     }
 
     // ------------------------------------------------------------------ consulta

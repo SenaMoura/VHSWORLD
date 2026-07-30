@@ -1,0 +1,12 @@
+// Despeja o classpath de runtime num arquivo, para o harness headless compilar contra
+// ele. Init script e nao mexer no build.gradle: o build do Pedro fica intocado.
+allprojects {
+    tasks.register('dumpRuntimeClasspath') {
+        doLast {
+            def out = new File(project.buildDir, 'runtime-classpath.txt')
+            out.parentFile.mkdirs()
+            out.text = project.sourceSets.main.runtimeClasspath.asPath
+            println "CLASSPATH -> " + out.absolutePath
+        }
+    }
+}

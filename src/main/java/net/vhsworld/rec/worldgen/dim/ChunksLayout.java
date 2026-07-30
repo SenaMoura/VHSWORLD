@@ -175,6 +175,72 @@ public final class ChunksLayout {
         return new BlockPos(ISLAND / 2, SPAWN_Y + 1, ISLAND / 2);
     }
 
+    /**
+     * O mesmo, mas numa coluna SORTEADA — e nunca a mesma duas vezes.
+     *
+     * Regra do Pedro para as 21: "spawn deve ser em diferentes locais das dimensoes e
+     * nunca no mesmo spawn". Aqui ela muda o que a dimensao E: nascer sempre na coluna do
+     * centro dava sempre o mesmo patamar (o centro tem posto negativo justamente para
+     * isso) e sempre a mesma vista. Sorteando, o jogador as vezes cai num grupo grande com
+     * pontes para todo lado e as vezes numa coluna sozinha de onde nao se sai a pe — e as
+     * duas coisas ja existiam no mapa, ele so nunca tinha caido nelas.
+     *
+     * ⚠️ A altura vem do `levelOf` daquela casa, e nao de SPAWN_Y. O patamar do centro e
+     * SPAWN_Y por construcao, mas de qualquer outra casa nao: usar SPAWN_Y direto largaria
+     * o jogador 56 blocos dentro da pedra ou 56 acima do chao.
+     */
+    public BlockPos randomSpawn() {
+        if (island == null) return spawnPos();
+        java.util.Random dice = new java.util.Random();
+        for (int tries = 0; tries < SPAWN_TRIES; tries++) {
+            int cx = dice.nextInt(-SPAWN_SPREAD, SPAWN_SPREAD + 1);
+            int cz = dice.nextInt(-SPAWN_SPREAD, SPAWN_SPREAD + 1);
+            if (!occupied(cx, cz)) continue;
+            BlockPos found = standingSpot(column(cx, cz));
+            if (found != null) return found;
+        }
+        return spawnPos();
+    }
+
+    /**
+     * Um ponto da ilha em que da para ficar de pe: grama embaixo e dois ares em cima.
+     *
+     * ⚠️ Nao da para chutar "o meio do quadrado". Metade das casas recebe o BOSQUE, e no
+     * bosque o meio pode ser tronco de carvalho — nascer dentro de um tronco seria a
+     * primeira coisa que o jogador veria da dimensao. Perguntar a peca custa um punhado de
+     * leituras de vetor e responde certo nas duas.
+     *
+     * A varredura comeca no meio e vai para fora para o spawn nao acabar sempre na quina:
+     * a quina da ilha e onde se olha o vazio de dois lados de uma vez, o que e a segunda
+     * coisa a se ver, nao a primeira.
+     */
+    private BlockPos standingSpot(Placement column) {
+        DimPiece piece = column.piece;
+        int grass = piece.anchorY;
+        if (grass + 2 >= piece.height) return null;
+        int mid = ISLAND / 2;
+        for (int ring = 0; ring < mid; ring++) {
+            for (int dx = -ring; dx <= ring; dx++) {
+                for (int dz = -ring; dz <= ring; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
+                    int lx = piece.anchorX + mid + dx;
+                    int lz = piece.anchorZ + mid + dz;
+                    if (lx < 0 || lz < 0 || lx >= piece.width || lz >= piece.length) continue;
+                    if (piece.at(lx, grass, lz, 0).isAir()) continue;
+                    if (!piece.at(lx, grass + 1, lz, 0).isAir()) continue;
+                    if (!piece.at(lx, grass + 2, lz, 0).isAir()) continue;
+                    return new BlockPos(column.worldX(lx, lz), column.oy + grass + 1,
+                            column.worldZ(lx, lz));
+                }
+            }
+        }
+        return null;
+    }
+
+    /** O quadrado de casas em que a fita pode largar o jogador. */
+    private static final int SPAWN_SPREAD = 64;
+    private static final int SPAWN_TRIES = 64;
+
     // ------------------------------------------------------------------ o tabuleiro
     private static long cellKey(int cx, int cz) {
         return ((long) cx << 32) | (cz & 0xFFFFFFFFL);

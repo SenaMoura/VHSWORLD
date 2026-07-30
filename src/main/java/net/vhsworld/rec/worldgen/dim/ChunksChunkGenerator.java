@@ -65,7 +65,10 @@ public class ChunksChunkGenerator extends ChunkGenerator implements DimSpawn {
 
     @Override
     public BlockPos dimensionSpawn() {
-        return layout().spawnPos();
+        // SORTEADO, e nao o ponto fixo: regra do Pedro para as 21 — "spawn deve ser em
+        // diferentes locais das dimensoes e nunca no mesmo spawn". Quem sabe onde da para
+        // ficar de pe e a planta; o motivo de cada escolha esta no `randomSpawn` dela.
+        return layout().randomSpawn();
     }
 
     public ChunksLayout layout() {

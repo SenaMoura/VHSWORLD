@@ -1,0 +1,10 @@
+{
+  "type": "recmod:train",
+  "generator": {
+    "type": "recmod:train",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:train"
+    }
+  }
+}

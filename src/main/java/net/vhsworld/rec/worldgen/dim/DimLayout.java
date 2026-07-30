@@ -169,8 +169,42 @@ public final class DimLayout {
      * dimensao, e as duas contam a historia errada.
      */
     public net.minecraft.core.BlockPos spawnPos() {
+        return spawnIn(hub);
+    }
+
+    /**
+     * O mesmo, mas numa peca SORTEADA do labirinto — e nunca a mesma duas vezes.
+     *
+     * Regra do Pedro para as 21: "spawn deve ser em diferentes locais das dimensoes e
+     * nunca no mesmo spawn". Aqui ela e mais que variedade: nascer sempre na hub fazia da
+     * hub um ponto de referencia, e um labirinto com ponto de referencia deixa de ser
+     * labirinto na segunda visita. Sem ela, entrar duas vezes e entrar em dois lugares.
+     *
+     * ⚠️ A planta E CRESCIDA ANTES de sortear. Ela nasce so com a hub e o resto aparece
+     * conforme o jogador pede chunk; sorteando sem crescer, a lista de pecas teria uma so
+     * e o sorteio devolveria a hub sempre — parecendo funcionar e nao funcionando.
+     */
+    public net.minecraft.core.BlockPos randomSpawn() {
         if (hub == null) return new net.minecraft.core.BlockPos(0, FLOOR_Y + 1, 0);
-        DimPiece piece = hub.piece;
+        growTo(SPAWN_RADIUS);
+        List<Placement> options = List.copyOf(placements);
+        if (options.isEmpty()) return spawnPos();
+        return spawnIn(options.get(new java.util.Random().nextInt(options.size())));
+    }
+
+    /**
+     * Ate onde a planta cresce para o sorteio do spawn.
+     *
+     * 600 blocos dao algumas centenas de pecas, o bastante para dois spawns seguidos
+     * praticamente nunca calharem na mesma. Nao vale crescer mais: crescer e o que custa
+     * nesta dimensao, e o jogador que quer ir longe leva a planta com ele andando.
+     */
+    private static final double SPAWN_RADIUS = 600.0D;
+
+    /** O piso livre mais perto do meio desta peca. */
+    private net.minecraft.core.BlockPos spawnIn(Placement where) {
+        if (where == null) return new net.minecraft.core.BlockPos(0, FLOOR_Y + 1, 0);
+        DimPiece piece = where.piece;
         int cx = piece.width / 2, cz = piece.length / 2;
         int bestX = cx, bestZ = cz, bestDistance = Integer.MAX_VALUE;
         for (int x = 0; x < piece.width; x++) {
@@ -187,8 +221,8 @@ public final class DimLayout {
                 }
             }
         }
-        return new net.minecraft.core.BlockPos(hub.worldX(bestX, bestZ), FLOOR_Y + 1,
-                hub.worldZ(bestX, bestZ));
+        return new net.minecraft.core.BlockPos(where.worldX(bestX, bestZ), where.oy + 1,
+                where.worldZ(bestX, bestZ));
     }
 
     // ------------------------------------------------------------------ consulta

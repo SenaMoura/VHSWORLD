@@ -87,6 +87,60 @@ def main():
           speckle=["#..#....#.",
                    "...#..#..."])
 
+    # As seis do lote de 2026-07-29. A regra da etiqueta e sempre a mesma: a cor CLARA
+    # e o material de que a dimensao e feita, e o respingo ESCURO e o que ela faz com
+    # quem entra. Nenhuma delas e saturada — a cor aqui e etiqueta de fita velha, nao
+    # icone de menu; e o dedo do jogador na fileira do bau tem que dar pra distinguir
+    # sete fitas de longe, o que se resolve pelo VALOR (claro/escuro) e nao pelo matiz.
+
+    # VILLAGE: tijolo e cobblestone da casa. O respingo e ralo e regular — a rua e uma
+    # cadencia, e e justamente a repeticao que assusta ali.
+    build("tape_village",
+          light=(196, 156, 130, 255),
+          dark=(82, 60, 52, 255),
+          speckle=["#...#...#.",
+                   ".#...#...#"])
+
+    # GRASSROOMS: quartzo quase branco com a grama entrando. A etiqueta mais CLARA das
+    # sete de proposito: e a unica dimensao iluminada, e ela se le no bau pelo brilho.
+    build("tape_grassrooms",
+          light=(228, 230, 226, 255),
+          dark=(104, 148, 82, 255),
+          speckle=[".#....#...",
+                   "....#...#."])
+
+    # TRAIN: aco e fuligem. O respingo em PAR e o unico ritmo desenhado das sete — sao
+    # os dormentes passando debaixo de quem anda na linha.
+    build("tape_train",
+          light=(126, 126, 132, 255),
+          dark=(28, 26, 24, 255),
+          speckle=["##..##..##",
+                   "..##..##.."])
+
+    # UNDER PRESSURE: a agua funda. A etiqueta mais ESCURA das sete, e o respingo e
+    # quase tudo — na fita, a agua ja cobriu a etiqueta.
+    build("tape_under_pressure",
+          light=(58, 112, 138, 255),
+          dark=(8, 24, 36, 255),
+          speckle=["#.##..#.##",
+                   "##..##.#.#"])
+
+    # BIBLIOTECA: couro de lombada e o amarelo do tapete, no escuro.
+    build("tape_biblioteca",
+          light=(178, 148, 86, 255),
+          dark=(48, 34, 22, 255),
+          speckle=["#..#..#..#",
+                   "#..#..#..#"])
+
+    # PARKOURLAND: madeira da gaiola. O respingo em coluna e o unico VERTICAL das sete
+    # — a unica dimensao em que o assunto e altura, e a unica em que errar tira voce
+    # dela.
+    build("tape_parkourland",
+          light=(190, 158, 104, 255),
+          dark=(40, 34, 28, 255),
+          speckle=["..#....#..",
+                   "..#....#.."])
+
 
 if __name__ == "__main__":
     main()

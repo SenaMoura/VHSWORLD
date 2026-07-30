@@ -1,0 +1,10 @@
+{
+  "type": "recmod:under_pressure",
+  "generator": {
+    "type": "recmod:under_pressure",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:under_pressure"
+    }
+  }
+}

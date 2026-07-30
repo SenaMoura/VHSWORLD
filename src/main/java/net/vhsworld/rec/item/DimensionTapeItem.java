@@ -133,7 +133,7 @@ public class DimensionTapeItem extends Item {
      * interface `DimSpawn`: gerador que nao a implementa nao serve como dimensao do
      * mod, e isso o compilador cobra — o arquivo distante deixou de existir.
      */
-    private static Vec3 spawnOf(ServerLevel level) {
+    public static Vec3 spawnOf(ServerLevel level) {
         ChunkGenerator generator = level.getChunkSource().getGenerator();
         BlockPos pos = generator instanceof DimSpawn dimension ? dimension.dimensionSpawn() : null;
         return pos == null
@@ -147,7 +147,7 @@ public class DimensionTapeItem extends Item {
      * O `ITeleporter` do Forge existe justamente para isto — sem ele, o jogo procura
      * (e cava) um portal do Nether no destino.
      */
-    private record FixedPoint(Vec3 where) implements ITeleporter {
+    public record FixedPoint(Vec3 where) implements ITeleporter {
         @Override
         public PortalInfo getPortalInfo(net.minecraft.world.entity.Entity entity, ServerLevel destination,
                                         Function<ServerLevel, PortalInfo> vanilla) {

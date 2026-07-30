@@ -180,5 +180,20 @@
   "message.recmod.caller_already": "It has already been answered.",
   "message.recmod.caller_fired": "Someone called. The sky has cracked.",
   "item.recmod.tape_chunks": "Tape: CHUNKS",
-  "biome.recmod.chunks": "CHUNKS"
+  "biome.recmod.chunks": "CHUNKS",
+  "item.recmod.tape_insidious": "Tape: INSIDIOUS",
+  "biome.recmod.insidious": "INSIDIOUS",
+  "item.recmod.tape_village": "Tape: VILLAGE",
+  "biome.recmod.village": "VILLAGE",
+  "item.recmod.tape_grassrooms": "Tape: GRASSROOMS",
+  "biome.recmod.grassrooms": "GRASSROOMS",
+  "item.recmod.tape_train": "Tape: TRAIN",
+  "biome.recmod.train": "TRAIN",
+  "item.recmod.tape_under_pressure": "Tape: UNDER PRESSURE",
+  "biome.recmod.under_pressure": "UNDER PRESSURE",
+  "item.recmod.tape_biblioteca": "Tape: BIBLIOTECA",
+  "biome.recmod.biblioteca": "BIBLIOTECA",
+  "item.recmod.tape_parkourland": "Tape: PARKOURLAND",
+  "biome.recmod.parkourland": "PARKOURLAND",
+  "message.recmod.parkour_fell": "You missed. The tape switched itself."
 }

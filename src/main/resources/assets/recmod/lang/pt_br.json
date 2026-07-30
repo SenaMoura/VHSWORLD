@@ -130,5 +130,20 @@
   "message.recmod.caller_already": "Ja atenderam.",
   "message.recmod.caller_fired": "Alguem chamou. O ceu rachou.",
   "item.recmod.tape_chunks": "Fita: CHUNKS",
-  "biome.recmod.chunks": "CHUNKS"
+  "biome.recmod.chunks": "CHUNKS",
+  "item.recmod.tape_insidious": "Fita: INSIDIOUS",
+  "biome.recmod.insidious": "INSIDIOUS",
+  "item.recmod.tape_village": "Fita: VILLAGE",
+  "biome.recmod.village": "VILLAGE",
+  "item.recmod.tape_grassrooms": "Fita: GRASSROOMS",
+  "biome.recmod.grassrooms": "GRASSROOMS",
+  "item.recmod.tape_train": "Fita: TRAIN",
+  "biome.recmod.train": "TRAIN",
+  "item.recmod.tape_under_pressure": "Fita: UNDER PRESSURE",
+  "biome.recmod.under_pressure": "UNDER PRESSURE",
+  "item.recmod.tape_biblioteca": "Fita: BIBLIOTECA",
+  "biome.recmod.biblioteca": "BIBLIOTECA",
+  "item.recmod.tape_parkourland": "Fita: PARKOURLAND",
+  "biome.recmod.parkourland": "PARKOURLAND",
+  "message.recmod.parkour_fell": "Voce errou. A fita trocou sozinha."
 }

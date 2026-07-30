@@ -1,0 +1,10 @@
+{
+  "type": "recmod:biblioteca",
+  "generator": {
+    "type": "recmod:biblioteca",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:biblioteca"
+    }
+  }
+}

@@ -162,6 +162,37 @@ public final class InsidiousLayout {
         return new BlockPos(0, FLOOR_Y + 1, 0);
     }
 
+    /**
+     * O mesmo, mas num cruzamento SORTEADO — e nunca o mesmo duas vezes.
+     *
+     * Regra do Pedro para as 21: "spawn deve ser em diferentes locais das dimensoes e
+     * nunca no mesmo spawn". Aqui ela vale duplo, porque a INSIDIOUS tem UMA sala escondida
+     * no meio dela: nascendo sempre no centro, a distancia ate o coracao seria sempre a
+     * mesma e o caminho seria decorado na segunda ida. Sorteando, achar a sala volta a ser
+     * procurar.
+     *
+     * ⚠️ Nao sorteia a casa do CORACAO. Ele e o achado da dimensao; nascer dentro dele e
+     * receber de graca a unica coisa que ela tem para dar.
+     *
+     * O ponto e o centro da casa porque a ancora de todas as pecas da INSIDIOUS e o bloco
+     * do piso no meio da passagem — se a casa esta ocupada, ali ha piso, sem ter que olhar.
+     */
+    public BlockPos randomSpawn() {
+        if (cross == null) return spawnPos();
+        java.util.Random dice = new java.util.Random();
+        for (int tries = 0; tries < SPAWN_TRIES; tries++) {
+            int cx = dice.nextInt(-SPAWN_SPREAD, SPAWN_SPREAD + 1);
+            int cz = dice.nextInt(-SPAWN_SPREAD, SPAWN_SPREAD + 1);
+            if (!occupied(cx, cz) || isHeart(cx, cz)) continue;
+            return new BlockPos(cx * CELL, FLOOR_Y + 1, cz * CELL);
+        }
+        return spawnPos();
+    }
+
+    /** O quadrado de casas em que a fita pode largar o jogador. */
+    private static final int SPAWN_SPREAD = 48;
+    private static final int SPAWN_TRIES = 64;
+
     /** O meio da sala unica. Serve para o que for morar nela e para quem for procura-la. */
     public BlockPos heartPos() {
         return new BlockPos(heartX * CELL, FLOOR_Y + 1, heartZ * CELL);

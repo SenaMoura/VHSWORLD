@@ -40,6 +40,38 @@ public class ModChunkGenerators {
     public static final RegistryObject<Codec<? extends ChunkGenerator>> INSIDIOUS =
             GENERATORS.register("insidious", () -> net.vhsworld.rec.worldgen.dim.InsidiousChunkGenerator.CODEC);
 
+    // ------------------------------------------------------------------ o lote de 6
+    //
+    // Nenhuma delas usa fonte de biomas propria, pelo mesmo motivo das tres primeiras:
+    // e um bioma so no mapa inteiro (`minecraft:fixed`). A variacao de uma dimensao do
+    // mod vem da construcao, e nao do terreno — em varias delas nao ha terreno.
+
+    /** VILLAGE: a mesma casa, para sempre, dos dois lados da mesma rua. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> VILLAGE =
+            GENERATORS.register("village", () -> net.vhsworld.rec.worldgen.dim.VillageChunkGenerator.CODEC);
+
+    /** GRASSROOMS: liminal space branco, iluminado, com grama crescendo dentro. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> GRASSROOMS =
+            GENERATORS.register("grassrooms", () -> net.vhsworld.rec.worldgen.dim.GrassroomsChunkGenerator.CODEC);
+
+    /** TRAIN: uma linha de trem reta sobre o vazio, e safe spots de vez em quando. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> TRAIN =
+            GENERATORS.register("train", () -> net.vhsworld.rec.worldgen.dim.TrainChunkGenerator.CODEC);
+
+    /** UNDER PRESSURE: 92 blocos de agua, e submarinos dentro. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> UNDER_PRESSURE =
+            GENERATORS.register("under_pressure",
+                    () -> net.vhsworld.rec.worldgen.dim.UnderPressureChunkGenerator.CODEC);
+
+    /** BIBLIOTECA: o salao de estantes ladrilhado, no breu. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> BIBLIOTECA =
+            GENERATORS.register("biblioteca", () -> net.vhsworld.rec.worldgen.dim.BibliotecaChunkGenerator.CODEC);
+
+    /** PARKOURLAND: a unica finita, e a unica de que se cai para fora. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> PARKOURLAND =
+            GENERATORS.register("parkourland",
+                    () -> net.vhsworld.rec.worldgen.dim.ParkourlandChunkGenerator.CODEC);
+
     public static void register(IEventBus eventBus) {
         GENERATORS.register(eventBus);
         BIOME_SOURCES.register(eventBus);
