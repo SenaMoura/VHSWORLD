@@ -72,6 +72,42 @@ public class ModChunkGenerators {
             GENERATORS.register("parkourland",
                     () -> net.vhsworld.rec.worldgen.dim.ParkourlandChunkGenerator.CODEC);
 
+    // ------------------------------------------------------------------ o lote de 3
+    //
+    // As tres de 2026-07-30, do bloco "NOVAS DIMENSOES" das notas do Pedro. As duas
+    // primeiras nao carimbam peca nenhuma: sao 100% Java, e sao as primeiras do mod
+    // assim. A MAZE volta ao molde das outras — peca do Pedro numa grade.
+
+    /** STONELAND: a silhueta do overworld, feita so de pedregulho. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> STONELAND =
+            GENERATORS.register("stoneland", () -> net.vhsworld.rec.worldgen.dim.StonelandChunkGenerator.CODEC);
+
+    /** ESCRITORIO: torres de baias soltas no vazio, ligadas por passarela de vidro. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> ESCRITORIO =
+            GENERATORS.register("escritorio", () -> net.vhsworld.rec.worldgen.dim.EscritorioChunkGenerator.CODEC);
+
+    /** MAZE: o labirinto de parede de 163 blocos. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> MAZE =
+            GENERATORS.register("maze", () -> net.vhsworld.rec.worldgen.dim.MazeChunkGenerator.CODEC);
+
+    // ------------------------------------------------------------------ o lote de 3 (2026-07-31)
+    //
+    // As tres do `dimensions.rtf`. Todas 100% Java, como a STONELAND e a ESCRITORIO:
+    // nenhuma carimba peca do Pedro, e por isso nenhuma tem .bin.
+
+    /** FLORESTA: taiga densa na bruma branca, e um celeiro por regiao. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> FLORESTA =
+            GENERATORS.register("floresta", () -> net.vhsworld.rec.worldgen.dim.FlorestaChunkGenerator.CODEC);
+
+    /** PIPE TUNELS: corredores de concreto cavados no macico, com os canos na parede. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> PIPE_TUNELS =
+            GENERATORS.register("pipe_tunels",
+                    () -> net.vhsworld.rec.worldgen.dim.PipeTunelsChunkGenerator.CODEC);
+
+    /** MALL: o shopping de dois andares, com vao central e escada rolante. */
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> MALL =
+            GENERATORS.register("mall", () -> net.vhsworld.rec.worldgen.dim.MallChunkGenerator.CODEC);
+
     public static void register(IEventBus eventBus) {
         GENERATORS.register(eventBus);
         BIOME_SOURCES.register(eventBus);

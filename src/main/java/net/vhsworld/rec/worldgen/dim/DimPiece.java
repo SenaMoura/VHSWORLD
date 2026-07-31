@@ -70,6 +70,19 @@ public final class DimPiece {
         }
     }
 
+    /**
+     * O giro de indice `rotation`, para quem desenha ao lado de uma peca girada.
+     *
+     * Quem constroi casca em volta de uma peca (o telhado da VILLAGE, por exemplo)
+     * escreve em coordenada LOCAL e converte com o `Placement` — mas escada e degrau
+     * tambem tem que virar, e virar pela MESMA tabela que a peca usou. Duas tabelas
+     * concordam ate o dia em que uma delas troca de sentido, e ai o telhado aponta
+     * para um lado e a parede para o outro.
+     */
+    public static Rotation rotation(int index) {
+        return ROTATIONS[index & 3];
+    }
+
     public BlockState at(int x, int y, int z, int rotation) {
         int i = (y * length + z) * width + x;
         return palettes[rotation][cells[i]];

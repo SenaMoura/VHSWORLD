@@ -34,7 +34,7 @@ public final class RECNetwork {
     private RECNetwork() {}
 
     /** Suba isto ao mudar QUALQUER formato de pacote. */
-    private static final String VERSION = "1";
+    private static final String VERSION = "2";
 
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(RECMod.MOD_ID, "main"),
@@ -58,6 +58,14 @@ public final class RECNetwork {
 
         CHANNEL.registerMessage(id++, JudgementPacket.class,
                 JudgementPacket::encode, JudgementPacket::decode, JudgementPacket::handle);
+
+        // ⚠️ A REGRA DO ESPELHO NAO TEM PACOTE, e isso foi decisao. O primeiro desenho
+        // tinha um "eu virei a camera" do cliente para o servidor; e desnecessario e
+        // pior. O servidor JA recebe a rotacao do jogador todo tique pelo movimento
+        // vanilla, entao ele mesmo pode julgar se o olhar saiu do lugar — e assim a regra
+        // nao depende de o cliente ser honesto. Ver MirrorWalk.
+        CHANNEL.registerMessage(id++, EscapeFxPacket.class,
+                EscapeFxPacket::encode, EscapeFxPacket::decode, EscapeFxPacket::handle);
     }
 
     /** Do servidor para UM jogador. */

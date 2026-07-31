@@ -158,6 +158,10 @@ public final class RECConfig {
         public final ForgeConfigSpec.IntValue ambientDreadMinSeconds;
         public final ForgeConfigSpec.IntValue ambientDreadMaxSeconds;
         public final ForgeConfigSpec.DoubleValue ambientDreadVolume;
+        public final ForgeConfigSpec.BooleanValue dimensionStings;
+        public final ForgeConfigSpec.IntValue dimensionStingMinSeconds;
+        public final ForgeConfigSpec.IntValue dimensionStingMaxSeconds;
+        public final ForgeConfigSpec.DoubleValue dimensionStingVolume;
         public final ForgeConfigSpec.BooleanValue chaseMusic;
         public final ForgeConfigSpec.DoubleValue chaseMusicVolume;
         public final ForgeConfigSpec.BooleanValue ophanimDrone;
@@ -753,6 +757,28 @@ public final class RECConfig {
                     .comment("Volume dos ruidos de fundo. Baixo de proposito: tem que caber",
                              "a duvida de ter ouvido mesmo.")
                     .defineInRange("ambientDreadVolume", 0.55D, 0.0D, 1.0D);
+
+            dimensionStings = b
+                    .comment("Sustos avulsos da DIMENSAO em que voce esta: o grito da",
+                             "biblioteca, o rangido de metal dos tuneis de cano, o bumbo",
+                             "distorcido da parkourland. Sao as faixas curtas da trilha",
+                             "que o Pedro separou por pasta — curtas demais para servirem",
+                             "de musica, entao tocam soltas.")
+                    .define("dimensionStings", true);
+
+            dimensionStingMinSeconds = b
+                    .comment("Menor espera entre dois sustos de dimensao.")
+                    .defineInRange("dimensionStingMinSeconds", 120, 5, 3600);
+
+            dimensionStingMaxSeconds = b
+                    .comment("Maior espera entre dois sustos de dimensao. Mais espacado que o",
+                             "ambientDread de proposito: sao dois sistemas tocando no mesmo",
+                             "silencio, e juntos e facil virar barulho constante.")
+                    .defineInRange("dimensionStingMaxSeconds", 420, 5, 3600);
+
+            dimensionStingVolume = b
+                    .comment("Volume dos sustos de dimensao.")
+                    .defineInRange("dimensionStingVolume", 0.70D, 0.0D, 1.0D);
 
             chaseMusic = b
                     .comment("A trilha que toca enquanto o Cara Cinza esta atras de voce, e",

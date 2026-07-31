@@ -32,6 +32,9 @@ public final class ModEntitySetup {
     public static void onAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.STONEMAN.get(), StonemanEntity.createAttributes().build());
         event.put(ModEntities.ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        // O Espelho nao anda, nao ataca e nao apanha — mas TODO `Mob` precisa de mapa de
+        // atributos registrado, senao o jogo estoura ao instanciar. Os do Mob cru bastam.
+        event.put(ModEntities.MIRROR.get(), Mob.createMobAttributes().build());
     }
 
     @SubscribeEvent

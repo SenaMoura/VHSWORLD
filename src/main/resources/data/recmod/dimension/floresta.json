@@ -1,0 +1,10 @@
+{
+  "type": "recmod:floresta",
+  "generator": {
+    "type": "recmod:floresta",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:floresta"
+    }
+  }
+}

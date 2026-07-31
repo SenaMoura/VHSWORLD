@@ -3,10 +3,16 @@
   "downfall": 0.0,
   "has_precipitation": false,
   "effects": {
-    "fog_color": 0,
-    "sky_color": 0,
+    "fog_color": 3947584,
+    "sky_color": 3947584,
     "water_color": 4159204,
-    "water_fog_color": 329011
+    "water_fog_color": 329011,
+    "music": {
+      "sound": "recmod:music_train",
+      "min_delay": 0,
+      "max_delay": 0,
+      "replace_current_music": true
+    }
   },
   "spawners": {
     "monster": [],

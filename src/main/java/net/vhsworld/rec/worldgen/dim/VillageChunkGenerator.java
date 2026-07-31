@@ -3,9 +3,12 @@ package net.vhsworld.rec.worldgen.dim;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -92,6 +95,19 @@ public class VillageChunkGenerator extends StampChunkGenerator {
     /** De quanto em quanto poste. Um por lote seria fileira de poste, nao rua. */
     private static final int LAMP_EVERY = 2;
 
+    /**
+     * O ultimo X da CASA dentro da peca — que NAO e o ultimo X da peca.
+     *
+     * ⚠️ A peca tem 18 de largura, mas 4 deles sao o quintal cercado (x local 14..17).
+     * A casa acaba na parede de tijolo de x=13, e e sobre ELA que o telhado assenta.
+     * Medido camada por camada no schematic: em y=9, a ultima parede esta em x=15 da
+     * selecao, que e o x=13 da peca depois do recorte.
+     */
+    private static final int HOUSE_MAX_X = 13;
+
+    /** Quanto o beiral avanca alem da parede, nos quatro lados. */
+    private static final int EAVE = 1;
+
     /** Onde a fita pode largar o jogador: qualquer lugar num quadrado deste raio. */
     private static final int SPAWN_SPREAD = 64;
 
@@ -102,6 +118,23 @@ public class VillageChunkGenerator extends StampChunkGenerator {
     private static final BlockState PAVE = Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState();
     private static final BlockState POST = Blocks.IRON_BARS.defaultBlockState();
     private static final BlockState LAMP = Blocks.LANTERN.defaultBlockState();
+
+    // O telhado. Spruce porque a casa ja e de spruce da soleira ao oitao — o marrom da
+    // foto do Pedro sai de graca, e nenhum bloco novo entra na dimensao por causa dele.
+    private static final BlockState RIDGE = Blocks.SPRUCE_PLANKS.defaultBlockState();
+
+    /**
+     * O degrau da agua que desce para -X, e o da que desce para +X.
+     *
+     * ⚠️ `facing=east` poe a METADE ALTA do bloco no lado LESTE (o modelo `block/stairs`
+     * tem o segundo elemento em x 8..16, e o blockstate de leste nao tem rotacao). Ou
+     * seja: a agua que DESCE para oeste usa `facing=east`. Trocar os dois nao da erro
+     * nenhum — da um telhado com os degraus virados para dentro.
+     */
+    private static final BlockState STEP_DOWN_WEST = Blocks.SPRUCE_STAIRS.defaultBlockState()
+            .setValue(StairBlock.FACING, Direction.EAST);
+    private static final BlockState STEP_DOWN_EAST = Blocks.SPRUCE_STAIRS.defaultBlockState()
+            .setValue(StairBlock.FACING, Direction.WEST);
 
     private volatile DimPiece house;
     private volatile boolean looked;
@@ -159,6 +192,51 @@ public class VillageChunkGenerator extends StampChunkGenerator {
         // fundacao tem que ganhar do concreto, senao a soleira sai afundada.
         walkway(brush, placement, rotation);
         if (brush.touches(placement)) brush.stamp(placement);
+        roof(brush, placement);
+    }
+
+    /**
+     * O telhado de duas aguas, desenhado por cima da peca.
+     *
+     * ⚠️ POR QUE ELE NAO ESTA NO SCHEMATIC. Conferi as dez camadas da casa do Pedro: a
+     * de cima (y=9) tem 133 blocos, e sao todos o ANEL da parede — o miolo x3..14 /
+     * z5..19 e ar de ponta a ponta. A casa dele acaba num caixote aberto. Por isso o
+     * "colocar o telhado" nao e mexer no .schem: e desenhar aqui, e assim ele nao
+     * precisa reexportar peca nenhuma.
+     *
+     * MEIA INCLINACAO, e nao a de 45 graus que sai de graca com escada. A casa tem 14
+     * de largura: a 45 graus o telhado subiria 8 blocos sobre uma casa de 10 e a rua
+     * viraria um desfiladeiro de telhado. Subindo um nivel a cada DOIS blocos ele
+     * fecha em 4, que e a proporcao rasa da foto. O preco e o par degrau+tabua: a
+     * escada cobre a metade de baixo do nivel e a tabua ao lado dela fecha a de cima.
+     *
+     * O beiral avanca 1 para os quatro lados e as aguas correm ate as pontas em Z, o
+     * que fecha os oitoes sem precisar de triangulo separado — cada fatia de Z ja e a
+     * ladeira inteira.
+     *
+     * Em coordenada LOCAL de proposito: assim o giro de 180 da fileira de baixo da rua
+     * sai da mesma conta, e o `Placement` cuida do espelho. Cuidado unico: o estado da
+     * escada tem que girar junto, pela tabela da PROPRIA peca.
+     */
+    private void roof(Brush brush, Placement placement) {
+        Rotation turn = DimPiece.rotation(placement.rotation);
+        int base = placement.oy + placement.piece.height;
+        int crest = HOUSE_MAX_X / 2;           // ultima coluna da agua oeste
+        int lastZ = placement.piece.length - 1;
+
+        for (int lx = -EAVE; lx <= HOUSE_MAX_X + EAVE; lx++) {
+            boolean west = lx <= crest;
+            // Quantos blocos desde o beiral deste lado. Os dois lados chegam a 7 na
+            // cumeeira, e e isso que faz as duas aguas se encontrarem no mesmo nivel.
+            int fromEave = west ? lx + EAVE : HOUSE_MAX_X + EAVE - lx;
+            int level = fromEave / 2;
+            BlockState state = (fromEave & 1) == 0
+                    ? (west ? STEP_DOWN_WEST : STEP_DOWN_EAST).rotate(turn)
+                    : RIDGE;
+            for (int lz = -EAVE; lz <= lastZ + EAVE; lz++) {
+                brush.set(placement.worldX(lx, lz), base + level, placement.worldZ(lx, lz), state);
+            }
+        }
     }
 
     /**
@@ -288,5 +366,20 @@ public class VillageChunkGenerator extends StampChunkGenerator {
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState randomState) {
         return GROUND_Y + 1;
+    }
+
+    // ------------------------------------------------------------------ a saida
+    @Override
+    public String dimensionId() {
+        return "village";
+    }
+
+    /** No meio da rua, como o spawn — so que na casa fixa da regiao, e nao sorteada. */
+    @Override
+    public BlockPos exitAnchor(int rx, int rz) {
+        int gx = ExitSite.cellInRegion(rx, PERIOD_X);
+        int gz = ExitSite.cellInRegion(rz, PERIOD_Z);
+        return new BlockPos(gx * PERIOD_X + (ROAD_MIN + ROAD_MAX) / 2, GROUND_Y + 1,
+                gz * PERIOD_Z + PERIOD_Z / 2);
     }
 }

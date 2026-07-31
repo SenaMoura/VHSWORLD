@@ -38,7 +38,8 @@ public class FlashPacket {
         // thread do servidor e como se pede um ConcurrentModificationException.
         ctx.enqueueWork(() -> {
             ServerPlayer player = ctx.getSender();
-            if (player != null) OphanimGaze.flash(player);
+            if (player == null) return;
+            OphanimGaze.flash(player);
         });
         ctx.setPacketHandled(true);
     }

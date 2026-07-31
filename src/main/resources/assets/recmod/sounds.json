@@ -176,11 +176,11 @@
       }
     ]
   },
-  "music_data": {
+  "music_biblioteca": {
     "category": "music",
     "sounds": [
       {
-        "name": "recmod:music_data",
+        "name": "recmod:music/horror_ambient",
         "stream": true
       }
     ]
@@ -189,7 +189,63 @@
     "category": "music",
     "sounds": [
       {
-        "name": "recmod:music_chunks",
+        "name": "recmod:music/background_music_viii",
+        "stream": true
+      }
+    ]
+  },
+  "music_data": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_v",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/scary_horror_atmosphere",
+        "stream": true
+      }
+    ]
+  },
+  "music_escritorio": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_ix",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_v",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/heads_no_2",
+        "stream": true
+      }
+    ]
+  },
+  "music_floresta": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_v",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/outlast_official_soundtrack_04_wheel_chair_dude",
+        "stream": true
+      }
+    ]
+  },
+  "music_grassrooms": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/horror_ambience_3",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/reflections_of_a_memory",
         "stream": true
       }
     ]
@@ -198,8 +254,224 @@
     "category": "music",
     "sounds": [
       {
-        "name": "recmod:music_insidious",
+        "name": "recmod:music/background_music_v",
         "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_vi",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_vii",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/scary_horror_atmosphere",
+        "stream": true
+      }
+    ]
+  },
+  "music_mall": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_v",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_x",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/innocent_moon",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/outlast_official_soundtrack_07_swarm_ambience",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/yume_2kki_ost_underground_tv_complex",
+        "stream": true
+      }
+    ]
+  },
+  "music_maze": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_ii",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_ix",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/yume_2kki_ost_broken_faces_area",
+        "stream": true
+      }
+    ]
+  },
+  "music_parkourland": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_i",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_ix",
+        "stream": true
+      }
+    ]
+  },
+  "music_pipe_tunels": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_vii",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_viii",
+        "stream": true
+      }
+    ]
+  },
+  "music_stoneland": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_iii",
+        "stream": true
+      }
+    ]
+  },
+  "music_train": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_iv",
+        "stream": true
+      }
+    ]
+  },
+  "music_under_pressure": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_viii",
+        "stream": true
+      }
+    ]
+  },
+  "music_village": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/horror_background_atmosphere_025",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/silent_hill_claw_finger_extended",
+        "stream": true
+      }
+    ]
+  },
+  "music_overworld": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "recmod:music/background_music_ix",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/background_music_x",
+        "stream": true
+      },
+      {
+        "name": "recmod:music/halo_of_the_sun",
+        "stream": true
+      }
+    ]
+  },
+  "sting_biblioteca": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "recmod:music/tense_paranormal_horror",
+        "stream": false
+      }
+    ]
+  },
+  "sting_chunks": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "recmod:music/dark_horror_suspense_30s",
+        "stream": false
+      }
+    ]
+  },
+  "sting_mall": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "recmod:music/horror_stinger",
+        "stream": false
+      }
+    ]
+  },
+  "sting_parkourland": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "recmod:music/081484_hardcore_distortion_kick",
+        "stream": false
+      }
+    ]
+  },
+  "sting_pipe_tunels": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "recmod:music/horror_metallic_screeches",
+        "stream": false
+      }
+    ]
+  },
+  "sting_under_pressure": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "recmod:music/dark_horror_suspense_30s",
+        "stream": false
+      }
+    ]
+  },
+  "sting_geral": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "recmod:music/creepy_distant_footsteps",
+        "stream": false
+      },
+      {
+        "name": "recmod:music/scream_horror_sfx_8f98",
+        "stream": false
+      },
+      {
+        "name": "recmod:music/scream_horror_sfx_b395",
+        "stream": false
+      },
+      {
+        "name": "recmod:music/spooky_transition",
+        "stream": false
+      },
+      {
+        "name": "recmod:music/strange_whispers",
+        "stream": false
       }
     ]
   }

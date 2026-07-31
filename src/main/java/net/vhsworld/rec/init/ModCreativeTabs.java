@@ -31,6 +31,12 @@ public class ModCreativeTabs {
             event.accept(ModItems.TAPE_UNDER_PRESSURE);
             event.accept(ModItems.TAPE_BIBLIOTECA);
             event.accept(ModItems.TAPE_PARKOURLAND);
+            event.accept(ModItems.TAPE_STONELAND);
+            event.accept(ModItems.TAPE_ESCRITORIO);
+            event.accept(ModItems.TAPE_MAZE);
+            event.accept(ModItems.TAPE_FLORESTA);
+            event.accept(ModItems.TAPE_PIPE_TUNELS);
+            event.accept(ModItems.TAPE_MALL);
             event.accept(ModItems.CALLER);
             event.accept(ModItems.TRIPOD_ITEM);
             event.accept(ModItems.HAMMER);
@@ -65,6 +71,7 @@ public class ModCreativeTabs {
             event.accept(ModItems.ALUMINUM_ORE_ITEM);
             event.accept(ModItems.DEEPSLATE_ALUMINUM_ORE_ITEM);
             event.accept(ModItems.CORRUPTED_STONE_ITEM);
+            event.accept(ModItems.WHITE_LIGHT_ITEM);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(ModItems.RAW_ALUMINUM);

@@ -1,0 +1,10 @@
+{
+  "type": "recmod:escritorio",
+  "generator": {
+    "type": "recmod:escritorio",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:escritorio"
+    }
+  }
+}

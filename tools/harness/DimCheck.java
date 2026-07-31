@@ -4,6 +4,8 @@ import net.minecraft.server.Bootstrap;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.vhsworld.rec.worldgen.dim.DimPiece;
+import net.vhsworld.rec.worldgen.dim.GrassroomsChunkGenerator;
+import net.vhsworld.rec.worldgen.dim.MazeChunkGenerator;
 import net.vhsworld.rec.worldgen.dim.PieceSet;
 import net.vhsworld.rec.worldgen.dim.Placement;
 
@@ -50,6 +52,7 @@ public final class DimCheck {
         underPressure();
         biblioteca();
         parkourland();
+        maze();
 
         System.out.println(failures == 0 ? "\n=== TUDO PASSOU ===" : "\n=== " + failures + " REPROVADO(S) ===");
         System.exit(failures == 0 ? 0 : 1);
@@ -91,6 +94,8 @@ public final class DimCheck {
     static final int V_PERIOD_X = 64, V_PERIOD_Z = 32;
     static final int V_ROAD_MIN = 28, V_ROAD_MAX = 35;
     static final int V_HOUSE_A_X = 4, V_HOUSE_B_X = 42, V_HOUSE_Z = 7;
+    /** O ultimo X da CASA dentro da peca — o quintal cercado vem depois dele. */
+    static final int V_HOUSE_MAX_X = 13;
 
     static void village() {
         System.out.println("=== VILLAGE ===");
@@ -141,47 +146,180 @@ public final class DimCheck {
         check("girada 180, a frente da fileira B aponta para a rua",
                 frontX < V_HOUSE_B_X + house.width / 2,
                 "frente em x=" + frontX + ", rua acaba em " + V_ROAD_MAX);
+
+        // ------------------------------------------------------------------ o telhado
+        //
+        // O telhado do gerador assenta em `piece.height` e vai de x=-1 a x=14, e as duas
+        // coisas dependem de medidas da PECA que ninguem escreveu em lugar nenhum. Se o
+        // Pedro reexportar a casa com uma camada a mais, o telhado passa a flutuar um
+        // bloco acima da parede e ninguem descobre ate entrar no mundo.
+        int topRing = 0, topInner = 0;
+        for (int x = 0; x <= 13; x++) {
+            for (int z = 0; z < house.length; z++) {
+                boolean solid = !house.at(x, house.height - 1, z, 0).isAir();
+                boolean border = x == 0 || x == 13 || z == 0 || z == house.length - 1;
+                if (!solid) continue;
+                if (border) topRing++; else topInner++;
+            }
+        }
+        check("a ultima camada da casa e ANEL de parede, e nao teto",
+                topRing > 0 && topInner * 4 < topRing,
+                "borda " + topRing + " blocos, miolo " + topInner + " — o telhado tem que vir do Java");
+        check("a parede da casa acaba em x=13 (o telhado se apoia nela)",
+                V_HOUSE_MAX_X == 13 && house.width > 13,
+                "peca " + house.width + " larga; casa 0..13, quintal 14.." + (house.width - 1));
+
+        // A cumeeira: as duas aguas tem que chegar ao mesmo nivel, senao o telhado abre
+        // uma fresta no meio. Refaz a conta do gerador em vez de confiar nela.
+        int crest = V_HOUSE_MAX_X / 2;
+        int westTop = -1, eastTop = -1, peak = 0;
+        for (int lx = -1; lx <= V_HOUSE_MAX_X + 1; lx++) {
+            boolean west = lx <= crest;
+            int fromEave = west ? lx + 1 : V_HOUSE_MAX_X + 1 - lx;
+            int level = fromEave / 2;
+            peak = Math.max(peak, level);
+            if (lx == crest) westTop = level;
+            if (lx == crest + 1) eastTop = level;
+        }
+        check("as duas aguas do telhado se encontram no mesmo nivel",
+                westTop == eastTop && westTop == peak,
+                "oeste " + westTop + ", leste " + eastTop + ", mais alto " + peak
+                        + " (telhado sobe " + (peak + 1) + " sobre a parede)");
         System.out.println();
     }
 
     // ------------------------------------------------------------------ GRASSROOMS
-    static final int G_CELL = 56, G_MARGIN = 4;
+    /**
+     * ⚠️ ESTA SECAO FOI REESCRITA e vale dizer o que a versao velha media, porque ela
+     * PASSAVA. Ela conferia que a maior peca cabia no meio de uma sala de 56x56 com 4 de
+     * corredor em volta — e cabia. So que a menor peca tem 8x9, e "cabe" nao era a
+     * pergunta: sobravam 47 blocos de piso branco vazio em volta dela, e foi disso que o
+     * Pedro reclamou olhando o jogo. O teste media a regra de encaixe e nao o resultado.
+     *
+     * Agora ele mede o RESULTADO, no proprio codigo do gerador (`planCell`): quanto do
+     * quarteirao virou construcao, qual o maior vazio que sobrou, se ha peca em cima de
+     * peca, se alguma transborda, e se da para andar do anel ate qualquer fresta.
+     */
+    static final int G_CELLS = 48;
 
     static void grassrooms() {
         System.out.println("=== GRASSROOMS ===");
         List<DimPiece> rooms = PieceSet.get("grassrooms").pieces();
         check("as cinco salas entraram", rooms.size() == 5, rooms.size() + " pecas");
+        if (rooms.isEmpty()) { System.out.println(); return; }
 
-        int inner = G_CELL - 1 - 2 * G_MARGIN;
-        int worst = 0;
-        String worstName = "";
-        for (DimPiece room : rooms) {
-            int slackX = inner - room.width, slackZ = inner - room.length;
-            if (Math.min(slackX, slackZ) < worst || worstName.isEmpty()) {
-                worst = Math.min(slackX, slackZ);
-                worstName = room.name;
+        int cell = GrassroomsChunkGenerator.CELL;
+        int ring = GrassroomsChunkGenerator.RING;
+
+        int minPieces = Integer.MAX_VALUE, worstFill = 100, worstVoid = 0;
+        int overlaps = 0, spills = 0, marooned = 0, blockedSpawns = 0;
+
+        for (int i = 0; i < G_CELLS; i++) {
+            int cx = (i % 7) - 3, cz = (i / 7) - 3;
+            List<Placement> plan = GrassroomsChunkGenerator.planCell(rooms, 1234L, cx, cz);
+            minPieces = Math.min(minPieces, plan.size());
+
+            // O mapa do quarteirao: true = construcao, false = branco por onde se anda.
+            boolean[][] solid = new boolean[cell][cell];
+            for (Placement p : plan) {
+                if (p.minX() < cx * cell + ring || p.maxX() > cx * cell + cell - 1
+                        || p.minZ() < cz * cell + ring || p.maxZ() > cz * cell + cell - 1) {
+                    spills++;
+                    continue;
+                }
+                for (int x = p.minX(); x <= p.maxX(); x++) {
+                    for (int z = p.minZ(); z <= p.maxZ(); z++) {
+                        int lx = x - cx * cell, lz = z - cz * cell;
+                        if (solid[lx][lz]) overlaps++;
+                        solid[lx][lz] = true;
+                    }
+                }
+            }
+
+            int filled = 0;
+            for (int x = 0; x < cell; x++) for (int z = 0; z < cell; z++) if (solid[x][z]) filled++;
+            worstFill = Math.min(worstFill, 100 * filled / (cell * cell));
+            worstVoid = Math.max(worstVoid, largestSquare(solid));
+
+            if (solid[1][1]) blockedSpawns++;
+            marooned += unreachable(solid);
+        }
+
+        check("nenhuma peca cai em cima de outra", overlaps == 0, overlaps + " blocos repetidos");
+        check("nenhuma peca transborda o quarteirao", spills == 0, spills + " pecas para fora");
+        check("todo quarteirao tem pelo menos 3 construcoes", minPieces >= 3,
+                "o mais vazio tem " + minPieces);
+
+        // Os dois numeros que respondem ao pedido do Pedro. A casca antiga punha UMA peca
+        // de 8x9 numa casa de 56x56: 2% de construcao e um vazio quadrado de 47 de lado.
+        //
+        // Os limites estao ABAIXO do que se mede hoje (45% e 14) de proposito: eles sao
+        // trava contra regressao, e nao a nota da versao atual. Um limite colado na
+        // medicao reprova na primeira vez que o Pedro mudar o peso de uma peca, e ai o
+        // teste vira barulho em vez de aviso.
+        check("pelo menos 40% do quarteirao e construcao", worstFill >= 40,
+                "o pior tem " + worstFill + "% de construcao");
+        check("nao sobra praca: o maior vazio quadrado e menor que 20", worstVoid < 20,
+                "maior vazio: " + worstVoid + "x" + worstVoid);
+
+        check("o canto do anel, onde a fita larga o jogador, esta livre",
+                blockedSpawns == 0, blockedSpawns + " quarteiroes com o canto ocupado");
+        check("da para andar do anel ate qualquer fresta", marooned == 0,
+                marooned + " blocos de branco ilhados");
+
+        int tallest = 0;
+        for (DimPiece room : rooms) tallest = Math.max(tallest, room.height);
+        check("o teto passa por cima da peca mais alta",
+                GrassroomsChunkGenerator.CEIL_H >= tallest,
+                "teto em +" + GrassroomsChunkGenerator.CEIL_H + ", peca mais alta " + tallest);
+        System.out.println();
+    }
+
+    /** O lado do maior quadrado todo vazio — a medida de "praca". */
+    static int largestSquare(boolean[][] solid) {
+        int n = solid.length;
+        int[][] dp = new int[n][n];
+        int best = 0;
+        for (int x = 0; x < n; x++) {
+            for (int z = 0; z < n; z++) {
+                if (solid[x][z]) continue;
+                dp[x][z] = (x == 0 || z == 0) ? 1
+                        : 1 + Math.min(dp[x - 1][z], Math.min(dp[x][z - 1], dp[x - 1][z - 1]));
+                best = Math.max(best, dp[x][z]);
             }
         }
-        check("a maior sala cabe com o corredor de " + G_MARGIN + " em volta", worst >= 0,
-                "pior caso: " + worstName + " sobra " + worst);
+        return best;
+    }
 
-        // O corredor de verdade: distancia da parede da celula ate a peca, nos 4 lados.
-        for (DimPiece room : rooms) {
-            int ox = 1 + G_MARGIN + Math.max(0, (inner - room.width) / 2);
-            int oz = 1 + G_MARGIN + Math.max(0, (inner - room.length) / 2);
-            int left = ox - 1, right = (G_CELL - 1) - (ox + room.width - 1);
-            int top = oz - 1, bottom = (G_CELL - 1) - (oz + room.length - 1);
-            check(room.name + ": corredor >= 2 nos quatro lados",
-                    Math.min(Math.min(left, right), Math.min(top, bottom)) >= 2,
-                    "O" + left + " L" + right + " N" + top + " S" + bottom);
+    /**
+     * Quantos blocos de branco NAO se alcanca partindo do canto do anel.
+     *
+     * E o teste que sustenta a dimensao inteira: sem parede construida pelo Java, o que
+     * liga uma construcao na outra e a fresta que sobra entre elas. Se a guilhotina
+     * fechasse um bolsao, o jogador cairia nele de fita e nao teria por onde sair.
+     */
+    static int unreachable(boolean[][] solid) {
+        int n = solid.length;
+        boolean[][] seen = new boolean[n][n];
+        ArrayList<int[]> queue = new ArrayList<>();
+        queue.add(new int[]{1, 1});
+        seen[1][1] = true;
+        for (int head = 0; head < queue.size(); head++) {
+            int[] at = queue.get(head);
+            int[][] around = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+            for (int[] step : around) {
+                int nx = at[0] + step[0], nz = at[1] + step[1];
+                if (nx < 0 || nz < 0 || nx >= n || nz >= n) continue;
+                if (seen[nx][nz] || solid[nx][nz]) continue;
+                seen[nx][nz] = true;
+                queue.add(new int[]{nx, nz});
+            }
         }
-
-        // A porta e de 4x5 e tem que caber na parede e no teto mais baixo.
-        int lowest = Integer.MAX_VALUE;
-        for (DimPiece room : rooms) lowest = Math.min(lowest, room.height);
-        check("a porta de 5 de alto cabe na sala mais baixa", lowest - 1 >= 5,
-                "teto mais baixo: " + lowest + " (interior " + (lowest - 1) + ")");
-        System.out.println();
+        int lost = 0;
+        for (int x = 0; x < n; x++) {
+            for (int z = 0; z < n; z++) if (!solid[x][z] && !seen[x][z]) lost++;
+        }
+        return lost;
     }
 
     // ------------------------------------------------------------------ TRAIN
@@ -415,5 +553,132 @@ public final class DimCheck {
         System.out.printf("  %d degraus, %d descansos, %.1f voltas, sobe %d blocos%n",
                 P_STEPS, rests, (P_STEPS * (double) P_STRIDE) / P_PERIMETER, P_STEPS - 1);
         System.out.println();
+    }
+
+    // ------------------------------------------------------------------ MAZE
+    static final int M_CELL_X = 76, M_CELL_Z = 20;
+    static final int M_PIERCE = 2, M_DOOR_H = 5;
+    static final int M_SPAWN_X = 10, M_SPAWN_Z = 10;
+
+    /**
+     * O que a MAZE assume sobre as pecas do Pedro, e que nada mais no repo garante.
+     *
+     * As tres afirmacoes que sustentam a dimensao inteira sao medicoes, nao escolhas: a
+     * grade so existe porque as duas pecas tem a MESMA pegada; o tunel so atravessa
+     * porque a parede mais grossa tem 2; e o spawn so e seguro porque aquele ponto e ar
+     * nas DUAS. Qualquer uma delas muda se o Pedro reexportar um maze_*.schem, e nenhuma
+     * das tres da erro de compilacao ao mudar — da uma dimensao com porta cega ou com o
+     * jogador nascendo dentro de uma parede de 163 blocos.
+     */
+    static void maze() {
+        System.out.println("=== MAZE ===");
+
+        // ⚠️ SO OS LADRILHOS, e nao `pieces()` inteiro. Desde que a cabana entrou no .bin
+        // como enfeite de peso 0, o conjunto tem uma peca de 7x6 no meio de duas de
+        // 76x20 — e as medicoes abaixo (mesma pegada, espessura da parede, ponto de
+        // spawn) leem coordenadas que so existem nas grandes. `DimPiece.at` nao confere
+        // limite: perguntar x=20 a uma peca de 7 de largura nao reprova, le lixo.
+        List<DimPiece> tiles = new ArrayList<>();
+        for (DimPiece piece : PieceSet.get("maze").pieces()) {
+            if (piece.weight > 0) tiles.add(piece);
+        }
+        if (tiles.size() < 2) { check("pecas", false, "esperava 2, achei " + tiles.size()); return; }
+
+        DimPiece first = tiles.get(0);
+        boolean sameFootprint = true;
+        for (DimPiece tile : tiles) {
+            if (tile.width != first.width || tile.length != first.length) sameFootprint = false;
+        }
+        check("as pecas tem a mesma pegada (e o que permite a grade)", sameFootprint,
+                tiles.get(0).name + " " + tiles.get(0).width + "x" + tiles.get(0).length
+                        + ", " + tiles.get(1).name + " " + tiles.get(1).width + "x" + tiles.get(1).length);
+        check("a pegada e a grade do gerador",
+                first.width == M_CELL_X && first.length == M_CELL_Z,
+                "peca " + first.width + "x" + first.length + ", grade "
+                        + M_CELL_X + "x" + M_CELL_Z);
+
+        // A parede mais grossa. O tunel fura `PIERCE` de cada lado da divisa, entao ele
+        // so atravessa se PIERCE >= a espessura. Medido na altura em que o tunel passa.
+        int thickest = 0;
+        String where = "";
+        for (DimPiece tile : tiles) {
+            int east = 0;
+            while (east < tile.width && !tile.at(tile.width - 1 - east, 3, tile.length / 2, 0).isAir()) east++;
+            int north = 0;
+            while (north < tile.length && !tile.at(20, 3, north, 0).isAir()) north++;
+            if (east > thickest) { thickest = east; where = tile.name + " leste"; }
+            if (north > thickest) { thickest = north; where = tile.name + " norte"; }
+        }
+        check("o tunel fura a parede mais grossa das pecas", M_PIERCE >= thickest,
+                "mais grossa: " + thickest + " (" + where + "), tunel fura " + M_PIERCE);
+
+        // O spawn. ⚠️ A LICAO DO SUBMARINO vale aqui: "tem bloco" nao e a pergunta.
+        // Precisa de chao SOLIDO embaixo e de dois blocos de ar para o corpo — a `cross`
+        // tem mato alto plantado, e mato nao e ar.
+        for (DimPiece tile : tiles) {
+            BlockState under = tile.at(M_SPAWN_X, 0, M_SPAWN_Z, 0);
+            boolean clear = true;
+            for (int y = 1; y <= 2; y++) {
+                if (!tile.at(M_SPAWN_X, y, M_SPAWN_Z, 0).isAir()) clear = false;
+            }
+            check(tile.name + ": o ponto de spawn tem chao e dois de ar",
+                    !under.isAir() && clear,
+                    "chao: " + under.getBlock().getName().getString() + ", ar acima: " + clear);
+        }
+
+        // O tunel tem que caber na altura da peca, e sobrar parede acima dele — um tunel
+        // que chegasse ao topo nao seria porta, seria a parede inteira faltando.
+        check("o vao de " + M_DOOR_H + " de alto e uma porta, e nao a parede faltando",
+                M_DOOR_H * 8 < first.height,
+                "porta " + M_DOOR_H + ", parede " + (first.height - 1) + " de alto");
+
+        mazeProps();
+        System.out.println();
+    }
+
+    /**
+     * As variacoes de estrutura: elas nao podem tapar a porta nem entupir o corredor.
+     *
+     * ⚠️ ESTE E O RISCO REAL DO ENFEITE, e nao a aparencia dele. Uma massa de pedra de
+     * ate 112 blocos de altura sorteada em cima de um tunel de 4x5 fecharia a passagem
+     * sem deixar rastro nenhum no log — o jogador so descobre andando ate la e achando
+     * parede. E uma massa que atravessasse o salao de lado a lado deixaria a casa sem
+     * saida. Os dois sao mantidos longe pela mesma folga (`EDGE_X`/`EDGE_Z`), e e ela
+     * que este teste mede, com os numeros do proprio gerador.
+     */
+    static void mazeProps() {
+        int cellZ = MazeChunkGenerator.CELL_Z;
+        int pierce = MazeChunkGenerator.PIERCE;
+
+        // O tunel norte ocupa z de `divisa-PIERCE` a `divisa+PIERCE-1`, ou seja o local
+        // vai ate PIERCE-1. O enfeite comeca em EDGE_Z. A folga e a diferenca.
+        check("o enfeite para longe do tunel", MazeChunkGenerator.EDGE_Z - pierce >= 2
+                        && MazeChunkGenerator.EDGE_X - pierce >= 2,
+                "folga Z " + (MazeChunkGenerator.EDGE_Z - pierce)
+                        + ", folga X " + (MazeChunkGenerator.EDGE_X - pierce));
+
+        // A pior massa possivel encostada o mais ao sul que o sorteio permite.
+        int lastZ = cellZ - MazeChunkGenerator.EDGE_Z - 1;
+        int freeNorth = MazeChunkGenerator.EDGE_Z - 1;
+        int freeSouth = (cellZ - 2) - lastZ;
+        check("o corredor nunca entope: sobra passagem dos dois lados",
+                Math.min(freeNorth, freeSouth) >= 3 && MazeChunkGenerator.PROP_MAX_L < cellZ,
+                "livre ao norte " + freeNorth + ", ao sul " + freeSouth
+                        + ", massa mais funda " + MazeChunkGenerator.PROP_MAX_L);
+
+        DimPiece cabin = PieceSet.get("maze").byName("cabin");
+        if (cabin == null) { check("a cabana do Pedro entrou no .bin", false, "byName devolveu null"); return; }
+        check("a cabana tem peso 0 (nunca e sorteada como casa)", cabin.weight == 0,
+                "peso " + cabin.weight);
+
+        // Nos quatro giros: cabe no miolo, com as duas margens?
+        int worst = Integer.MAX_VALUE;
+        for (int rotation = 0; rotation < 4; rotation++) {
+            worst = Math.min(worst, Math.min(
+                    MazeChunkGenerator.CELL_X - 2 * MazeChunkGenerator.EDGE_X - cabin.rotatedWidth(rotation),
+                    cellZ - 2 * MazeChunkGenerator.EDGE_Z - cabin.rotatedLength(rotation)));
+        }
+        check("a cabana cabe no miolo nos quatro giros", worst >= 0,
+                cabin.width + "x" + cabin.height + "x" + cabin.length + ", pior sobra " + worst);
     }
 }

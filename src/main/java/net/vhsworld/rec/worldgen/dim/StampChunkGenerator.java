@@ -180,6 +180,9 @@ public abstract class StampChunkGenerator extends ChunkGenerator implements DimS
                                                         StructureManager structures, ChunkAccess chunk) {
         return CompletableFuture.supplyAsync(() -> {
             carve(new Brush(chunk));
+            // A saida NAO e carimbada aqui, e ja foi: ate a v1.71.0 o ExitSite construia
+            // uma sala neste ponto. A entidade do Espelho tomou o lugar dela e nao precisa
+            // de construcao — ela e posta no mundo pelo MirrorDirector, em tempo de jogo.
             return chunk;
         }, executor);
     }

@@ -199,6 +199,45 @@ DIMENSIONS = {
     "parkourland": [
         ("cage", "parkour_land.schem", 0, True, None, False, (0, 0, 0)),
     ],
+    # MAZE: das OITO maze_*.schem so TRES sao arquivos diferentes.
+    #
+    #   md5: maze_1 = maze_2 = maze_3     (76x164x20)
+    #        maze_5 = maze_6              (76x164x20)
+    #        maze_7 = maze_8              (142x185x103)
+    #        maze_4 sozinha               (81x164x27)
+    #
+    # Entram as duas de 76x20, e so elas, porque SO ELAS TEM A MESMA PEGADA — e pegada
+    # igual e o que permite a grade. A maze_4 (81x27) e a maze_7 (142x103) sairiam do
+    # ladrilho e abririam degrau de piso e fresta de parede em toda emenda; ficam
+    # guardadas no schematics para quando a MAZE ganhar camaras de tamanho proprio.
+    #
+    # As duas se distinguem pelo que ja vem aberto nelas, e e por isso que as duas
+    # entram em vez de uma so: a `hall` e uma caixa fechada com saida so a oeste, e a
+    # `cross` tem vao nas quatro paredes. Uma grade so de `hall` seria um corredor
+    # unico; uma grade so de `cross` seria um campo aberto. Misturadas, ha bifurcacao.
+    #
+    # Sem recorte e sem ancora: medi a caixa util das duas e ela e a selecao inteira
+    # (x 0..75, y 0..163, z 0..19), sem um bloco de folga. E sem deteccao de porta —
+    # aqui o encaixe e pela GRADE e quem abre a passagem e o Java, porque um vao de 18
+    # blocos de largura na parede oeste nao e uma porta, e a parede faltando.
+    #
+    # ⚠️ A CABANA TEM PESO 0, e peso 0 quer dizer "existe e nunca e sorteada como
+    # ladrilho" (ver DimHash.weighted). Ela e um ENFEITE, nao uma casa da grade: o
+    # gerador a pede pelo nome. Ela existe porque medi as duas pecas da grade bloco a
+    # bloco e elas diferem em 2318 de 249280 — 0,9%. Ou seja o "sorteio" entre hall e
+    # cross entrega praticamente a mesma parede em toda casa, e foi disso que o Pedro
+    # reclamou olhando o jogo. A variacao tem que vir de fora do ladrilho.
+    #
+    # Ela e do Pedro e esta na maze_4: um casebre de tabua 7x6x5 com CAMA, BAU e tocha
+    # de parede, encostado do lado de fora do muro, com uma porta de carvalho no proprio
+    # muro. O recorte pega so o casebre (x30..36, y0..4, z1..6) e deixa o muro de fora —
+    # o muro quem poe e a peca da casa, e um segundo muro carimbado por cima do primeiro
+    # sairia deslocado da grade.
+    "maze": [
+        ("hall",  "maze_1.schem", 5, True,  None, False, (0, 0, 0)),
+        ("cross", "maze_5.schem", 5, False, None, False, (0, 0, 0)),
+        ("cabin", "maze_4.schem", 0, False, (30, 36, 0, 4, 1, 6), False, (0, 0, 0)),
+    ],
 }
 
 FACES = {"north": 0, "east": 1, "south": 2, "west": 3}

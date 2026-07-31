@@ -3,12 +3,18 @@
   "downfall": 0.0,
   "has_precipitation": false,
   "effects": {
-    "fog_color": 15265267,
-    "sky_color": 15265267,
+    "fog_color": 15922165,
+    "sky_color": 15922165,
     "water_color": 4159204,
     "water_fog_color": 329011,
     "grass_color": 8437607,
-    "foliage_color": 7716687
+    "foliage_color": 7716687,
+    "music": {
+      "sound": "recmod:music_grassrooms",
+      "min_delay": 0,
+      "max_delay": 0,
+      "replace_current_music": true
+    }
   },
   "spawners": {
     "monster": [],

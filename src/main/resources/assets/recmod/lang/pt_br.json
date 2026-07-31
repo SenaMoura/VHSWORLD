@@ -25,6 +25,7 @@
   "item.recmod.blank_tape": "Fita Virgem",
   "item.recmod.videocassette": "Videocassete",
   "block.recmod.tripod": "Tripe",
+  "block.recmod.white_light": "Luz Branca",
   "recmod.codex.infrared_lens.desc": "Vidro verde lapidado a partir da gosma corrompida. Erga a lente e o que se esconde do olho para de se esconder: os Rasgos da Realidade acendem enquanto ela esta na sua mao. Ela nunca desliga, e por isso bebe o dobro de bateria — enxergar o invisivel nao sai de graca.",
   "recmod.codex.infrared_lens.obtain": "Duas vidracas e gosma preta em cruz, redstone em cima, aluminio embaixo. So segurar — nao tem o que apertar.",
   "recmod.codex.corrupted_battery.desc": "Uma pilha em que a gosma entrou. Enche a camera de vez num uso so — mais do que qualquer pilha limpa fez — mas cobra a diferenca da sua cabeca, em vez de devolver. Boa no aperto; virou habito, acaba mal.",
@@ -144,6 +145,19 @@
   "item.recmod.tape_biblioteca": "Fita: BIBLIOTECA",
   "biome.recmod.biblioteca": "BIBLIOTECA",
   "item.recmod.tape_parkourland": "Fita: PARKOURLAND",
+  "item.recmod.tape_stoneland": "Fita: STONELAND",
+  "item.recmod.tape_escritorio": "Fita: ESCRITORIO",
+  "item.recmod.tape_maze": "Fita: MAZE",
+  "item.recmod.tape_floresta": "Fita: FLORESTA",
+  "item.recmod.tape_pipe_tunels": "Fita: PIPE TUNELS",
+  "item.recmod.tape_mall": "Fita: MALL",
   "biome.recmod.parkourland": "PARKOURLAND",
-  "message.recmod.parkour_fell": "Voce errou. A fita trocou sozinha."
+  "message.recmod.parkour_fell": "Voce errou. A fita trocou sozinha.",
+  "message.recmod.tape_one_way": "A fita não rebobina aqui. Há outra saída nesta dimensão.",
+  "message.recmod.mirror_behind": "Passos, logo atrás de você.",
+  "message.recmod.mirror_broken": "Você olhou. O espelho estalou e alguma coisa te empurrou.",
+  "block.recmod.exit_door": "Porta da Linha",
+  "message.recmod.track_door": "Alguma coisa se abriu nos trilhos, mais à frente.",
+  "entity.recmod.mirror": "Espelho",
+  "message.recmod.mirror_turn_back": "you need to turn back before it's too late"
 }

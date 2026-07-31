@@ -274,4 +274,25 @@ public class UnderPressureChunkGenerator extends StampChunkGenerator {
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState randomState) {
         return BED_Y + 1;
     }
+
+    // ------------------------------------------------------------------ a saida
+    @Override
+    public String dimensionId() {
+        return "under_pressure";
+    }
+
+    /**
+     * No leito, no meio da casa.
+     *
+     * ⚠️ A SALA FICA DEBAIXO D'AGUA E ALAGA pelos quatro vaos, e isso e aceito e nao
+     * esquecido. Fechar os vaos daria uma caixa estanque que ninguem abre sem picareta —
+     * pior. E a camara escura alagada continua funcionando: a lampada vermelha acende na
+     * agua e o tanque tambem. O jogador chega nadando, que e como se chega a tudo aqui.
+     */
+    @Override
+    public BlockPos exitAnchor(int rx, int rz) {
+        int cx = ExitSite.cellInRegion(rx, CELL);
+        int cz = ExitSite.cellInRegion(rz, CELL);
+        return new BlockPos(cx * CELL + CELL / 2, BED_Y + 1, cz * CELL + CELL / 2);
+    }
 }

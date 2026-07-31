@@ -5,6 +5,7 @@ import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.client.escape.EscapeFx;
 import net.vhsworld.rec.client.fx.InkTransition;
 import net.vhsworld.rec.client.sanity.SanityOverlay;
 import net.vhsworld.rec.client.tape.TapeRecorder;
@@ -27,5 +28,9 @@ public class OverlayRegistry {
         // E a mancha vem por cima ATE do chiado: ela nao e um efeito da fita, ela e
         // o que engole a fita inteira.
         event.registerAboveAll("ink", InkTransition.INK);
+        // O corte da fuga vem por cima de TUDO, inclusive da mancha. Nao e mais um efeito
+        // do mod: e o fim da gravacao, e nada pode aparecer depois dele — nem o chiado,
+        // nem a barra de sanidade. Ver EscapeFx.
+        event.registerAboveAll("escape_cut", EscapeFx.OVERLAY);
     }
 }

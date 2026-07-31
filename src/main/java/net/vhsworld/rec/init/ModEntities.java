@@ -8,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.entity.AnomalyEntity;
+import net.vhsworld.rec.entity.MirrorEntity;
 import net.vhsworld.rec.entity.StonemanEntity;
 
 /** As criaturas do mod. */
@@ -47,6 +48,31 @@ public class ModEntities {
                     .updateInterval(3)
                     .fireImmune()
                     .build("anomaly"));
+
+    /**
+     * O ESPELHO: a saida de treze das quinze dimensoes.
+     *
+     * ⚠️ A CAIXA E 3.0 x 8.4, e ela acompanha o desenho de verdade — ao contrario da
+     * anomalia, que usa caixa pequena de proposito. Aqui a caixa NAO e so "onde a criatura
+     * esta": e o alvo do olhar. A regra inteira desta criatura e o servidor perguntar
+     * "para onde este jogador esta olhando?", e essa pergunta e respondida com um raio
+     * contra a caixa. Caixa menor que o painel daria um Espelho cujas bordas se pode
+     * encarar impunemente, e o jogador aprenderia a olhar de esguelha.
+     *
+     * `clientTrackingRange` alto pelo mesmo motivo do Homem de Pedra, e mais um: ele tem
+     * oito blocos de altura e e a SAIDA. Ver o painel preto de longe, no meio da neblina,
+     * e como a dimensao diz onde e — se ele so aparecesse perto, achar a saida viraria
+     * sorte em vez de leitura.
+     */
+    public static final RegistryObject<EntityType<MirrorEntity>> MIRROR =
+            ENTITIES.register("mirror", () -> EntityType.Builder
+                    .of(MirrorEntity::new, MobCategory.MISC)
+                    .sized(3.0F, 8.4F)
+                    .clientTrackingRange(16)
+                    .updateInterval(20)
+                    .fireImmune()
+                    .noSummon()
+                    .build("mirror"));
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);

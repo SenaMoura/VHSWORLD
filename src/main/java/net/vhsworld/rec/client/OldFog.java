@@ -11,6 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.config.RECConfig;
+import net.vhsworld.rec.worldgen.dim.DimensionProfile;
 
 /**
  * A neblina antiga (alpha / r1.6.4) dentro das dimensoes do mod.
@@ -72,6 +73,15 @@ public final class OldFog {
         float far = rd * 16.0f * (rd <= 28 ? 2.0f : 1.0f);
         float scale = event.getMode() == FogRenderer.FogMode.FOG_SKY ? horizon(rd) : terrain(rd);
         float density = RECConfig.CLIENT.oldFogDensity.get().floatValue();
+
+        // O aperto da PROPRIA dimensao, multiplicado por cima do botao do jogador.
+        //
+        // ⚠️ MULTIPLICA, nao substitui. O botao do config e o unico jeito de quem nao
+        // aguenta bruma jogar o mod; se a dimensao pudesse ignora-lo, a PARKOURLAND
+        // (0.30) ficaria intransponivel para essa pessoa e ela nao teria o que mexer.
+        // Assim o autor diz a proporcao entre as dimensoes e o jogador diz o volume.
+        DimensionProfile profile = DimensionProfile.of(mc.level);
+        if (profile != null) density *= profile.fog();
 
         event.setNearPlaneDistance(0.0f);
         event.setFarPlaneDistance(far * scale * density);

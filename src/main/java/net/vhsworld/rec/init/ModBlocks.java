@@ -11,6 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.vhsworld.rec.RECMod;
+import net.vhsworld.rec.block.ExitDoorBlock;
 import net.vhsworld.rec.block.RealityTearBlock;
 import net.vhsworld.rec.block.RFReceiverBlock;
 
@@ -107,6 +108,62 @@ public class ModBlocks {
                             .mapColor(MapColor.COLOR_GRAY)
                             .strength(2.5F, 3.0F)
                             .requiresCorrectToolForDrops()
+                            .sound(SoundType.METAL)));
+
+    /**
+     * Luz Branca: um bloco branco de ponta a ponta que acende sozinho.
+     *
+     * "como ha janelas que podem mostrar o void, cria um bloco totalmente branco e que
+     * brilha e que emite efeito de luz".
+     *
+     * ⚠️ O PROBLEMA QUE ELE RESOLVE E DE OLHAR PARA CIMA, e vale registrar qual e. As
+     * salas da GRASSROOMS tem abobada de vidro (esta na foto do Pedro, e esta na peca),
+     * e a abobada e a camada mais alta da peca — a mesma altura em que o Java escrevia o
+     * teto. Como a peca e carimbada DEPOIS da casca, o vidro dela apagava o teto e
+     * sobrava vidro olhando para o nada. Dentro de um liminal space iluminado, o unico
+     * lugar preto era justo o ceu.
+     *
+     * Nao e `minecraft:light` e nao e um vidro claro: aqueles nao aparecem. Este e uma
+     * superficie branca opaca, e e ISSO que o vidro tem que mostrar — o teto de estudio
+     * fotografico da foto, sem fonte de luz visivel e sem sombra.
+     *
+     * Luz 15 porque ele e o SOL da dimensao. E `mapColor` branco para o mapa nao pintar
+     * o teto de cinza-pedra.
+     */
+    public static final RegistryObject<Block> WHITE_LIGHT = BLOCKS.register("white_light",
+            () -> new Block(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.SNOW)
+                            .strength(0.6F)
+                            .lightLevel(state -> 15)
+                            .sound(SoundType.GLASS)));
+
+    /**
+     * A porta da TRAIN e da PARKOURLAND, no molde da do Dimensional Doors.
+     *
+     * ⚠️ ELA TEM COLISAO, e a versao anterior nao tinha. Enquanto era um cubo que se
+     * atravessava, "abrir" nao existia — encostar ja levava embora. Agora que e uma porta
+     * de verdade, a colisao E a mecanica: fechada ela barra, e so depois de aberta o
+     * jogador entra no espaco dela e o `entityInside` dispara. Tirar a colisao daqui
+     * desmonta a porta inteira.
+     *
+     * ⚠️ E `noOcclusion`, senao o vazio animado do painel some. Um bloco que oclui faz o
+     * jogo descartar as faces vizinhas E aplicar sombreamento de cubo cheio no proprio
+     * modelo fino — o painel ficaria chapado e preto, sem o chiado se mexendo dentro, que
+     * e a unica coisa que a distingue de uma porta de ferro comum.
+     *
+     * Luz 7 porque as duas dimensoes que a usam sao escuras e de bruma fechada: sem brilho
+     * proprio, a porta apareceria como uma mancha e o jogador passaria direto pela unica
+     * saida que ele tem.
+     */
+    public static final RegistryObject<Block> EXIT_DOOR = BLOCKS.register("exit_door",
+            () -> new ExitDoorBlock(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_BLACK)
+                            .strength(-1.0F, 3600000.0F)
+                            .noLootTable()
+                            .noOcclusion()
+                            .lightLevel(state -> 7)
                             .sound(SoundType.METAL)));
 
     public static void register(IEventBus eventBus) {

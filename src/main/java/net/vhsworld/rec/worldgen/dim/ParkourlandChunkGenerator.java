@@ -3,6 +3,7 @@ package net.vhsworld.rec.worldgen.dim;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
@@ -240,6 +241,25 @@ public class ParkourlandChunkGenerator extends StampChunkGenerator {
         if (level.getBlockEntity(where) instanceof RandomizableContainerBlockEntity container) {
             container.setLootTable(LOOT, where.asLong() ^ seed());
         }
+
+        // ------------------------------------------------------------------ a saida
+        //
+        // ⚠️ A PORTA JA VEM PRONTA, e nao nasce andando como a da TRAIN. As duas usam
+        // `ExitMethod.DOOR`, mas so faz sentido "ganhar" a porta andando numa dimensao em
+        // que andar E o desafio. Aqui o desafio e SUBIR, e o topo ja e a linha de chegada:
+        // a porta ao lado do bau e o premio da subida, do mesmo jeito que o bau e.
+        //
+        // Ela tambem conserta um defeito da outra forma: numa torre de plataformas soltas
+        // sobre o vazio, "a frente do jogador" nao existe em linha reta, e a porta acabava
+        // nascendo num degrau qualquer no meio do caminho — o jogador saia sem nunca ter
+        // chegado ao topo, e o parkour inteiro deixava de ter razao de ser.
+        //
+        // Duas casas ao lado do bau: perto o bastante para se ver na mesma olhada, longe o
+        // bastante para o corpo dela nao tapar a tampa do bau.
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            net.vhsworld.rec.escape.TrackDoor.raise(server,
+                    where.getX() + 2, where.getY(), where.getZ(), Direction.NORTH);
+        }
     }
 
     // ------------------------------------------------------------------ o spawn
@@ -283,5 +303,28 @@ public class ParkourlandChunkGenerator extends StampChunkGenerator {
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState randomState) {
         return CAGE_Y + 1;
+    }
+
+    // ------------------------------------------------------------------ a saida
+    @Override
+    public String dimensionId() {
+        return "parkourland";
+    }
+
+    /**
+     * Uma sala so, no chao da gaiola, e a MESMA para toda regiao.
+     *
+     * ⚠️ IGNORA rx E rz, e tem que ignorar. A PARKOURLAND e a unica FINITA das quinze:
+     * fora da gaiola nao ha mundo, e uma sala por regiao criaria caixas boiando no vazio
+     * ao lado da torre — inalcancaveis, e visiveis, que e pior do que so inalcancaveis.
+     * Devolvendo sempre o mesmo ponto, o `nearest` do ExitSite acha esta e o carimbo
+     * redesenha a mesma sala em cima dela mesma, que nao custa nada.
+     *
+     * No CHAO e nao no topo: a torre ja e a prova. Fazer o jogador subir para achar a
+     * saida e cobrar duas vezes pela mesma coisa.
+     */
+    @Override
+    public BlockPos exitAnchor(int rx, int rz) {
+        return new BlockPos((START_X0 + START_X1) / 2, CAGE_Y + 1, (START_Z0 + START_Z1) / 2);
     }
 }

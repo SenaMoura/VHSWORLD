@@ -28,12 +28,16 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(StonemanModel.BASE, StonemanModel::createBase);
+        event.registerLayerDefinition(net.vhsworld.rec.client.entity.MirrorModel.LAYER,
+                net.vhsworld.rec.client.entity.MirrorModel::createBodyLayer);
     }
 
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.STONEMAN.get(), StonemanRenderer::new);
         event.registerEntityRenderer(ModEntities.ANOMALY.get(), AnomalyRenderer::new);
+        event.registerEntityRenderer(ModEntities.MIRROR.get(),
+                net.vhsworld.rec.client.entity.MirrorRenderer::new);
     }
 
     private ClientSetup() {}

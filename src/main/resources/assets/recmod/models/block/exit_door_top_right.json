@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right",
+  "textures": {
+    "bottom": "recmod:block/exit_door_bottom",
+    "top": "recmod:block/exit_door_top"
+  }
+}

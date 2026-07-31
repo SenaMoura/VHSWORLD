@@ -1,0 +1,8 @@
+{
+  "type": "recmod:overworld_music",
+  "biomes": "#minecraft:is_overworld",
+  "music": "recmod:music_overworld",
+  "min_delay": 0,
+  "max_delay": 0,
+  "replace_current_music": true
+}

@@ -21,6 +21,7 @@
   "recmod.codex.aluminum.desc": "Light, soft and dull. It is good for exactly one thing: becoming the shell of a battery. Whoever finds an aluminum vein in a cave is a few steps away from never rationing power again.",
   "recmod.codex.aluminum.obtain": "Small veins in any overworld cave, between height -32 and 60. A stone pickaxe is enough. Smelt the raw ore into ingots.",
   "block.recmod.corrupted_stone": "Corrupted Stone",
+  "block.recmod.white_light": "White Light",
   "item.recmod.iron_stick": "Iron Rod",
   "item.recmod.hammer": "Hammer",
   "item.recmod.pressed_iron": "Pressed Iron",
@@ -194,6 +195,19 @@
   "item.recmod.tape_biblioteca": "Tape: BIBLIOTECA",
   "biome.recmod.biblioteca": "BIBLIOTECA",
   "item.recmod.tape_parkourland": "Tape: PARKOURLAND",
+  "item.recmod.tape_stoneland": "Tape: STONELAND",
+  "item.recmod.tape_escritorio": "Tape: OFFICE",
+  "item.recmod.tape_maze": "Tape: MAZE",
+  "item.recmod.tape_floresta": "Tape: FOREST",
+  "item.recmod.tape_pipe_tunels": "Tape: PIPE TUNNELS",
+  "item.recmod.tape_mall": "Tape: MALL",
   "biome.recmod.parkourland": "PARKOURLAND",
-  "message.recmod.parkour_fell": "You missed. The tape switched itself."
+  "message.recmod.parkour_fell": "You missed. The tape switched itself.",
+  "message.recmod.tape_one_way": "The tape won't rewind here. There is another way out of this place.",
+  "message.recmod.mirror_behind": "Footsteps, right behind you.",
+  "message.recmod.mirror_broken": "You looked. The mirror cracked and something shoved you.",
+  "block.recmod.exit_door": "Line Door",
+  "message.recmod.track_door": "Something opened on the tracks, further ahead.",
+  "entity.recmod.mirror": "Mirror",
+  "message.recmod.mirror_turn_back": "you need to turn back before it's too late"
 }

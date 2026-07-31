@@ -132,6 +132,30 @@ public class ModItems {
     public static final RegistryObject<Item> TAPE_PARKOURLAND = ITEMS.register("tape_parkourland",
             () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "parkourland"));
 
+    /** Fita STONELAND: o overworld inteiro refeito em pedregulho. */
+    public static final RegistryObject<Item> TAPE_STONELAND = ITEMS.register("tape_stoneland",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "stoneland"));
+
+    /** Fita ESCRITORIO: o andar de baias, e as torres na neblina do lado de fora. */
+    public static final RegistryObject<Item> TAPE_ESCRITORIO = ITEMS.register("tape_escritorio",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "escritorio"));
+
+    /** Fita MAZE: o labirinto de parede de 163 blocos. */
+    public static final RegistryObject<Item> TAPE_MAZE = ITEMS.register("tape_maze",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "maze"));
+
+    /** Fita FLORESTA: a taiga na bruma branca, e o celeiro. */
+    public static final RegistryObject<Item> TAPE_FLORESTA = ITEMS.register("tape_floresta",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "floresta"));
+
+    /** Fita PIPE TUNELS: os tuneis de concreto com os canos na parede. */
+    public static final RegistryObject<Item> TAPE_PIPE_TUNELS = ITEMS.register("tape_pipe_tunels",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "pipe_tunels"));
+
+    /** Fita MALL: o shopping de dois andares que nao acaba. */
+    public static final RegistryObject<Item> TAPE_MALL = ITEMS.register("tape_mall",
+            () -> new DimensionTapeItem(new Item.Properties().stacksTo(1), "mall"));
+
     /** Tripe: bloco que se planta e filma por voce. */
     public static final RegistryObject<Item> TRIPOD_ITEM = ITEMS.register("tripod",
             () -> new BlockItem(ModBlocks.TRIPOD.get(), new Item.Properties()));
@@ -139,6 +163,10 @@ public class ModItems {
     // --- Pedra corrompida: a raiz da cadeia de itens ---
     public static final RegistryObject<Item> CORRUPTED_STONE_ITEM = ITEMS.register("corrupted_stone",
             () -> new BlockItem(ModBlocks.CORRUPTED_STONE.get(), new Item.Properties()));
+
+    /** Luz Branca: o teto luminoso da GRASSROOMS, na mao de quem quiser construir com ele. */
+    public static final RegistryObject<Item> WHITE_LIGHT_ITEM = ITEMS.register("white_light",
+            () -> new BlockItem(ModBlocks.WHITE_LIGHT.get(), new Item.Properties()));
 
     // --- A cadeia do ferro batido ---
     // Nada aqui e magico: e ferramenta feita na marra, com bigorna e pancada. O

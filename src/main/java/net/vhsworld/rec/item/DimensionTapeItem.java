@@ -35,15 +35,23 @@ import java.util.function.Function;
  * inteiro fala de VHS. A fita ja e o objeto do jogo; so faltava ela levar a algum
  * lugar.
  *
- * A VOLTA E PELA MESMA FITA. O lugar de onde o jogador saiu fica gravado nos dados
- * persistentes dele (sobrevive a morte e a saida do mundo), entao usar a fita
- * dentro da dimensao devolve exatamente onde ele estava. Se o registro se perder,
- * a volta cai no ponto de nascimento do overworld em vez de deixar o jogador preso.
+ * ⚠️ A FITA E SO IDA (v1.70.0). Ate a 1.69 ela era tambem a volta, e isso foi
+ * removido de proposito: com ela no bolso, entrar numa dimensao nao custava nada e
+ * o medo tinha botao de pausa. Agora quem tira o jogador de la e o aparelho de
+ * saida daquela dimensao — ver o pacote `escape` e o `ExitMethod`.
+ *
+ * O que a fita ainda faz, e que passou a ser a coisa mais importante dela: GRAVAR A
+ * MARCA de onde o jogador saiu, nos dados persistentes (que sobrevivem a morte e a
+ * sair do mundo). E essa marca que a saida consome depois. A chave mora no
+ * `Escape.RETURN_TAG` e nao aqui: quem escreve e quem le tem que ser o mesmo
+ * arquivo, senao a ida grava numa chave e a saida procura noutra, e o sintoma —
+ * todo mundo voltando para o spawn do mundo — parece decisao de design e nao
+ * defeito.
  */
 public class DimensionTapeItem extends Item {
 
     /** Onde o jogador estava antes de entrar. Mora no NBT persistente dele. */
-    private static final String RETURN_TAG = "recmod:tape_return";
+    private static final String RETURN_TAG = net.vhsworld.rec.escape.Escape.RETURN_TAG;
 
     private final ResourceKey<Level> target;
 
@@ -68,11 +76,18 @@ public class DimensionTapeItem extends Item {
         level.playSound(null, player.blockPosition(), ModSounds.TAPE_PLAYER.get(),
                 SoundSource.PLAYERS, 1.0F, 1.0F);
 
+        // ⚠️ DENTRO DA PROPRIA DIMENSAO A FITA NAO FAZ MAIS NADA (v1.70.0). Ela era a ida
+        // E a volta; agora e so ida, e quem tira o jogador de la e o aparelho de saida
+        // daquela dimensao — ver o pacote `escape`. O aviso na tela e obrigatorio e nao
+        // enfeite: sem ele, o jogador aperta a fita, nao acontece nada, e a leitura mais
+        // razoavel que lhe resta e "o mod bugou" — nao "existe outra saida".
         if (level.dimension().equals(target)) {
-            leave(serverPlayer, server);
-        } else {
-            enter(serverPlayer, server);
+            serverPlayer.displayClientMessage(
+                    Component.translatable("message.recmod.tape_one_way"), true);
+            return InteractionResultHolder.sidedSuccess(stack, false);
         }
+
+        enter(serverPlayer, server);
         return InteractionResultHolder.sidedSuccess(stack, false);
     }
 
@@ -95,33 +110,9 @@ public class DimensionTapeItem extends Item {
         player.changeDimension(destination, new FixedPoint(spawnOf(destination)));
     }
 
-    // ------------------------------------------------------------------ volta
-    private void leave(ServerPlayer player, MinecraftServer server) {
-        CompoundTag data = player.getPersistentData();
-        ServerLevel destination = null;
-        Vec3 where = null;
-
-        if (data.contains(RETURN_TAG)) {
-            CompoundTag mark = data.getCompound(RETURN_TAG);
-            ResourceLocation id = ResourceLocation.tryParse(mark.getString("dimension"));
-            if (id != null) {
-                destination = server.getLevel(
-                        ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, id));
-            }
-            where = new Vec3(mark.getDouble("x"), mark.getDouble("y"), mark.getDouble("z"));
-        }
-
-        // Sem marca (mundo antigo, ou o jogador entrou por comando): o overworld
-        // resolve. Ficar preso na dimensao seria pior do que voltar no lugar errado.
-        if (destination == null) {
-            destination = server.overworld();
-            BlockPos spawn = destination.getSharedSpawnPos();
-            where = new Vec3(spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5);
-        }
-
-        data.remove(RETURN_TAG);
-        player.changeDimension(destination, new FixedPoint(where));
-    }
+    // A VOLTA SAIU DAQUI. Ela agora e `Escape.leave`, chamada pelo aparelho de saida da
+    // dimensao. O codigo era quase identico ao que esta la — o que mudou nao foi a conta,
+    // foi QUEM tem o direito de chama-la.
 
     /**
      * O hub da dimensao, perguntado ao proprio gerador dela.

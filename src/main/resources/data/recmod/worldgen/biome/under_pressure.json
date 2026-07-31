@@ -6,7 +6,13 @@
     "fog_color": 1250067,
     "sky_color": 2437746,
     "water_color": 1523067,
-    "water_fog_color": 656387
+    "water_fog_color": 656387,
+    "music": {
+      "sound": "recmod:music_under_pressure",
+      "min_delay": 0,
+      "max_delay": 0,
+      "replace_current_music": true
+    }
   },
   "spawners": {
     "monster": [],

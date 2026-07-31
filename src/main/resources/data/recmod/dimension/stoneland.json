@@ -1,0 +1,10 @@
+{
+  "type": "recmod:stoneland",
+  "generator": {
+    "type": "recmod:stoneland",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "recmod:stoneland"
+    }
+  }
+}

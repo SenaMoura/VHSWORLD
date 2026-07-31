@@ -56,6 +56,14 @@ def main():
     en = json.loads(read(os.path.join(ASSETS, "lang", "en_us.json")))
     pt = json.loads(read(os.path.join(ASSETS, "lang", "pt_br.json")))
 
+    # Todo o Java de uma vez, para poder perguntar "alguem le a peca desta dimensao?".
+    all_java = []
+    for root, _, files in os.walk(JAVA):
+        for f in files:
+            if f.endswith(".java"):
+                all_java.append(read(os.path.join(root, f)))
+    all_java = "\n".join(all_java)
+
     for name in stems:
         print("=== %s" % name)
         stem_path = os.path.join(DATA, "dimension", name + ".json")
@@ -110,12 +118,33 @@ def main():
                 json.loads(read(biome_file))
                 ok("%s: bioma ok" % name)
 
-        # 4. a peca assada existe? (nem toda dimensao usa, mas as nossas usam)
+        # 4. a peca assada existe — SE o gerador pedir uma.
+        #
+        # ⚠️ ANTES ISTO EXIGIA O .bin DE TODA DIMENSAO, e a exigencia era errada: ela
+        # media a regra de ontem em vez da pergunta. Ate 2026-07-30 toda dimensao do mod
+        # carimbava alguma coisa que o Pedro construiu, entao "tem .bin?" e "esta ligada?"
+        # davam a mesma resposta por acidente. A STONELAND e a ESCRITORIO sao 100% Java e
+        # nao carimbam peca nenhuma — reprovar as duas por falta de um arquivo que elas
+        # nao leem seria o teste virar burocracia.
+        #
+        # A pergunta certa e a de sempre: as pontas concordam? Ou seja — quem CHAMA
+        # `PieceSet.get("x")` precisa do `x.bin`, e quem nao chama nao precisa. E o
+        # contrario tambem e defeito e continua reprovando: um .bin que ninguem le e
+        # trabalho do Pedro que nao entrou no jogo, e isso e pior do que um arquivo a
+        # mais, porque ninguem sente falta.
         bin_path = os.path.join(DATA, "dimension_pieces", name + ".bin")
-        if os.path.exists(bin_path) and os.path.getsize(bin_path) > 0:
+        has_bin = os.path.exists(bin_path) and os.path.getsize(bin_path) > 0
+        wants = 'PieceSet.get("%s")' % name in all_java
+        if wants and has_bin:
             ok("%s: pecas assadas (%.1f KB)" % (name, os.path.getsize(bin_path) / 1024.0))
+        elif wants:
+            bad("%s: o gerador le PieceSet.get(\"%s\") e nao ha dimension_pieces/%s.bin"
+                % (name, name, name))
+        elif has_bin:
+            bad("%s: ha um %s.bin de %.1f KB que gerador nenhum le — peca construida "
+                "fora do jogo" % (name, name, os.path.getsize(bin_path) / 1024.0))
         else:
-            bad("%s: nao ha dimension_pieces/%s.bin" % (name, name))
+            ok("%s: sem peca, e nao pede nenhuma (dimensao 100%% Java)" % name)
 
         # 5. a fita: item, modelo, textura, aba do criativo e as duas linguas
         tape = "tape_" + name

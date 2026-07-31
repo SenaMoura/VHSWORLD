@@ -241,4 +241,28 @@ public class ChunksChunkGenerator extends ChunkGenerator implements DimSpawn {
     public void addDebugScreenInfo(List<String> lines, RandomState randomState, BlockPos pos) {
         lines.add("VHSWORLD dimension CHUNKS");
     }
+
+    // ------------------------------------------------------------------ a saida
+    @Override
+    public String dimensionId() {
+        return "chunks";
+    }
+
+    /**
+     * O hub da planta, e a MESMA sala para toda regiao.
+     *
+     * ⚠️ IGNORA rx E rz, e nao e preguica. A planta desta dimensao nao e uma grade: ela
+     * CRESCE a partir de um hub, peca por peca, e so o hub e alcancavel com certeza — o
+     * resto depende de que pecas nasceram por perto, o que a grade do ExitSite nao tem
+     * como saber. Devolver um ponto por regiao aqui poria a sala de saida boiando no
+     * vazio entre duas pecas, e desde que a fita virou so ida isso e um jogador preso.
+     *
+     * O preco e conhecido e foi aceito: ha UMA saida nesta dimensao, e o jogador tem que
+     * andar ate ela. Foi por isso que ela nao ficou com o metodo EJECT, que precisa de
+     * tres salas — ver a nota do reparto no DimensionProfile.
+     */
+    @Override
+    public BlockPos exitAnchor(int rx, int rz) {
+        return layout().spawnPos();
+    }
 }

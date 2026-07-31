@@ -141,6 +141,80 @@ def main():
           speckle=["..#....#..",
                    "..#....#.."])
 
+    # ------------------------------------------------------------------ o lote de 3
+    #
+    # As tres de 2026-07-30. A regra continua a mesma (claro = do que a dimensao e feita,
+    # escuro = o que ela faz com quem entra), e o cuidado NOVO e que agora sao doze fitas
+    # na mesma aba: as tres precisam se separar das nove por VALOR, e nao so por matiz.
+    # Por isso nenhuma delas repete a faixa media em que village/biblioteca/parkourland
+    # ja moram.
+
+    # STONELAND: pedregulho, e nada alem de pedregulho. A unica etiqueta SEM MATIZ das
+    # doze — cinza puro nos dois tons. E a leitura literal da dimensao: e o overworld com
+    # a cor arrancada. O respingo denso e a granulacao do proprio pedregulho.
+    build("tape_stoneland",
+          light=(146, 146, 146, 255),
+          dark=(58, 58, 58, 255),
+          speckle=["#.#..##.#.",
+                   ".##.#..##."])
+
+    # ESCRITORIO: o bege de forro de escritorio, com o preto do vao entre as torres. E o
+    # unico respingo em BLOCO das doze (dois pares grudados), e e de proposito: sao as
+    # baias vistas de cima, que e a planta da dimensao.
+    build("tape_escritorio",
+          light=(198, 192, 170, 255),
+          dark=(22, 22, 26, 255),
+          speckle=["##...##...",
+                   "##...##..."])
+
+    # MAZE: o verde acinzentado da grama do chao contra a pedra da parede. O respingo e
+    # o mais IRREGULAR das doze, sem nenhum par alinhado entre as duas linhas — as outras
+    # onze tem cadencia, e esta e a unica dimensao cujo assunto e nao haver cadencia
+    # nenhuma para se agarrar.
+    build("tape_maze",
+          light=(118, 132, 96, 255),
+          dark=(46, 48, 44, 255),
+          speckle=["#...#..#..",
+                   "..#...#..#"])
+
+    # ------------------------------------------------------------------ o lote de 3
+    #
+    # As tres de 2026-07-31. Sao QUINZE fitas na mesma aba agora, e o problema que isso
+    # cria e novo: com doze ja e dificil achar uma pelo matiz, porque a paleta do mod e
+    # estreita de proposito. As tres entram ocupando faixas de VALOR que ainda estavam
+    # livres — a floresta e a mais escura de todas, a mall a mais clara depois da
+    # grassrooms, e a pipe tunels fica na faixa media mas e a unica QUENTE (ferrugem)
+    # entre catorze frias.
+
+    # FLORESTA: o verde-preto do abeto na bruma. A etiqueta MAIS ESCURA das quinze, e e
+    # a leitura literal das fotos — nelas o mato e uma massa preta e o unico claro e o
+    # ceu, que nao cabe numa etiqueta. O respingo cerrado e sem cadencia nenhuma e a
+    # propria densidade que o Pedro pediu: nao ha caminho a enxergar ali dentro.
+    build("tape_floresta",
+          light=(62, 78, 58, 255),
+          dark=(18, 22, 18, 255),
+          speckle=["#.##.#.##.",
+                   ".##.##.#.#"])
+
+    # PIPE TUNELS: o concreto claro do tunel, e a ferrugem do cano por cima. A unica
+    # etiqueta QUENTE das quinze, e o respingo corre em LINHA CONTINUA nas duas fileiras
+    # — e o unico desenho horizontal ininterrupto do lote, e e o cano, que e a coisa que
+    # define a dimensao. As outras catorze tem respingo picado; esta atravessa.
+    build("tape_pipe_tunels",
+          light=(150, 144, 134, 255),
+          dark=(122, 74, 44, 255),
+          speckle=["..######..",
+                   "..######.."])
+
+    # MALL: o bege polido do piso, com o preto das lojas fechadas. O respingo em PARES
+    # ESPACADOS e regular e a fileira de vitrines vista de cima — a unica dimensao do mod
+    # cuja planta e uma cadencia comercial, e a unica etiqueta que a desenha.
+    build("tape_mall",
+          light=(214, 204, 178, 255),
+          dark=(24, 22, 20, 255),
+          speckle=["##..##..##",
+                   "##..##..##"])
+
 
 if __name__ == "__main__":
     main()

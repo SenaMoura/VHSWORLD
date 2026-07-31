@@ -1,0 +1,32 @@
+{
+  "temperature": 0.25,
+  "downfall": 0.8,
+  "has_precipitation": false,
+  "effects": {
+    "fog_color": 14212312,
+    "sky_color": 14212312,
+    "water_color": 4159204,
+    "water_fog_color": 329011,
+    "grass_color": 6057554,
+    "foliage_color": 4281404,
+    "music": {
+      "sound": "recmod:music_floresta",
+      "min_delay": 0,
+      "max_delay": 0,
+      "replace_current_music": true
+    }
+  },
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": []
+}
