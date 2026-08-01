@@ -41,6 +41,16 @@ MATS = {
     "head_dk":  (54, 40, 34),
     "teeth":    (226, 219, 201),
     "bone":     (198, 190, 168),
+    # paleta VHSWORLD: a corrupcao TIRA a cor - o corpo e quase preto e a carne
+    # so aparece como acento (dente, gengiva, viscera)
+    "char":     (62, 55, 51),
+    "soot":     (94, 84, 77),
+    "ash":      (130, 117, 106),
+    "grime":    (166, 151, 137),
+    "teeth_y":  (206, 186, 92),
+    "gums":     (146, 40, 40),
+    "glow":     (232, 206, 96),
+    "viscera":  (118, 34, 32),
 }
 BLOOD = (128, 38, 30)
 BLOOD_DK = (78, 22, 18)
@@ -284,14 +294,34 @@ class Rig(object):
                     n = ((xx * 374761393) ^ (yy * 668265263)) & 0xFF
                     c = MATS["meat"] if n > 90 else BLOOD_DK
                     px[xx, yy] = (c[0], c[1], c[2], 255)
-        if det.get("teeth") and fname == "north":
+        sides = ("north", "east", "west") if det.get("teeth_side") else ("north",)
+        if det.get("teeth") and fname in sides:
             # fileira de dentes na cara, listras verticais coladas na base
+            tooth = MATS[det.get("teeth_mat", "teeth")]
             base_y = y2 - max(2, (y2 - y1) // 3)
+            if det.get("gums"):
+                for xx in range(x1, x2):
+                    for yy in range(max(y1, base_y - 2), base_y):
+                        c = MATS["gums"] if (xx + yy) % 4 else BLOOD_DK
+                        px[xx, yy] = (c[0], c[1], c[2], 255)
             for xx in range(x1 + 1, x2 - 1):
                 if (xx - x1) % 2:
                     continue
                 for yy in range(base_y, y2 - 1):
-                    c = MATS["teeth"] if (yy - base_y) < (y2 - base_y - 1) else MATS["bone"]
+                    c = tooth if (yy - base_y) < (y2 - base_y - 1) else MATS["bone"]
+                    px[xx, yy] = (c[0], c[1], c[2], 255)
+        if det.get("glow") and fname in ("north", "south"):
+            cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
+            for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)):
+                if x1 <= cx + dx < x2 and y1 <= cy + dy < y2:
+                    c = MATS["glow"]
+                    px[cx + dx, cy + dy] = (c[0], c[1], c[2], 255)
+        if det.get("bands"):
+            for yy in range(y1, y2):
+                if ((yy - y1) // 2) % 3:
+                    continue
+                for xx in range(x1, x2):
+                    c = shade(MATS[p.mat], 0.55)
                     px[xx, yy] = (c[0], c[1], c[2], 255)
         if det.get("eye") and fname == "north":
             cy = y1 + (y2 - y1) // 3
