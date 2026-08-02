@@ -8,7 +8,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.entity.AnomalyEntity;
+import net.vhsworld.rec.entity.CrawlerVoidEntity;
+import net.vhsworld.rec.entity.InvertedSilhouetteEntity;
 import net.vhsworld.rec.entity.MirrorEntity;
+import net.vhsworld.rec.entity.ShadeSegmentEntity;
+import net.vhsworld.rec.entity.StaticWatcherEntity;
 import net.vhsworld.rec.entity.StonemanEntity;
 
 /** As criaturas do mod. */
@@ -73,6 +77,79 @@ public class ModEntities {
                     .fireImmune()
                     .noSummon()
                     .build("mirror"));
+
+    // ================================================================ a leva das quatro
+
+    /**
+     * O Observador Estatico.
+     *
+     * A caixa e 1.25 x 5.88, medida no modelo (tools/measure_entity_models.py), e ele
+     * e alto assim mesmo: quase seis blocos. `clientTrackingRange` no maximo porque o
+     * bicho e feito para ser visto de LONGE — parado no alto de um morro, a oitenta
+     * blocos. Se ele so aparecesse perto, a criatura inteira deixaria de existir.
+     *
+     * `updateInterval` alto (10) e de graca: ele nao anda. Toda mudanca de posicao e
+     * teletransporte, e teletransporte o servidor manda na hora, fora do intervalo.
+     */
+    public static final RegistryObject<EntityType<StaticWatcherEntity>> STATIC_WATCHER =
+            ENTITIES.register("static_watcher", () -> EntityType.Builder
+                    .of(StaticWatcherEntity::new, MobCategory.MONSTER)
+                    .sized(1.25F, 5.88F)
+                    .clientTrackingRange(16)
+                    .updateInterval(10)
+                    .fireImmune()
+                    .build("static_watcher"));
+
+    /**
+     * O Anomalo da Sombra.
+     *
+     * ⚠️ A caixa (1.2 x 2.6) e MAIS ESTREITA que o modelo, que tem 2.21 de largura por
+     * causa das costelas. E de proposito: ele vive em caverna, e uma caixa de 2.2 nao
+     * passa em corredor de 2. As costelas atravessando a parede nao sao defeito — ele
+     * e uma coisa colada na rocha, e isso ate ajuda.
+     */
+    public static final RegistryObject<EntityType<ShadeSegmentEntity>> SHADE_SEGMENT =
+            ENTITIES.register("shade_segment", () -> EntityType.Builder
+                    .of(ShadeSegmentEntity::new, MobCategory.MONSTER)
+                    .sized(1.2F, 2.6F)
+                    .clientTrackingRange(10)
+                    .updateInterval(2)
+                    .fireImmune()
+                    .build("shade_segment"));
+
+    /**
+     * A Silhueta Invertida.
+     *
+     * Caixa de jogador (0.6 x 1.95), nao a do modelo (1.0 x 2.0). Ela tem que caber
+     * exatamente onde um jogador caberia: o disfarce e o bicho, e uma silhueta que
+     * emperra numa porta que voce atravessa se denuncia sem dizer nada.
+     */
+    public static final RegistryObject<EntityType<InvertedSilhouetteEntity>> INVERTED_SILHOUETTE =
+            ENTITIES.register("inverted_silhouette", () -> EntityType.Builder
+                    .of(InvertedSilhouetteEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.95F)
+                    .clientTrackingRange(16)
+                    .updateInterval(2)
+                    .fireImmune()
+                    .build("inverted_silhouette"));
+
+    /**
+     * O Rastreador do Rastejo.
+     *
+     * ⚠️ O documento pede "altura de apenas 1 bloco, podendo passar por brechas". O
+     * modelo que o Pedro fez tem 3.11 de altura por 3.72 de largura — e um bicho
+     * grande, de costas arqueadas. A caixa aqui segue o MODELO (2.0 x 1.9), nao o
+     * texto: caixa de 1 bloco num modelo de 3 daria um bicho enterrado no chao pela
+     * metade. Passar por brecha e a unica coisa do documento que este bicho nao faz.
+     */
+    public static final RegistryObject<EntityType<CrawlerVoidEntity>> CRAWLER_VOID =
+            ENTITIES.register("crawler_void", () -> EntityType.Builder
+                    .of(CrawlerVoidEntity::new, MobCategory.MONSTER)
+                    .sized(2.0F, 1.9F)
+                    .clientTrackingRange(10)
+                    .updateInterval(2)
+                    .fireImmune()
+                    .build("crawler_void"));
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);

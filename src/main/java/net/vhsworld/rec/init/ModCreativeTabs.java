@@ -66,6 +66,11 @@ public class ModCreativeTabs {
         }
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(ModItems.STONEMAN_SPAWN_EGG);
+            event.accept(ModItems.ANOMALY_SPAWN_EGG);
+            event.accept(ModItems.STATIC_WATCHER_SPAWN_EGG);
+            event.accept(ModItems.SHADE_SEGMENT_SPAWN_EGG);
+            event.accept(ModItems.INVERTED_SILHOUETTE_SPAWN_EGG);
+            event.accept(ModItems.CRAWLER_VOID_SPAWN_EGG);
         }
         if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(ModItems.ALUMINUM_ORE_ITEM);

@@ -6,3 +6,5 @@ run/
 *.log
 *.log.gz
 logs/
+__pycache__/
+*.pyc

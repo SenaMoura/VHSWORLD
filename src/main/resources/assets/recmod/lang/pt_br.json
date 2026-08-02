@@ -159,5 +159,13 @@
   "block.recmod.exit_door": "Porta da Linha",
   "message.recmod.track_door": "Alguma coisa se abriu nos trilhos, mais à frente.",
   "entity.recmod.mirror": "Espelho",
-  "message.recmod.mirror_turn_back": "you need to turn back before it's too late"
+  "message.recmod.mirror_turn_back": "you need to turn back before it's too late",
+  "entity.recmod.static_watcher": "O Observador Estático",
+  "entity.recmod.shade_segment": "O Anômalo da Sombra",
+  "entity.recmod.inverted_silhouette": "A Silhueta Invertida",
+  "entity.recmod.crawler_void": "O Rastreador do Rastejo",
+  "item.recmod.static_watcher_spawn_egg": "Ovo de Observador Estático",
+  "item.recmod.shade_segment_spawn_egg": "Ovo de Anômalo da Sombra",
+  "item.recmod.inverted_silhouette_spawn_egg": "Ovo de Silhueta Invertida",
+  "item.recmod.crawler_void_spawn_egg": "Ovo de Rastreador do Rastejo"
 }

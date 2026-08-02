@@ -15,6 +15,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.entity.AnomalyEntity;
+import net.vhsworld.rec.entity.CrawlerVoidEntity;
+import net.vhsworld.rec.entity.InvertedSilhouetteEntity;
+import net.vhsworld.rec.entity.ShadeSegmentEntity;
+import net.vhsworld.rec.entity.StaticWatcherEntity;
 import net.vhsworld.rec.entity.StonemanEntity;
 
 /**
@@ -35,6 +39,12 @@ public final class ModEntitySetup {
         // O Espelho nao anda, nao ataca e nao apanha — mas TODO `Mob` precisa de mapa de
         // atributos registrado, senao o jogo estoura ao instanciar. Os do Mob cru bastam.
         event.put(ModEntities.MIRROR.get(), Mob.createMobAttributes().build());
+
+        event.put(ModEntities.STATIC_WATCHER.get(), StaticWatcherEntity.createAttributes().build());
+        event.put(ModEntities.SHADE_SEGMENT.get(), ShadeSegmentEntity.createAttributes().build());
+        event.put(ModEntities.INVERTED_SILHOUETTE.get(),
+                InvertedSilhouetteEntity.createAttributes().build());
+        event.put(ModEntities.CRAWLER_VOID.get(), CrawlerVoidEntity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -54,6 +64,49 @@ public final class ModEntitySetup {
                 SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 ModEntitySetup::anomalySpawnRules));
+
+        // O Observador e a Silhueta nascem em campo ABERTO e a ceu aberto — os dois
+        // dependem de ser vistos de longe (um no alto de um morro, outra na linha do
+        // horizonte). Nascer em caverna seria desperdicar a criatura inteira: no
+        // escuro apertado ninguem nota que a coisa la longe mudou de lugar.
+        event.enqueueWork(() -> SpawnPlacements.register(
+                ModEntities.STATIC_WATCHER.get(),
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                ModEntitySetup::openSkySpawnRules));
+
+        event.enqueueWork(() -> SpawnPlacements.register(
+                ModEntities.INVERTED_SILHOUETTE.get(),
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                ModEntitySetup::openSkySpawnRules));
+
+        // Os outros dois sao de caverna e de canto escuro; a regra de monstro serve.
+        event.enqueueWork(() -> SpawnPlacements.register(
+                ModEntities.SHADE_SEGMENT.get(),
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Monster::checkMonsterSpawnRules));
+
+        event.enqueueWork(() -> SpawnPlacements.register(
+                ModEntities.CRAWLER_VOID.get(),
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Monster::checkMonsterSpawnRules));
+    }
+
+    /**
+     * Chao que aceita bicho, a ceu aberto, e so de noite.
+     *
+     * Nao usa `isDarkEnoughToSpawn` de proposito: aquilo cobra escuro no bloco, e
+     * campo aberto de madrugada com lua cheia passa raspando. Aqui o que importa e
+     * ser NOITE e haver ceu — o Observador precisa de horizonte, nao de breu.
+     */
+    private static boolean openSkySpawnRules(EntityType<? extends Mob> type, ServerLevelAccessor level,
+                                             MobSpawnType reason, BlockPos pos, RandomSource random) {
+        return level.canSeeSky(pos)
+                && !level.getLevel().isDay()
+                && Mob.checkMobSpawnRules(type, level, reason, pos, random);
     }
 
     private static boolean anomalySpawnRules(EntityType<AnomalyEntity> type, ServerLevelAccessor level,

@@ -34,7 +34,7 @@ public final class RECNetwork {
     private RECNetwork() {}
 
     /** Suba isto ao mudar QUALQUER formato de pacote. */
-    private static final String VERSION = "2";
+    private static final String VERSION = "5";
 
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(RECMod.MOD_ID, "main"),
@@ -66,6 +66,19 @@ public final class RECNetwork {
         // nao depende de o cliente ser honesto. Ver MirrorWalk.
         CHANNEL.registerMessage(id++, EscapeFxPacket.class,
                 EscapeFxPacket::encode, EscapeFxPacket::decode, EscapeFxPacket::handle);
+
+        // O som do nada. Ele so precisa de fio porque a DECISAO virou do servidor: quem
+        // sabe se ha uma criatura a quarenta blocos e o mundo, nao a tela. Ver Director.
+        CHANNEL.registerMessage(id++, DreadPacket.class,
+                DreadPacket::encode, DreadPacket::decode, DreadPacket::handle);
+
+        // "Aqui tinha uma coisa sua." Chega calado e so vira imagem com a lente na mao.
+        CHANNEL.registerMessage(id++, AbsencePacket.class,
+                AbsencePacket::encode, AbsencePacket::decode, AbsencePacket::handle);
+
+        // A trilha virou batida: quem decide quando ha musica agora e o servidor.
+        CHANNEL.registerMessage(id++, MusicPacket.class,
+                MusicPacket::encode, MusicPacket::decode, MusicPacket::handle);
     }
 
     /** Do servidor para UM jogador. */

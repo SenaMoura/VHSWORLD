@@ -8,8 +8,20 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.client.entity.AnomalyRenderer;
+import net.vhsworld.rec.client.entity.CrawlerVoidModel;
+import net.vhsworld.rec.client.entity.CrawlerVoidRenderer;
+import net.vhsworld.rec.client.entity.InvertedSilhouetteModel;
+import net.vhsworld.rec.client.entity.InvertedSilhouetteRenderer;
+import net.vhsworld.rec.client.entity.ShadeSegmentModel;
+import net.vhsworld.rec.client.entity.ShadeSegmentRenderer;
+import net.vhsworld.rec.client.entity.StaticWatcherModel;
+import net.vhsworld.rec.client.entity.StaticWatcherRenderer;
 import net.vhsworld.rec.client.entity.StonemanModel;
 import net.vhsworld.rec.client.entity.StonemanRenderer;
+import net.vhsworld.rec.client.entity.geom.CrawlerVoidGeometry;
+import net.vhsworld.rec.client.entity.geom.InvertedSilhouetteGeometry;
+import net.vhsworld.rec.client.entity.geom.ShadeSegmentGeometry;
+import net.vhsworld.rec.client.entity.geom.StaticWatcherGeometry;
 import net.vhsworld.rec.client.screen.RFReceiverScreen;
 import net.vhsworld.rec.init.ModEntities;
 import net.vhsworld.rec.init.ModMenus;
@@ -30,6 +42,14 @@ public final class ClientSetup {
         event.registerLayerDefinition(StonemanModel.BASE, StonemanModel::createBase);
         event.registerLayerDefinition(net.vhsworld.rec.client.entity.MirrorModel.LAYER,
                 net.vhsworld.rec.client.entity.MirrorModel::createBodyLayer);
+
+        // A leva das quatro. A geometria destas vem de client/entity/geom/, gerada do
+        // .bbmodel por tools/bbmodel_to_geometry.py — arquivo gerado, nao editar.
+        event.registerLayerDefinition(StaticWatcherModel.LAYER, StaticWatcherGeometry::create);
+        event.registerLayerDefinition(ShadeSegmentModel.LAYER, ShadeSegmentGeometry::create);
+        event.registerLayerDefinition(InvertedSilhouetteModel.LAYER,
+                InvertedSilhouetteGeometry::create);
+        event.registerLayerDefinition(CrawlerVoidModel.LAYER, CrawlerVoidGeometry::create);
     }
 
     @SubscribeEvent
@@ -38,6 +58,12 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.ANOMALY.get(), AnomalyRenderer::new);
         event.registerEntityRenderer(ModEntities.MIRROR.get(),
                 net.vhsworld.rec.client.entity.MirrorRenderer::new);
+
+        event.registerEntityRenderer(ModEntities.STATIC_WATCHER.get(), StaticWatcherRenderer::new);
+        event.registerEntityRenderer(ModEntities.SHADE_SEGMENT.get(), ShadeSegmentRenderer::new);
+        event.registerEntityRenderer(ModEntities.INVERTED_SILHOUETTE.get(),
+                InvertedSilhouetteRenderer::new);
+        event.registerEntityRenderer(ModEntities.CRAWLER_VOID.get(), CrawlerVoidRenderer::new);
     }
 
     private ClientSetup() {}

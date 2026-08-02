@@ -368,6 +368,28 @@ public class ModItems {
     public static final RegistryObject<Item> ANOMALY_SPAWN_EGG = ITEMS.register("anomaly_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntities.ANOMALY, 0x0D0D10, 0xC9C4B4, new Item.Properties()));
 
+    // A leva das quatro. As cores do ovo sao a leitura de cada bicho a distancia:
+    // preto de fundo em todos, e a mancha e o que voce nota primeiro nele.
+    public static final RegistryObject<Item> STATIC_WATCHER_SPAWN_EGG =
+            ITEMS.register("static_watcher_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.STATIC_WATCHER,
+                            0x000000, 0xD8D8D8, new Item.Properties()));
+
+    public static final RegistryObject<Item> SHADE_SEGMENT_SPAWN_EGG =
+            ITEMS.register("shade_segment_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.SHADE_SEGMENT,
+                            0x090909, 0xFFFFFF, new Item.Properties()));
+
+    public static final RegistryObject<Item> INVERTED_SILHOUETTE_SPAWN_EGG =
+            ITEMS.register("inverted_silhouette_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.INVERTED_SILHOUETTE,
+                            0x000000, 0x161616, new Item.Properties()));
+
+    public static final RegistryObject<Item> CRAWLER_VOID_SPAWN_EGG =
+            ITEMS.register("crawler_void_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.CRAWLER_VOID,
+                            0x0A0A0A, 0xEDEDED, new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

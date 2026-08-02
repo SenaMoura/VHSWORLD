@@ -155,9 +155,9 @@ public final class RECConfig {
         public final ForgeConfigSpec.BooleanValue sightSounds;
         public final ForgeConfigSpec.IntValue sightSoundRest;
         public final ForgeConfigSpec.BooleanValue ambientDread;
-        public final ForgeConfigSpec.IntValue ambientDreadMinSeconds;
-        public final ForgeConfigSpec.IntValue ambientDreadMaxSeconds;
         public final ForgeConfigSpec.DoubleValue ambientDreadVolume;
+        public final ForgeConfigSpec.BooleanValue absenceEvidence;
+        public final ForgeConfigSpec.BooleanValue directorMusic;
         public final ForgeConfigSpec.BooleanValue dimensionStings;
         public final ForgeConfigSpec.IntValue dimensionStingMinSeconds;
         public final ForgeConfigSpec.IntValue dimensionStingMaxSeconds;
@@ -738,25 +738,44 @@ public final class RECConfig {
                     .defineInRange("sightSoundRest", 45, 1, 3600);
 
             ambientDread = b
-                    .comment("Ruidos que tocam do nada, sem criatura nenhuma por perto.",
-                             "A maior parte do medo acontece quando NAO esta acontecendo",
-                             "nada; isto e o que ocupa esse silencio.")
+                    .comment("Ruidos que tocam do nada. A maior parte do medo acontece",
+                             "quando NAO esta acontecendo nada; isto e o que ocupa esse",
+                             "silencio.",
+                             "⚠️ QUANDO eles tocam nao se ajusta mais aqui: quem decide e o",
+                             "Diretor, no lado do servidor ([diretor] no recmod-common).",
+                             "O antigo par de min/max saiu justamente por isso — era um",
+                             "segundo relogio, e som sorteado sem motivo nenhum e o que",
+                             "fazia o jogador parar de escutar. Isto aqui e so o botao de",
+                             "desligar, para quem nao aguenta.")
                     .define("ambientDread", true);
-
-            ambientDreadMinSeconds = b
-                    .comment("Menor espera entre dois ruidos de fundo.")
-                    .defineInRange("ambientDreadMinSeconds", 90, 5, 3600);
-
-            ambientDreadMaxSeconds = b
-                    .comment("Maior espera entre dois ruidos de fundo. A DISTANCIA entre os",
-                             "dois numeros e a mecanica: intervalo fixo vira metronomo, e",
-                             "metronomo nao assusta ninguem.")
-                    .defineInRange("ambientDreadMaxSeconds", 300, 5, 3600);
 
             ambientDreadVolume = b
                     .comment("Volume dos ruidos de fundo. Baixo de proposito: tem que caber",
                              "a duvida de ter ouvido mesmo.")
                     .defineInRange("ambientDreadVolume", 0.55D, 0.0D, 1.0D);
+
+            absenceEvidence = b
+                    .comment("O VISOR: com a lente infravermelha na mao, o lugar onde havia",
+                             "uma coisa sua que sumiu aparece marcado.",
+                             "⚠️ Desligar isto NAO desliga a ausencia — o mundo continua",
+                             "mexendo nas suas tochas, voce so perde o unico jeito de",
+                             "provar. Que e, honestamente, a versao mais cruel do mod.",
+                             "Para o mundo parar de mexer, e `absence` no recmod-common.")
+                    .define("absenceEvidence", true);
+
+            directorMusic = b
+                    .comment("Deste lado, a trilha obedecer ao Diretor quer dizer CALAR quem",
+                             "tentar tocar musica por conta propria — a do mod, a do vanilla",
+                             "e a de outros mods.",
+                             "⚠️ Sem este corte, abrir os intervalos nos JSON nao bastaria: o",
+                             "MusicManager nasce com 100 ticks no relogio, entao a primeira",
+                             "faixa entra cinco segundos depois de carregar o mundo por mais",
+                             "alto que seja o min_delay. Enquanto houver uma segunda pessoa",
+                             "decidindo quando ha musica, o silencio do Diretor e so um",
+                             "intervalo entre faixas.",
+                             "Disco de jukebox nao e afetado: fazer barulho de proposito e",
+                             "decisao do jogador.")
+                    .define("directorMusic", true);
 
             dimensionStings = b
                     .comment("Sustos avulsos da DIMENSAO em que voce esta: o grito da",
@@ -843,6 +862,14 @@ public final class RECConfig {
         public final ForgeConfigSpec.IntValue scatterMaxRadius;
         public final ForgeConfigSpec.IntValue scatterMaxNearby;
 
+        // --- o Diretor: quem conta o compasso do mod inteiro ---
+        public final ForgeConfigSpec.BooleanValue director;
+        public final ForgeConfigSpec.IntValue directorLongSilenceSeconds;
+        public final ForgeConfigSpec.DoubleValue directorNoiseTellRange;
+        public final ForgeConfigSpec.BooleanValue absence;
+        public final ForgeConfigSpec.BooleanValue directorMusic;
+        public final ForgeConfigSpec.DoubleValue directorMusicCutPressure;
+
         // --- criaturas ---
         public final ForgeConfigSpec.DoubleValue stonemanWatchRange;
         public final ForgeConfigSpec.BooleanValue stonemanSurge;
@@ -862,6 +889,20 @@ public final class RECConfig {
         public final ForgeConfigSpec.DoubleValue greyfaceChaseRange;
         public final ForgeConfigSpec.BooleanValue greyfaceSteps;
         public final ForgeConfigSpec.DoubleValue greyfaceStepVolume;
+
+        // --- a leva das quatro (Observador, Sombra, Silhueta, Rastejo) ---
+        public final ForgeConfigSpec.DoubleValue staticWatcherRange;
+        public final ForgeConfigSpec.DoubleValue staticWatcherOffSeconds;
+        public final ForgeConfigSpec.DoubleValue staticWatcherStep;
+        public final ForgeConfigSpec.DoubleValue staticWatcherMinDistance;
+        public final ForgeConfigSpec.DoubleValue staticWatcherStrikeRange;
+        public final ForgeConfigSpec.IntValue shadeSegmentDarkLevel;
+        public final ForgeConfigSpec.DoubleValue shadeSegmentWatchRange;
+        public final ForgeConfigSpec.DoubleValue silhouetteRange;
+        public final ForgeConfigSpec.DoubleValue silhouetteKeepDistance;
+        public final ForgeConfigSpec.IntValue silhouetteCorneredTicks;
+        public final ForgeConfigSpec.DoubleValue crawlerWatchRange;
+        public final ForgeConfigSpec.DoubleValue crawlerPounceRange;
 
         // --- o Ofanim: o olhar reciproco ---
         public final ForgeConfigSpec.BooleanValue ophanimInChunks;
@@ -1024,6 +1065,94 @@ public final class RECConfig {
                              "ALCANCE do som, e e isso que se quer aqui: ouvir de longe.")
                     .defineInRange("greyfaceStepVolume", 1.8D, 0.0D, 4.0D);
 
+            // ---------------- O Observador Estatico ----------------
+
+            staticWatcherRange = b
+                    .comment("Observador Estatico: de quantos blocos o seu olhar ainda o apaga",
+                             "— e ate onde ele procura para onde voltar. Alto de proposito: o",
+                             "bicho e feito para ser notado LA LONGE, no alto de um morro. De",
+                             "perto ele ja perdeu a graca.")
+                    .defineInRange("staticWatcherRange", 64.0D, 8.0D, 192.0D);
+
+            staticWatcherOffSeconds = b
+                    .comment("Quantos segundos ele fica apagado antes de tentar voltar.",
+                             "Curto demais e ele pisca na sua cara e vira efeito visual;",
+                             "longo demais e voce esquece que ele existe — e o susto mora",
+                             "justamente em lembrar dele quando ja e tarde.")
+                    .defineInRange("staticWatcherOffSeconds", 4.0D, 0.5D, 120.0D);
+
+            staticWatcherStep = b
+                    .comment("Quanto da distancia atual ele fecha a cada volta (0.25 = um",
+                             "quarto). E o preco de cada piscada sua. Como e proporcional, a",
+                             "aproximacao comeca larga e vai ficando fina — ele nunca chega",
+                             "por um salto, sempre por uma conta que voce podia ter feito.")
+                    .defineInRange("staticWatcherStep", 0.25D, 0.02D, 0.9D);
+
+            staticWatcherMinDistance = b
+                    .comment("Ele nunca reaparece mais perto que isto, em blocos. Sem o piso,",
+                             "a aproximacao proporcional acabaria colocando ele DENTRO de voce.")
+                    .defineInRange("staticWatcherMinDistance", 3.0D, 1.0D, 32.0D);
+
+            staticWatcherStrikeRange = b
+                    .comment("A que distancia olhar para ele deixa de apaga-lo e passa a",
+                             "custar caro: ele bate, cega por 3 segundos e recomeca de longe.",
+                             "E o unico dano que ele da no jogo inteiro. Sem isso a aproximacao",
+                             "nao teria consequencia nenhuma e ele seria so um enfeite que anda.")
+                    .defineInRange("staticWatcherStrikeRange", 3.5D, 0.0D, 16.0D);
+
+            // ---------------- O Anomalo da Sombra ----------------
+
+            shadeSegmentDarkLevel = b
+                    .comment("Anomalo da Sombra: ate este nivel de luz ele consegue se soltar.",
+                             "A luz e medida NO BLOCO DELE, nao no seu — por isso jogar uma",
+                             "tocha em cima dele o prende mesmo com voce no breu. 7 e o mesmo",
+                             "limiar que o Minecraft usa para nascer monstro; abaixo de 4 ele",
+                             "so anda em breu quase total.")
+                    .defineInRange("shadeSegmentDarkLevel", 4, 0, 15);
+
+            shadeSegmentWatchRange = b
+                    .comment("De quantos blocos o seu olhar tambem o prende, alem da luz. Esta",
+                             "segunda trava existe para quem foi pego sem tocha: virar a cabeca",
+                             "ainda compra um segundo. Sem ela, ficar sem carvao no escuro",
+                             "seria morte anunciada, e o jogo viraria gerencia de inventario.")
+                    .defineInRange("shadeSegmentWatchRange", 20.0D, 0.0D, 96.0D);
+
+            // ---------------- A Silhueta Invertida ----------------
+
+            silhouetteRange = b
+                    .comment("Silhueta Invertida: de quantos blocos ela repara em voce. Fora",
+                             "disso ela fica parada, parecendo um jogador no horizonte — que e",
+                             "o estado em que ela passa a maior parte da vida.")
+                    .defineInRange("silhouetteRange", 48.0D, 8.0D, 128.0D);
+
+            silhouetteKeepDistance = b
+                    .comment("A distancia, em blocos, que ela nao deixa voce furar. Ela recua",
+                             "de frente, sem virar as costas, para manter exatamente isto.",
+                             "Perto demais o disfarce de jogador cai; longe demais voce nunca",
+                             "chega perto o bastante para desconfiar que aquilo nao e gente.")
+                    .defineInRange("silhouetteKeepDistance", 12.0D, 2.0D, 64.0D);
+
+            silhouetteCorneredTicks = b
+                    .comment("Quantos ticks ela pode querer recuar sem sair do lugar antes de",
+                             "simplesmente deixar de estar la (20 = 1 segundo). E o que impede",
+                             "de encurralar ela num canto: alcancar a silhueta responderia a",
+                             "unica pergunta que ela existe para nao responder.")
+                    .defineInRange("silhouetteCorneredTicks", 30, 5, 600);
+
+            // ---------------- O Rastreador do Rastejo ----------------
+
+            crawlerWatchRange = b
+                    .comment("Rastreador do Rastejo: de quantos blocos o seu olhar o faz parar.",
+                             "Ele so avanca enquanto voce esta ocupado — de costas, minerando,",
+                             "ou com um bau aberto na tela.")
+                    .defineInRange("crawlerWatchRange", 32.0D, 4.0D, 128.0D);
+
+            crawlerPounceRange = b
+                    .comment("A partir daqui ele ignora o seu olhar e vem assim mesmo: e bote,",
+                             "nao mais aproximacao. Sem isto ele congelaria a um passo de voce",
+                             "e viraria brinquedo — bastaria encarar para nunca mais apanhar.")
+                    .defineInRange("crawlerPounceRange", 6.0D, 0.0D, 32.0D);
+
             ophanimInChunks = b
                     .comment("O Ofanim mora no ceu da dimensao CHUNKS, mantido em UM por um",
                              "Diretor. Desligado, a CHUNKS volta a ser paisagem vazia — o que",
@@ -1156,6 +1285,72 @@ public final class RECConfig {
                              "e nao anda. E a janela em que da para atravessar a ponte olhando",
                              "para a frente. O preco ja foi pago na bateria.")
                     .defineInRange("ophanimFlashBlindSeconds", 6.0D, 0.0D, 60.0D);
+
+            b.pop();
+
+            // ------------------------------------------------------------ diretor
+
+            b.comment("O DIRETOR: quem decide QUANDO qualquer coisa acontece com o",
+                      "jogador. Antes nao existia — cada mecanica tinha o proprio",
+                      "relogio e nenhuma sabia da outra, e era isso que produzia tres",
+                      "sustos num minuto e vinte minutos de nada. Ver Director.java.")
+             .push("diretor");
+
+            director = b
+                    .comment("Liga o Diretor. Desligado, o mod volta ao que era: spawn",
+                             "vanilla puro e som ambiente solto. Nao e um modo mais facil,",
+                             "e um modo SEM RITMO — o medo fica por conta da sorte.")
+                    .define("director", true);
+
+            directorLongSilenceSeconds = b
+                    .comment("Depois de tantos segundos sem NADA acontecer, o Diretor pode",
+                             "quebrar a calmaria com um ruido mentiroso — som sem nenhuma",
+                             "criatura por tras.",
+                             "⚠️ A MENTIRA E O QUE FAZ A VERDADE FUNCIONAR. Se o ruido so",
+                             "tocasse com bicho por perto, o jogador aprenderia em uma noite",
+                             "que som = ameaca, e o som viraria um radar util em vez de uma",
+                             "duvida. Ele precisa mentir as vezes para nunca ser confiavel.")
+                    .defineInRange("directorLongSilenceSeconds", 150, 20, 3600);
+
+            directorNoiseTellRange = b
+                    .comment("De quantos blocos uma criatura nossa ainda DENUNCIA a posicao",
+                             "dela pelo ruido ambiente. Dentro disso, o som sai da direcao",
+                             "dela (torta de proposito, e nunca na distancia real: ele diz",
+                             "mais ou menos ONDE, jamais O QUE nem QUAO PERTO).")
+                    .defineInRange("directorNoiseTellRange", 40.0D, 8.0D, 128.0D);
+
+            absence = b
+                    .comment("A AUSENCIA: o mundo mexe, pelas suas costas, em coisas que",
+                             "VOCE colocou. A tocha que voce fincou nao esta mais la; a",
+                             "porta que voce fechou esta aberta.",
+                             "So mexe em tocha e porta, so no que voce mesmo colocou, so",
+                             "fora do seu campo de visao e so entre 8 e 64 blocos. Nunca",
+                             "encosta em bau nem em construcao: perda de progresso nao e",
+                             "medo, e raiva.",
+                             "⚠️ Sem a lente na mao nao ha como provar que aconteceu — e e",
+                             "esse o ponto. Ver o visor em AbsenceEvidence.")
+                    .define("absence", true);
+
+            directorMusic = b
+                    .comment("O DIRETOR MANDA NA TRILHA. Silencio vira o estado padrao e a",
+                             "musica so entra quando ele decide — e some quando a pressao",
+                             "sobe.",
+                             "⚠️ Desligado, a trilha volta ao que era ate a v1.76.3: os",
+                             "biomas tem min_delay/max_delay ZERO, entao uma faixa emenda na",
+                             "outra sem parar. Isso nao e 'mais musica', e o Diretor ficar",
+                             "inaudivel: ele nega batidas para comprar dois minutos de vazio",
+                             "e a trilha enche esse vazio inteiro. O silencio e o quarto",
+                             "estado das leis de dimensao; com isto desligado ele nao existe.")
+                    .define("directorMusic", true);
+
+            directorMusicCutPressure = b
+                    .comment("Acima desta pressao a faixa e CORTADA na hora, sem esperar piso",
+                             "nem nada. A musica sumir sozinha quando algo se aproxima e a",
+                             "ferramenta de terror mais barata que este mod tem — o jogador",
+                             "nao sabe por que parou, so sabe que parou.",
+                             "Baixo demais e a trilha nunca toca; alto demais e ela insiste",
+                             "por cima do encontro, que e trilha de filme e nao terror.")
+                    .defineInRange("directorMusicCutPressure", 0.45D, 0.0D, 1.0D);
 
             b.pop();
         }
