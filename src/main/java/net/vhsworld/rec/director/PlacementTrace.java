@@ -40,8 +40,16 @@ public final class PlacementTrace {
     /** Quantas colocacoes recentes cabem por jogador. */
     private static final int MEMORY = 64;
 
-    /** Uma coisa que o jogador colocou, e onde. */
-    public record Mark(ResourceKey<Level> dimension, BlockPos pos, BlockState state) {}
+    /**
+     * Uma coisa que o jogador colocou, onde, e QUANDO.
+     *
+     * ⚠️ O `placedAt` entrou depois do teste de 2026-08-02, e ele existe por um motivo que
+     * o teste provou: tocha recem-fincada nao tem memoria associada. O jogador ainda esta
+     * com o gesto na mao — se ela some, ou ele ve sumir, ou ele conclui na hora que o mod
+     * fez. Marca precisa ENVELHECER para virar lembranca: e depois de andar, voltar e
+     * passar por ela de novo que ela deixa de ser um bloco e vira "a tocha do corredor".
+     */
+    public record Mark(ResourceKey<Level> dimension, BlockPos pos, BlockState state, long placedAt) {}
 
     private static final Map<UUID, Deque<Mark>> TRACE = new HashMap<>();
 
@@ -62,7 +70,8 @@ public final class PlacementTrace {
         }
 
         Deque<Mark> marks = TRACE.computeIfAbsent(player.getUUID(), id -> new ArrayDeque<>());
-        marks.addLast(new Mark(player.level().dimension(), pos.immutable(), state));
+        marks.addLast(new Mark(player.level().dimension(), pos.immutable(), state,
+                player.level().getGameTime()));
         while (marks.size() > MEMORY) marks.removeFirst();
     }
 

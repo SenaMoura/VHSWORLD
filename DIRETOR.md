@@ -148,30 +148,137 @@ Duas leituras, ambas verdadeiras:
    Minecraft não inventaria bloco. O **resultado padrão da mecânica é "nada aconteceu"**: um
    modo de falha silencioso que é o desfecho mais provável.
 
-### O que falta
+### A correção (v1.78.0)
 
-- **Um gancho sensorial que faça virar.** Não um aviso — a tocha deve **se apagar com o som de
-  apagar, atrás de você**. Você ouve, vira, não há nada. Mas agora *está olhando*. É a
-  diferença entre um estado que mudou e uma coisa que aconteceu.
-- **Alvo único e que carregue peso.** A tocha do corredor, a porta da base, a cama — coisa
-  cuja falta muda **o que você consegue fazer**, não só o que você vê.
+**O gancho sensorial.** A tocha agora **se apaga com o som de apagar** (`Absence.hiss`). Você
+ouve, vira, não há nada — mas agora *está olhando*. Três decisões dentro disso:
+
+- **Som não é prova.** O comentário que estava no código dizia "qualquer efeito seria uma prova,
+  e a mecânica depende de não haver prova". A frase estava certa e a conclusão estava errada.
+  Partícula fica, drop fica, marca no chão fica — todos podem ser apontados depois, inclusive
+  para outra pessoa. O som **já acabou quando você vira a cabeça**: ele não deixa nada além da
+  sua palavra, que é o material desta mecânica. Por isso: som sim, partícula não.
+- **Não é aviso.** Pela mesma razão que o visor não é detector. Aviso aponta pro mod e entrega
+  tarefa. Uma chama morrendo é o som que aquele objeto faz — pode ter sido goteira, pode ter
+  sido nada. Só que vem de um lugar onde agora não há mais nada.
+- **Só o dono da fita ouve** (`ClientboundSoundPacket` direto, não `level.playSound`). Perguntar
+  "você ouviu isso?" e receber "não" é melhor que qualquer efeito.
+- ⚠️ **Volume sobe com a distância** porque no Minecraft volume *é* alcance (raio ≈ 16 × volume).
+  Sem essa conta, tudo acima de 16 blocos sumiria em silêncio e o gancho existiria só no código
+  — que é, palavra por palavra, o defeito original.
+
+**O alvo único.** O `Collections.shuffle` + primeiro que servir achava um bloco *válido*; nunca
+achava um bloco de que o jogador **sentiria falta**. Agora pontua por **solidão** (distância até
+a coisa mais próxima que você colocou) e desempata por **idade** (`Mark.placedAt`):
+
+- A solidão é também o único jeito honesto de a falta **carregar peso**: se era a única luz dali,
+  sumir muda *o que você consegue fazer*. Tirar a 14ª de uma fileira não apaga nada.
+- Idade porque marca precisa **envelhecer** para virar lembrança. Tocha de 30 s atrás ainda está
+  na mão do jogador — sumir com ela não produz dúvida, produz a conclusão correta de que foi o mod.
+- ⚠️ **Cama/baú/fornalha carregariam peso de verdade e continuam vetados.** A terceira trava
+  ganha: perda de progresso vira raiva. O peso sai da **escolha** do alvo, nunca do valor dele.
+- ⚠️ O piso de solidão (6 blocos) é **frouxo de propósito**. Entre os que passam, a ausência já
+  escolhe o mais sozinho — o filtro só precisa matar a fileira colada. Apertar demais recria
+  "não acontece nada", o único sintoma que nunca aponta para o Diretor.
+
+**O teto de distância caiu de 64 para 28** (`absenceHearingRange`): ausência que o jogador não
+pode *ouvir* acontecer volta a ser a versão que falhou. Batida gasta que não vira nada é pior que
+espera.
 
 ⚠️ **Isto é um alerta para a direção da fita inteira.** A tese "a câmera existe porque o mundo
 mente e você vai querer prova" pressupõe que o jogador **detecta** a mentira. A revisão de fita
 depende da mesma suposição. Ela não é mais gratuita: toda mecânica dessa família precisa provar
 que produz o momento de virar a cabeça, e nenhuma pode contar com a memória do jogador.
 
+### O segundo teste (2026-08-03) — ✅ PASSOU
+
+Mesma mecânica, mesmo jogador, um som de diferença: *"escutei o barulho de tocha apagar e tive a
+sensação de fato de que algo estava errado."*
+
+Duas conclusões, e a segunda vale mais que a primeira:
+
+1. **A ausência está validada como batida.** Ela produz o momento — sem entidade, sem vulto, sem
+   dano, com um `setBlock` e um pacote de som.
+2. **★ O DIAGNÓSTICO ESTAVA CERTO E É GENERALIZÁVEL.** O que separou o teste que falhou do que
+   passou não foi conteúdo novo, nem mais efeito, nem ajuste de número: foi a mecânica passar a
+   ter um **acontecimento perceptível**. A v1.76 e a v1.78 fazem *a mesma coisa com o mundo*. A
+   diferença inteira mora no que chega ao jogador.
+
+   Daí a pergunta que toda mecânica futura tem que responder ANTES de ser escrita: **qual é o
+   segundo em que o jogador percebe que isto aconteceu?** Se a resposta for "quando ele reparar",
+   a mecânica já falhou — só ainda não foi testada. O resultado padrão dela é "nada aconteceu",
+   e esse modo de falha é silencioso: no jogo ele é indistinguível de estar quebrado.
+
 ---
 
-## 6. Pendências
+## 6. A COLOCAÇÃO — o Diretor deixa de ser só censor (v1.79.0)
 
-- **Gancho sensorial + alvo único** na ausência, e refazer o teste em survival.
-- **Spawn natural nasce a 110–125 blocos** (medidos 114, 124, 116 — o vanilla sorteia numa
-  casca de ~24–128 e usa o limite externo). Isso torna o `SPAWN` como batida de ritmo quase
-  teórico: o bicho tem que andar 100+ blocos, e Homem de Pedra/anomalias não são feitos pra
-  isso. Se encontro faz parte do compasso, o Diretor vai ter que **colocar** a criatura.
+O `SpawnGate` podia **negar** um spawn; não podia **pedir** um. Enquanto só existisse a negativa,
+o Diretor conseguia impedir o encontro errado e não conseguia produzir o certo.
+
+O número que forçou isso: o spawn natural nasce a **110–125 blocos** (medidos 114, 124, 116 — o
+vanilla sorteia numa casca de ~24–128 e na prática usa o limite externo). A batida **mais cara**
+do Diretor gastava o compasso inteiro com algo que o jogador não tinha como ver, ouvir nem
+suspeitar — e que ainda teria que caminhar cem blocos, coisa que o Homem de Pedra (congela quando
+olhado) e a anomalia (nem anda) não fazem nunca.
+
+`Staging` coloca a criatura a **18–40 blocos, no arco de trás** (meia volta a partir do olhar,
+±90°, calculado direto em vez de sortear e rejeitar). É a mesma lição da ausência aplicada à
+batida pesada: perto o bastante para importar, atrás o bastante para não ser vista nascendo.
+
+- **As regras de spawn continuam valendo** (`SpawnPlacements`). Furar isso não daria mais
+  encontro, daria encontro sem sentido — o Observador espremido numa caverna é a criatura jogada
+  fora.
+- **A lista de quem pode aparecer vem do BIOMA**, não de uma lista própria. Os `biome_modifier` já
+  decidem quem nasce onde, e as 15 dimensões vão continuar decidindo. Lista própria criaria uma
+  segunda verdade que fura a primeira em silêncio. A colocação muda **onde e quando**, nunca
+  **o que é permitido**.
+- **`MobSpawnType.EVENT`**, não `NATURAL` — senão o Diretor pediria licença a si mesmo e seria
+  negado pelo próprio teto que acabou de conferir.
+- **Já virada para o jogador.** O susto é ela já estar te encarando quando você vira, não ela
+  reparar em você depois.
+
+### ★ O racionamento do elenco — a objeção do Pedro, e ela estava certa
+
+*"O problema é que não temos criaturas suficientes pro mod."*
+
+O mod tem **6 criaturas colocáveis**, e hoje isso não aparece porque **o defeito de cima esconde o
+elenco**: bicho que nasce a 114 blocos e nunca chega não repete, porque não acontece. No instante
+em que o Diretor passa a colocar a 20 blocos, o mesmo elenco é consumido de verdade e "poucas
+criaturas" deixa de ser opinião e vira sintoma. Construir a colocação sem racionar seria trocar um
+defeito invisível por um visível.
+
+⚠️ **O racionamento NÃO diminui a frequência — ele força a variedade.** É a distinção que faz a
+coisa valer. O Diretor continua colocando na mesma cadência; ele só não pode repetir o mesmo bicho
+dentro da janela. Com 6 tipos e 10 min de janela cabem 6 colocações nesses 10 min, então o teto do
+racionamento fica praticamente em cima do piso da batida (90 s) e quase nunca silencia o mod.
+
+E o elenco é percorrido **por quem está há mais tempo sem aparecer**, não sorteado: sorteio com
+poucos tipos produz repetição vizinha por acaso, e dois Homens de Pedra seguidos é exatamente o
+resultado que isto existe para impedir.
+
+O que se ganha é o que **nenhuma quantidade de criatura nova compra**: a mesma criatura não vira
+fauna. Bicho que aparece toda noite deixa de ser aparição e vira animal do bioma — e aí o problema
+passa a ser de combate, que o jogador sabe resolver.
+
+⚠️ **Isso não fecha a questão do elenco, adia com juros.** Criatura nova continua valendo — mas só
+**com verbo novo**, nunca com o mesmo olhar (ver §1). De 6 para 12 no mesmo eixo é exatamente o que
+se chamou de slop.
+
+---
+
+## 7. Pendências
+
+- **Testar a colocação in-game.** As perguntas: ela acha lugar (ver `colocacao sem lugar` no log)?
+  Aparece atrás mesmo? 10 min de janela sufoca ou respira? E a que já sabemos que vai doer: **6
+  criaturas bastam quando elas de fato aparecem?**
 - **Quebrar a monocultura do olhar:** eixos novos (som que você faz, permanência, posse,
   memória) — cada criatura taxando uma coisa diferente que o jogador valoriza.
 - **Auditoria de corte** das 15 dimensões.
+- **`recmod.tear.sense` é um AVISO** (`RealityTearSense:95`) — "You feel something that you don't
+  understand", na action bar, a cada 20 s enquanto houver um Rasgo de Realidade num raio de 10.
+  É o oposto exato do que a ausência provou: aponta para o mod, chega sem ser pedida e entrega
+  **objetivo** em vez de dúvida. Primeiro item da auditoria de corte — o gesto certo seria o do
+  visor (a lente confirma se, e só se, o jogador desconfiar sozinho).
 - **Ligar a sanidade ao Diretor** (hoje ela é client-side e ninguém lê).
 - Tirar o **pulso** de diagnóstico quando o ritmo estiver ajustado.

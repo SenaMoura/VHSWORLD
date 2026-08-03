@@ -46,7 +46,7 @@ public enum Beat {
      * problema de combate, nao de terror. Com este teto, enquanto houver qualquer coisa
      * nossa perto de voce, NENHUMA outra nasce. Uma de cada vez, sempre.
      */
-    SPAWN(90, 0.35f, 0.55f, 0.0f),
+    SPAWN(90, 0.35f, 0.55f, 0.005f),
 
     /**
      * A TRILHA — agora um acontecimento, nao um tapete.
@@ -130,11 +130,21 @@ public enum Beat {
      *
      * ⚠️ ZERO QUER DIZER "ESTA BATIDA NUNCA PARTE DO DIRETOR", e a distincao aqui e um
      * erro de unidade que quase entrou. NOISE o Diretor inicia: ele acorda duas vezes por
-     * segundo e sorteia, entao a chance so faz sentido como taxa por tempo. SPAWN nao —
-     * quem tenta e o motor de spawn do proprio jogo, na hora que ele quiser, e o Diretor
-     * so responde sim ou nao. Sortear tambem no SPAWN faria a frequencia das criaturas
-     * depender de quantas vezes o vanilla resolveu tentar naquele minuto, que e um numero
-     * que ninguem controla. Para ele, piso e teto ja sao a regra inteira.
+     * segundo e sorteia, entao a chance so faz sentido como taxa por tempo.
+     *
+     * ⚠️ O SPAWN ERA ZERO ATE A v1.79.0, E O MOTIVO DE TER DEIXADO DE SER IMPORTA. O
+     * argumento antigo estava certo: quem tentava era o motor do vanilla, na hora que ele
+     * quisesse, e sortear aqui faria a frequencia das criaturas depender de quantas vezes o
+     * vanilla resolveu tentar naquele minuto — um numero que ninguem controla. O que mudou
+     * nao foi o argumento, foi o fato: com o Staging, o Diretor tambem COLOCA criatura por
+     * conta propria, e batida que ele inicia precisa de taxa.
+     *
+     * As duas portas continuam separadas e e por isso que isto e seguro: o motor do vanilla
+     * so passa por `allow` (piso e teto, sem dado), e so a colocacao do Diretor consulta
+     * `wants`. O vanilla nunca vira dono da frequencia. E as duas dividem ESTE relogio e
+     * ESTA pressao de proposito — se cada uma tivesse a sua, o Diretor poderia colocar um
+     * bicho a vinte blocos logo depois de o vanilla ter posto outro, que e o empilhamento
+     * que o teto baixo existe para impedir.
      */
     public float urgePerSecond() {
         return urgePerSecond;

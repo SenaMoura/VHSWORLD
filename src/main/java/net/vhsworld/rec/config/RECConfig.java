@@ -867,6 +867,14 @@ public final class RECConfig {
         public final ForgeConfigSpec.IntValue directorLongSilenceSeconds;
         public final ForgeConfigSpec.DoubleValue directorNoiseTellRange;
         public final ForgeConfigSpec.BooleanValue absence;
+        public final ForgeConfigSpec.BooleanValue absenceSound;
+        public final ForgeConfigSpec.DoubleValue absenceHearingRange;
+        public final ForgeConfigSpec.DoubleValue absenceLoneRadius;
+        public final ForgeConfigSpec.IntValue absenceMinAgeSeconds;
+        public final ForgeConfigSpec.BooleanValue directorStaging;
+        public final ForgeConfigSpec.DoubleValue directorStagingMinDistance;
+        public final ForgeConfigSpec.DoubleValue directorStagingMaxDistance;
+        public final ForgeConfigSpec.IntValue directorStagingTypeCooldownSeconds;
         public final ForgeConfigSpec.BooleanValue directorMusic;
         public final ForgeConfigSpec.DoubleValue directorMusicCutPressure;
 
@@ -1324,12 +1332,103 @@ public final class RECConfig {
                              "VOCE colocou. A tocha que voce fincou nao esta mais la; a",
                              "porta que voce fechou esta aberta.",
                              "So mexe em tocha e porta, so no que voce mesmo colocou, so",
-                             "fora do seu campo de visao e so entre 8 e 64 blocos. Nunca",
-                             "encosta em bau nem em construcao: perda de progresso nao e",
-                             "medo, e raiva.",
+                             "fora do seu campo de visao e so a uma distancia em que voce",
+                             "consiga OUVIR (ver absenceHearingRange). Nunca encosta em bau",
+                             "nem em construcao: perda de progresso nao e medo, e raiva.",
                              "⚠️ Sem a lente na mao nao ha como provar que aconteceu — e e",
                              "esse o ponto. Ver o visor em AbsenceEvidence.")
                     .define("absence", true);
+
+            absenceSound = b
+                    .comment("O GANCHO SENSORIAL: a tocha se apaga com o som de apagar, e so",
+                             "voce ouve. Voce vira e nao ha nada — mas agora voce esta",
+                             "olhando.",
+                             "⚠️ DESLIGAR ISTO REFAZ O DEFEITO DE 2026-08-02. No teste sem o",
+                             "som a ausencia funcionou de ponta a ponta e o jogador nao",
+                             "notou nada: ela mudava o ESTADO do mundo sem produzir um",
+                             "ACONTECIMENTO, e ficava dependendo de o jogador lembrar",
+                             "sozinho de como o mundo estava. Som nao e prova (ele ja acabou",
+                             "quando voce vira); som e o que faz voce virar.")
+                    .define("absenceSound", true);
+
+            absenceHearingRange = b
+                    .comment("Ate quantos blocos a ausencia pode acontecer. E o alcance da",
+                             "ORELHA, nao o da mecanica.",
+                             "⚠️ Era 64 e encolheu por causa do gancho sensorial: ausencia",
+                             "que o jogador nao pode ouvir acontecer volta a ser a versao",
+                             "que falhou no teste. Batida gasta que nao vira nada e pior do",
+                             "que espera — o Diretor prefere nao acontecer.")
+                    .defineInRange("absenceHearingRange", 28.0D, 8.0D, 64.0D);
+
+            absenceLoneRadius = b
+                    .comment("Quao SOZINHA a coisa tem que estar (em blocos, ate a coisa mais",
+                             "proxima que voce colocou) para a ausencia poder mexer nela.",
+                             "⚠️ E o filtro de CONFETE. Quarenta e duas tochas fincadas em",
+                             "sequencia nao sao objetos: sem identidade nao ha o que sentir",
+                             "falta. A tocha do corredor e uma tocha; a decima quarta da",
+                             "fileira e textura de parede. A solidao tambem e o que faz a",
+                             "falta pesar: se ela era a unica luz dali, sumir muda o que",
+                             "voce consegue fazer, nao so o que voce ve.",
+                             "⚠️ SEIS E FROUXO DE PROPOSITO, e nao e descuido. Este numero e",
+                             "so o piso: entre todos os que passam, a ausencia ja escolhe o",
+                             "MAIS sozinho. O filtro so precisa matar o caso patologico (a",
+                             "fileira colada), porque apertar demais recria o pior modo de",
+                             "falha do mod — 'nao acontece nada' — que e o unico sintoma",
+                             "que nunca aponta para o Diretor.",
+                             "Zero desliga o filtro e traz o confete de volta.")
+                    .defineInRange("absenceLoneRadius", 6.0D, 0.0D, 32.0D);
+
+            absenceMinAgeSeconds = b
+                    .comment("Quanto tempo a coisa precisa ter ficado no mundo antes de a",
+                             "ausencia poder mexer nela.",
+                             "⚠️ Marca precisa ENVELHECER para virar lembranca. Tocha de",
+                             "trinta segundos atras ainda esta na mao do jogador, e sumir",
+                             "com ela nao produz duvida: produz a conclusao imediata e",
+                             "correta de que o mod fez.")
+                    .defineInRange("absenceMinAgeSeconds", 120, 0, 3600);
+
+            directorStaging = b
+                    .comment("A COLOCACAO: o Diretor POE a criatura perto de voce, pelas suas",
+                             "costas, em vez de so poder negar o spawn do vanilla.",
+                             "⚠️ POR QUE ISTO PRECISOU EXISTIR: medido no jogo, o spawn",
+                             "natural nasce a 110-125 blocos (114, 124, 116). O vanilla",
+                             "sorteia numa casca de ~24-128 e na pratica usa o limite de",
+                             "fora. Ou seja: a batida MAIS CARA do Diretor gastava o",
+                             "compasso inteiro com uma criatura que o jogador nao tinha como",
+                             "ver, ouvir nem suspeitar — e que ainda teria que caminhar cem",
+                             "blocos para chegar (o Homem de Pedra congela quando olhado e a",
+                             "anomalia nem anda: nao chegam nunca).",
+                             "Desligado, o spawn volta a ser vanilla puro e o Diretor volta a",
+                             "ser so um censor: ele consegue impedir o encontro errado e nao",
+                             "consegue produzir o certo.")
+                    .define("directorStaging", true);
+
+            directorStagingMinDistance = b
+                    .comment("Distancia minima da criatura colocada. Perto demais e susto de",
+                             "aparicao, que e o que a colocacao existe para NAO ser: o que se",
+                             "ve nascer e um bug, o que se descobre ali e uma aparicao.")
+                    .defineInRange("directorStagingMinDistance", 18.0D, 8.0D, 64.0D);
+
+            directorStagingMaxDistance = b
+                    .comment("Distancia maxima. Acima de ~48 a criatura para de contar na",
+                             "pressao (Tension.NEAR) e a colocacao recai no defeito que ela",
+                             "veio consertar.")
+                    .defineInRange("directorStagingMaxDistance", 40.0D, 12.0D, 96.0D);
+
+            directorStagingTypeCooldownSeconds = b
+                    .comment("Quanto tempo o MESMO tipo de criatura fica de fora depois de ser",
+                             "colocado.",
+                             "⚠️ ISTO NAO DIMINUI A FREQUENCIA, FORCA A VARIEDADE — e a",
+                             "distincao e o ponto inteiro. O Diretor continua colocando na",
+                             "mesma cadencia; ele so nao pode repetir o mesmo bicho dentro da",
+                             "janela. Com seis criaturas e dez minutos, cabem seis colocacoes",
+                             "nesses dez minutos: o teto do racionamento fica praticamente em",
+                             "cima do piso da batida, entao ele quase nunca silencia o mod.",
+                             "O que se ganha e o que nenhuma criatura nova compra: a mesma",
+                             "criatura nao vira FAUNA. Bicho que aparece toda noite deixa de",
+                             "ser aparicao e vira animal do bioma — e ai o problema passa a",
+                             "ser de combate, que o jogador sabe resolver.")
+                    .defineInRange("directorStagingTypeCooldownSeconds", 600, 0, 7200);
 
             directorMusic = b
                     .comment("O DIRETOR MANDA NA TRILHA. Silencio vira o estado padrao e a",

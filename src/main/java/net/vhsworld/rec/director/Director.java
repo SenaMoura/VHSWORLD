@@ -224,6 +224,7 @@ public final class Director {
                 }
 
                 maybeMusic(player, t);
+                maybeStaging(player, t);
                 maybeAbsence(player, t);
                 maybeNoise(player, t);
             }
@@ -285,6 +286,26 @@ public final class Director {
 
         LOG.info("[DIRETOR] trilha | pressao {} | silencio {}s",
                 String.format("%.2f", t.pressure()), silence);
+    }
+
+    /**
+     * A COLOCACAO — o Diretor finalmente PEDINDO um encontro, em vez de so poder negar.
+     *
+     * ⚠️ VEM PRIMEIRO ENTRE AS TRES QUE MEXEM COM O JOGADOR, e a ordem e a regra. Ela e a
+     * batida mais cara (0.55) e a de teto mais baixo (0.35): so cabe em calmaria de
+     * verdade, e e a mais rara das tres. Se corresse por ultimo, ausencia e ruido — que
+     * sao baratos e esperam menos — gastariam a calmaria antes, e o encontro, que e a
+     * unica batida que o mod tem com uma criatura dentro, quase nunca aconteceria.
+     *
+     * E o `report` mora no Staging, nao aqui, porque so ele sabe se achou lugar. Cobrar a
+     * pressao por uma colocacao que nao encontrou chao valido atras do jogador seria o
+     * Diretor calar o mundo por um encontro que nao existe.
+     */
+    private static void maybeStaging(ServerPlayer player, Tension t) {
+        if (!allow(player, Beat.SPAWN)) return;
+        if (!wants(t, Beat.SPAWN)) return;
+
+        Staging.tryPlace(player);
     }
 
     /**
@@ -385,5 +406,6 @@ public final class Director {
         STATE.remove(event.getEntity().getUUID());
         MUSIC_ON.remove(event.getEntity().getUUID());
         PlacementTrace.clear(event.getEntity().getUUID());
+        Staging.clear(event.getEntity().getUUID());
     }
 }
