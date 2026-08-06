@@ -121,17 +121,28 @@ public final class Director {
      * podendo esticar mais um pouco, senao ele vira hora marcada de novo.
      */
     private static boolean wants(Tension t, Beat beat) {
-        if (beat.urgePerSecond() <= 0.0f) return false;
+        // ⚠️ A taxa e POR SEGUNDO, e este metodo roda a cada SAMPLE_TICKS. Sem esta
+        // conversao, a mesma constante daria um ruido a cada vinte e seis segundos,
+        // cravados — o metronomo que o Diretor existe para nao ser.
+        float perSample = urgeNow(t, beat) * (Tension.SAMPLE_TICKS / 20.0f);
+
+        return perSample > 0.0f && RANDOM.nextFloat() < perSample;
+    }
+
+    /**
+     * A CHANCE POR SEGUNDO NESTE INSTANTE — a mesma conta do `wants`, sem o dado.
+     *
+     * ⚠️ Existe para o comando de diagnostico poder MOSTRAR o numero, e mora aqui em vez
+     * de ser recalculada la porque numero de diagnostico que diverge do numero real e pior
+     * que nenhum: ele nao so nao ajuda, ele manda consertar a coisa errada.
+     */
+    static float urgeNow(Tension t, Beat beat) {
+        if (beat.urgePerSecond() <= 0.0f) return 0.0f;
 
         float over = Math.min(4.0f,
                 (t.quiet(beat) - beat.floorTicks()) / (float) beat.floorTicks());
 
-        // ⚠️ A taxa e POR SEGUNDO, e este metodo roda a cada SAMPLE_TICKS. Sem esta
-        // conversao, a mesma constante daria um ruido a cada vinte e seis segundos,
-        // cravados — o metronomo que o Diretor existe para nao ser.
-        float perSample = beat.urgePerSecond() * (1.0f + over) * (Tension.SAMPLE_TICKS / 20.0f);
-
-        return RANDOM.nextFloat() < perSample;
+        return beat.urgePerSecond() * (1.0f + over);
     }
 
     /**
@@ -333,6 +344,22 @@ public final class Director {
         if (!allow(player, Beat.NOISE)) return;
         if (!wants(t, Beat.NOISE)) return;
 
+        fireNoise(player, t, false);
+    }
+
+    /**
+     * O RUIDO, FORCADO — para o comando de teste.
+     *
+     * ⚠️ Pula so o QUANDO (o allow, o wants e o piso de silencio da mentira). O resto e o
+     * mesmo caminho: mesma escolha entre denuncia e mentira, mesma torcao de direcao, mesmo
+     * report. Um teste que fizesse o som por fora provaria que o comando funciona, e nao
+     * que o ruido funciona.
+     */
+    public static boolean testNoise(ServerPlayer player) {
+        return fireNoise(player, of(player), true);
+    }
+
+    private static boolean fireNoise(ServerPlayer player, Tension t, boolean forced) {
         double range = RECConfig.COMMON.directorNoiseTellRange.get();
         Mob tell = nearestOurs(player, range);
 
@@ -347,7 +374,7 @@ public final class Director {
             // jogador nem soube que existe, nao quebrou silencio nenhum. Ler o relogio
             // geral aqui foi o que tornou a mentira quase inalcancavel.
             int longSilence = RECConfig.COMMON.directorLongSilenceSeconds.get() * 20;
-            if (t.quiet(Beat.NOISE) < longSilence) return;
+            if (!forced && t.quiet(Beat.NOISE) < longSilence) return false;
             angle = RANDOM.nextDouble() * Math.PI * 2.0D;
         }
 
@@ -371,7 +398,8 @@ public final class Director {
         LOG.info("[DIRETOR] ruido {} | pressao {} | silencio {}s",
                 tell != null ? "DENUNCIA (" + tell.getType().getDescriptionId() + ")" : "mentira",
                 String.format("%.2f", t.pressure()),
-                t.quiet(Beat.NOISE) / 20);
+                silence);
+        return true;
     }
 
     /** A criatura nossa mais perto, dentro do raio. Null se nao ha nenhuma. */
@@ -394,6 +422,67 @@ public final class Director {
 
     private static Tension of(ServerPlayer player) {
         return STATE.computeIfAbsent(player.getUUID(), id -> new Tension());
+    }
+
+    /** O estado bruto deste jogador — so para o comando de diagnostico ler. */
+    static Tension tension(ServerPlayer player) {
+        return of(player);
+    }
+
+    // ------------------------------------------------------------------ a bancada
+
+    /**
+     * ⚠️ A PORTA DE TESTE DO PACOTE — e ela e publica de proposito.
+     *
+     * Regra da casa desde 2026-08-03: <b>toda mecanica nova nasce com um jeito de dispara-la
+     * na hora</b>. O motivo esta escrito por todo este pacote: no jogo, "nao aconteceu nada"
+     * e indistinguivel de "esta quebrado", e esperar o Diretor querer para poder olhar custou
+     * a v1.79.0 inteira sem um unico teste. Cada metodo aqui pula SO o quando — o caminho
+     * que ele executa e o mesmo do relogio, report incluso.
+     *
+     * Quem quiser disparar isto de fora usa a bancada (net.vhsworld.rec.debug.TestBench),
+     * que e onde os gatilhos ficam listados para o comando achar sozinho.
+     */
+    public static boolean testAbsence(ServerPlayer player) {
+        if (Absence.tryApply(player)) {
+            report(player, Beat.ABSENCE);
+            return true;
+        }
+        return false;
+    }
+
+    /** A colocacao, forcada. Devolve a historia inteira da tentativa. */
+    public static Staging.Attempt testStaging(ServerPlayer player) {
+        return Staging.force(player);
+    }
+
+    /** Zera o racionamento do elenco deste jogador. */
+    public static void testForgetCast(ServerPlayer player) {
+        Staging.forget(player);
+    }
+
+    /** Manda a trilha entrar ou sair agora. */
+    public static void testMusic(ServerPlayer player, boolean play) {
+        if (play) {
+            MUSIC_ON.add(player.getUUID());
+            RECNetwork.toPlayer(player, new MusicPacket(MusicPacket.Action.PLAY));
+            report(player, Beat.MUSIC);
+        } else {
+            MUSIC_ON.remove(player.getUUID());
+            RECNetwork.toPlayer(player, new MusicPacket(MusicPacket.Action.STOP));
+        }
+    }
+
+    /**
+     * Escreve a pressao a mao.
+     *
+     * ⚠️ E o unico jeito de testar a metade do Diretor que NEGA. A metade que faz coisa se
+     * ve acontecendo; a que recusa e invisivel por definicao — sem poder por a pressao em
+     * 0.9 e ver tudo calar, nao ha como distinguir "o Diretor esta negando certo" de "o
+     * Diretor parou de funcionar".
+     */
+    public static void testPressure(ServerPlayer player, float value) {
+        of(player).setPressure(value);
     }
 
     /**

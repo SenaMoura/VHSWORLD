@@ -131,6 +131,18 @@ public final class Tension {
     }
 
     /**
+     * So a bancada de teste escreve isto (ver Director.testPressure).
+     *
+     * ⚠️ Nao dura: o `sample` puxa a pressao de volta para o que o MUNDO esta pedindo, a
+     * 0.004 por leitura. Escrever 1.0 num campo vazio compra uns oitenta segundos de
+     * negacao, que e exatamente o que se quer olhar — e depois o sistema volta sozinho ao
+     * que era. Teste que deixa estado preso e pior que teste nenhum.
+     */
+    void setPressure(float value) {
+        this.pressure = Math.max(0.0f, Math.min(1.0f, value));
+    }
+
+    /**
      * O SILENCIO DESTA BATIDA: tempo desde que ELA aconteceu. So ela.
      *
      * ⚠️ 3ª E ULTIMA VERSAO DESTA REGRA, e as duas anteriores morreram medidas no jogo.

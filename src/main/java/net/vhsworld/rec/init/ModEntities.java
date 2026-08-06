@@ -10,6 +10,7 @@ import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.entity.AnomalyEntity;
 import net.vhsworld.rec.entity.CrawlerVoidEntity;
 import net.vhsworld.rec.entity.InvertedSilhouetteEntity;
+import net.vhsworld.rec.entity.ListenerEntity;
 import net.vhsworld.rec.entity.MirrorEntity;
 import net.vhsworld.rec.entity.ShadeSegmentEntity;
 import net.vhsworld.rec.entity.StaticWatcherEntity;
@@ -150,6 +151,37 @@ public class ModEntities {
                     .updateInterval(2)
                     .fireImmune()
                     .build("crawler_void"));
+
+    // ================================================================ o verbo novo
+
+    /**
+     * O ESCUTADOR — o primeiro do elenco que nao e sobre olhar.
+     *
+     * ⚠️ A CAIXA E MAIS ESTREITA QUE O BICHO, e e o mesmo argumento do Anomalo da Sombra.
+     * Pela referencia (SCP-939) ele e um quadrupede baixo e ABERTO: os bracos dianteiros
+     * saem para os lados e o vao deles passa de dois blocos. Caixa do tamanho do desenho
+     * daria uma criatura que nao entra em corredor de mina — e mina e o lugar onde o
+     * jogador faz o barulho que a chama. Bicho que nao entra na mina nunca encontra
+     * ninguem minerando, e a criatura inteira deixaria de acontecer. Braco atravessando a
+     * parede de pedra nao e defeito aqui; e uma coisa espremida no tunel.
+     *
+     * 1.0 x 1.7: baixo e comprido, nao alto. Ele chega rente ao chao.
+     *
+     * `clientTrackingRange` 12 e menor de proposito, ao contrario do Observador: ele nao e
+     * feito para ser visto de longe. O que se percebe de longe dele e o ESTALO, que e som e
+     * nao depende de tracking — e chegar perto o bastante para ver o corpo ja e o problema.
+     *
+     * `updateInterval` 2: ele para e arranca em seco, e essas trocas tem que chegar
+     * inteiras no cliente. A postura dele e a informacao — ver ListenerEntity.
+     */
+    public static final RegistryObject<EntityType<ListenerEntity>> LISTENER =
+            ENTITIES.register("listener", () -> EntityType.Builder
+                    .of(ListenerEntity::new, MobCategory.MONSTER)
+                    .sized(1.0F, 1.7F)
+                    .clientTrackingRange(12)
+                    .updateInterval(2)
+                    .fireImmune()
+                    .build("listener"));
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);

@@ -275,6 +275,17 @@ public class StonemanEntity extends Monster {
         }
     }
 
+    /**
+     * O SURTO, FORCADO — para o comando de teste.
+     *
+     * ⚠️ Chama o MESMO startSurge do relogio espontaneo, e nao uma versao paralela: o
+     * surto tem aviso sonoro e emboscada, e um teste que pulasse os dois estaria provando
+     * outra coisa. Aqui so o cronometro sai do caminho.
+     */
+    public void testSurge() {
+        startSurge();
+    }
+
     /** Quebra a regra por 2 a 4 segundos, com aviso. */
     private void startSurge() {
         int min = ticks(RECConfig.COMMON.stonemanSurgeMinSeconds.get());

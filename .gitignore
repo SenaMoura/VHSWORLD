@@ -8,3 +8,7 @@ run/
 logs/
 __pycache__/
 *.pyc
+
+# lore vive em repo privado: SenaMoura/VHSWORLD-lore
+lore/
+*.blend1

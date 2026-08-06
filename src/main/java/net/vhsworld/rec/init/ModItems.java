@@ -390,6 +390,13 @@ public class ModItems {
                     () -> new ForgeSpawnEggItem(ModEntities.CRAWLER_VOID,
                             0x0A0A0A, 0xEDEDED, new Item.Properties()));
 
+    /** ⚠️ O ovo importa mais neste do que nos outros: sem ele, testar a escuta seria
+     *  esperar o Diretor colocar um. Invocacao pedida sempre passa pelo SpawnGate. */
+    public static final RegistryObject<Item> LISTENER_SPAWN_EGG =
+            ITEMS.register("listener_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.LISTENER,
+                            0x1A181A, 0x6E6266, new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

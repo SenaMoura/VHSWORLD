@@ -17,6 +17,7 @@ import net.vhsworld.rec.RECMod;
 import net.vhsworld.rec.entity.AnomalyEntity;
 import net.vhsworld.rec.entity.CrawlerVoidEntity;
 import net.vhsworld.rec.entity.InvertedSilhouetteEntity;
+import net.vhsworld.rec.entity.ListenerEntity;
 import net.vhsworld.rec.entity.ShadeSegmentEntity;
 import net.vhsworld.rec.entity.StaticWatcherEntity;
 import net.vhsworld.rec.entity.StonemanEntity;
@@ -45,6 +46,7 @@ public final class ModEntitySetup {
         event.put(ModEntities.INVERTED_SILHOUETTE.get(),
                 InvertedSilhouetteEntity.createAttributes().build());
         event.put(ModEntities.CRAWLER_VOID.get(), CrawlerVoidEntity.createAttributes().build());
+        event.put(ModEntities.LISTENER.get(), ListenerEntity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -90,6 +92,17 @@ public final class ModEntitySetup {
 
         event.enqueueWork(() -> SpawnPlacements.register(
                 ModEntities.CRAWLER_VOID.get(),
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Monster::checkMonsterSpawnRules));
+
+        // ⚠️ O ESCUTADOR USA A REGRA DE MONSTRO (escuro), e nao uma regra propria, embora
+        // luz nao signifique nada para ele — ele e cego. O motivo nao e ele, e o jogador:
+        // uma criatura que pudesse nascer ao meio-dia num campo aberto seria vista antes de
+        // ser ouvida, e a ordem em que se descobre esta criatura E a criatura. Primeiro o
+        // estalo no escuro, depois o corpo.
+        event.enqueueWork(() -> SpawnPlacements.register(
+                ModEntities.LISTENER.get(),
                 SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules));

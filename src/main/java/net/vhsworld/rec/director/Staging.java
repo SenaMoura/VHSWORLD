@@ -84,19 +84,38 @@ public final class Staging {
     private static final Map<UUID, Map<EntityType<?>, Long>> LAST = new HashMap<>();
 
     /**
-     * Tenta colocar uma criatura para este jogador. Devolve true se colocou.
+     * O QUE ACONTECEU NA TENTATIVA.
+     *
+     * ⚠️ Isto e um enum e nao um boolean pelo mesmo motivo que os dois avisos de
+     * diagnostico la embaixo estao separados: "nao colocou" e a resposta que este projeto
+     * ja pagou tres vezes para nao ter mais. Elenco vazio e um conserto, nenhum lugar
+     * valido atras do jogador e outro, e a chave desligada e um terceiro — e no jogo os
+     * tres sao o mesmo silencio.
+     */
+    public enum Outcome { COLOCOU, SEM_ELENCO, SEM_LUGAR, DESLIGADO }
+
+    /** O resultado inteiro de uma tentativa, para quem quiser contar a historia dela. */
+    public record Attempt(Outcome outcome, EntityType<?> type, double distance,
+                          BlockPos pos, int roster) {
+        static Attempt of(Outcome outcome, int roster) {
+            return new Attempt(outcome, null, 0.0D, null, roster);
+        }
+    }
+
+    /**
+     * Tenta colocar uma criatura para este jogador.
      *
      * ⚠️ Quem decide QUANDO nao e este arquivo — e o Diretor, pelo Beat.SPAWN. Aqui so se
      * responde "deu para colocar alguma coisa agora?".
      */
-    static boolean tryPlace(ServerPlayer player) {
-        if (!RECConfig.COMMON.directorStaging.get()) return false;
-        if (!(player.level() instanceof ServerLevel level)) return false;
+    static Attempt tryPlace(ServerPlayer player) {
+        if (!RECConfig.COMMON.directorStaging.get()) return Attempt.of(Outcome.DESLIGADO, 0);
+        if (!(player.level() instanceof ServerLevel level)) return Attempt.of(Outcome.DESLIGADO, 0);
 
         List<EntityType<?>> roster = roster(level, player);
         if (roster.isEmpty()) {
             noRoster(player);
-            return false;
+            return Attempt.of(Outcome.SEM_ELENCO, 0);
         }
 
         double min = RECConfig.COMMON.directorStagingMinDistance.get();
@@ -128,11 +147,11 @@ public final class Staging {
                     String.format("%.0f", distance),
                     player.getGameProfile().getName(),
                     String.format("%.2f", perceived), spot);
-            return true;
+            return new Attempt(Outcome.COLOCOU, type, distance, spot, roster.size());
         }
 
         noSpot(player, roster.size());
-        return false;
+        return Attempt.of(Outcome.SEM_LUGAR, roster.size());
     }
 
     /**
@@ -282,5 +301,58 @@ public final class Staging {
 
     static void clear(UUID player) {
         LAST.remove(player);
+    }
+
+    // ------------------------------------------------------------------ leitura de fora
+
+    /** Um tipo do elenco e quanto tempo falta para ele poder aparecer de novo. */
+    public record CastMember(EntityType<?> type, int waitSeconds) {}
+
+    /**
+     * O ELENCO DESTE BIOMA, com o racionamento de cada um — <b>inclusive quem esta em
+     * espera</b>, que o roster de cima ja descartou.
+     *
+     * ⚠️ E o unico jeito de responder no jogo a pergunta que o log nao responde: quando o
+     * mod fica quieto, e porque o bioma nao lista criatura nossa (defeito de datapack) ou
+     * porque o elenco inteiro esta em espera (racionamento apertado demais)? Sao consertos
+     * opostos — abrir o biome_modifier num caso, baixar o cooldown no outro — e ate aqui a
+     * unica diferenca visivel entre os dois era nenhuma.
+     */
+    public static List<CastMember> cast(ServerPlayer player) {
+        List<CastMember> out = new ArrayList<>();
+        if (!(player.level() instanceof ServerLevel level)) return out;
+
+        long cooldown = RECConfig.COMMON.directorStagingTypeCooldownSeconds.get() * 20L;
+        long now = level.getGameTime();
+
+        MobSpawnSettings settings = level.getBiome(player.blockPosition()).value().getMobSettings();
+        for (MobSpawnSettings.SpawnerData data : settings.getMobs(MobCategory.MONSTER).unwrap()) {
+            EntityType<?> type = data.type;
+
+            var key = ForgeRegistries.ENTITY_TYPES.getKey(type);
+            if (key == null || !net.vhsworld.rec.RECMod.MOD_ID.equals(key.getNamespace())) continue;
+
+            long waited = now - lastPlaced(player, type);
+            int left = waited >= cooldown ? 0 : (int) ((cooldown - waited) / 20L);
+
+            out.add(new CastMember(type, left));
+        }
+        return out;
+    }
+
+    /**
+     * Forca uma colocacao AGORA, pulando a decisao de quando.
+     *
+     * ⚠️ Pula so o QUANDO (o allow e o wants do Diretor) — o resto do caminho e o mesmo,
+     * racionamento e regra de spawn inclusive, e o report tambem acontece. Um teste que
+     * pulasse o caminho todo provaria que o comando funciona, nao que a colocacao funciona.
+     */
+    public static Attempt force(ServerPlayer player) {
+        return tryPlace(player);
+    }
+
+    /** Zera o racionamento deste jogador. So para teste — em jogo ele expira sozinho. */
+    public static void forget(ServerPlayer player) {
+        clear(player.getUUID());
     }
 }

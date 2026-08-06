@@ -50,6 +50,12 @@ public final class ClientSetup {
         event.registerLayerDefinition(InvertedSilhouetteModel.LAYER,
                 InvertedSilhouetteGeometry::create);
         event.registerLayerDefinition(CrawlerVoidModel.LAYER, CrawlerVoidGeometry::create);
+
+        // ⚠️ O Escutador nao vem de geom/: a geometria dele e escrita a mao e provisoria,
+        // ate a malha em pecas articuladas chegar. O que vale nele e o RIG, em
+        // ListenerModel — e o rig nao muda quando os vertices mudarem.
+        event.registerLayerDefinition(net.vhsworld.rec.client.entity.ListenerModel.LAYER,
+                net.vhsworld.rec.client.entity.ListenerModel::createBody);
     }
 
     @SubscribeEvent
@@ -64,6 +70,8 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.INVERTED_SILHOUETTE.get(),
                 InvertedSilhouetteRenderer::new);
         event.registerEntityRenderer(ModEntities.CRAWLER_VOID.get(), CrawlerVoidRenderer::new);
+        event.registerEntityRenderer(ModEntities.LISTENER.get(),
+                net.vhsworld.rec.client.entity.ListenerRenderer::new);
     }
 
     private ClientSetup() {}

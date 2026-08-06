@@ -217,5 +217,7 @@
   "item.recmod.static_watcher_spawn_egg": "Static Watcher Spawn Egg",
   "item.recmod.shade_segment_spawn_egg": "Shade Segment Spawn Egg",
   "item.recmod.inverted_silhouette_spawn_egg": "Inverted Silhouette Spawn Egg",
-  "item.recmod.crawler_void_spawn_egg": "Crawler Void Spawn Egg"
+  "item.recmod.crawler_void_spawn_egg": "Crawler Void Spawn Egg",
+  "entity.recmod.listener": "The Listener",
+  "item.recmod.listener_spawn_egg": "Listener Spawn Egg"
 }

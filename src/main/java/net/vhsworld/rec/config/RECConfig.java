@@ -912,6 +912,9 @@ public final class RECConfig {
         public final ForgeConfigSpec.DoubleValue crawlerWatchRange;
         public final ForgeConfigSpec.DoubleValue crawlerPounceRange;
 
+        // --- o Escutador: o cego que caca por som ---
+        public final ForgeConfigSpec.IntValue listenerHearingRange;
+
         // --- o Ofanim: o olhar reciproco ---
         public final ForgeConfigSpec.BooleanValue ophanimInChunks;
         public final ForgeConfigSpec.BooleanValue ophanimGaze;
@@ -1160,6 +1163,21 @@ public final class RECConfig {
                              "nao mais aproximacao. Sem isto ele congelaria a um passo de voce",
                              "e viraria brinquedo — bastaria encarar para nunca mais apanhar.")
                     .defineInRange("crawlerPounceRange", 6.0D, 0.0D, 32.0D);
+
+            // ---------------- O Escutador ----------------
+
+            listenerHearingRange = b
+                    .comment("O ESCUTADOR: de quantos blocos ele ouve o que voce faz.",
+                             "Olhar para ele nao faz absolutamente nada — ele nao tem olho. O",
+                             "contra-jogo dele e OUTRO: ficar quieto. Agachado no chao o jogador",
+                             "nao emite som nem evento (regra do proprio Minecraft, a mesma que",
+                             "engana o sensor de sculk), entao andar agachado o cega de vez.",
+                             "⚠️ Este numero e o tamanho da mordida. Curto demais e ele vira",
+                             "enfeite que nunca reage; longo demais e minerar em qualquer lugar",
+                             "chama a coisa, e o jogador para de minerar — que nao e medo, e",
+                             "imposto. 32 deixa uma sessao de mineracao normal ser ouvida por",
+                             "quem ja estava por perto, e nao pelo mapa inteiro.")
+                    .defineInRange("listenerHearingRange", 32, 8, 96);
 
             ophanimInChunks = b
                     .comment("O Ofanim mora no ceu da dimensao CHUNKS, mantido em UM por um",
